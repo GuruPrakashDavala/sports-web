@@ -2,13 +2,16 @@
 
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
+import getArticleFormattedDate from "../../utils/util";
 
 type PublishInfoProps = {
+  date: string | Date;
   styles?: ThemeUICSSObject;
 };
 
 const PublishInfo = (props: PublishInfoProps): JSX.Element => {
-  const { styles = {} } = props;
+  const { date, styles = {} } = props;
+  const articleDate = getArticleFormattedDate(date);
   return (
     <p
       sx={{
@@ -18,7 +21,7 @@ const PublishInfo = (props: PublishInfoProps): JSX.Element => {
         ...styles,
       }}
     >
-      Published 31st August 2022
+      {articleDate}
     </p>
   );
 };

@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { ThemeUICSSObject } from "@theme-ui/css";
-import Link from "../../Primitives/Link";
+import Link from "../Link";
 import { get } from "theme-ui";
 import { ColorTheme } from "../../../types/modifier";
 // import { ColorThemeAll, ColorThemeFrontend } from "../../../types/colorTheme"

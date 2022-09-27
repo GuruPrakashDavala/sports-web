@@ -3,117 +3,66 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import ArticleCard, { ArticleVariant } from "../components/Cards/ArticleCard";
-import MultiInfoCard from "../components/Cards/MultiInfoCard";
 import Carousel, { CarouselItem, CarouselProps } from "../components/Carousel";
+import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
 import ArticleGrid from "../components/Grids/ArticleGrid";
 import ContentGrid from "../components/Grids/ContentGrid";
 import SectionHeading from "../components/SectionHeading";
+import TwitterTweetEmbed from "../components/SocialEmbeds/TwitterTweetEmbed";
 import SectionWrapper from "../components/Wrappers/SectionWrapper";
-import { colors } from "../styles/theme";
-import { ColorTheme, ComponentVariant } from "../types/modifier";
-import { Blocks, BlockType } from "../utils/blocks";
+import { fetchAPI } from "../lib/strapi";
+import { ColorTheme } from "../types/modifier";
+import { ImageType } from "../types/article";
+import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 
-const largeMultiInfoComponentText =
-  "[Large multi info component]: Trent Alexander-Arnold's goal against AFC Bournemouth was the 800th Liverpool have scored under Jürgen Klopp in all competitions";
+type BlockPickerProps = { block: HomeBlocks; index: number };
 
-const Home: NextPage = () => {
-  const link = {
-    label: "this is a label",
-    href: "https://liverpoolfc.com",
-    external: false,
+const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
+  switch (block.type) {
+    case "articlecarousel": {
+      return (
+        <ArticeCarousel
+          block={block}
+          theme={index % 2 === 0 ? ColorTheme.GRAY : ColorTheme.LIGHT}
+        />
+      );
+    }
+    case "videocarousel":
+      return <h1>VideoCarouselPlaceholder</h1>;
+    case "articlegrid":
+      return (
+        <ArticleGrid
+          articleGrid={block}
+          theme={index % 2 === 0 ? ColorTheme.GRAY : ColorTheme.LIGHT}
+        />
+      );
+    default:
+      return <></>;
+  }
+};
+
+export type HomePageProps = {
+  attributes: {
+    contentGrid: ContentGridT[];
+    blocks: HomeBlocks[];
+    createdAt: string;
+    hero: { id: number; title: string };
+    publishedAt: string;
+    seo: {
+      id: number;
+      metaDescription: string;
+      metaTitle: string;
+      shareImage: { data: ImageType };
+    };
+    updatedAt: string;
   };
+  id: number;
+};
 
-  const blocks: Blocks[] = [
-    {
-      id: "1",
-      type: BlockType.NEWSCARD,
-      imageIndex: 1,
-      theme: ColorTheme.DARK,
-      variant: ArticleVariant.SMALL,
-    },
-    {
-      id: "3",
-      type: BlockType.NEWSCARD,
-      imageIndex: 2,
-      theme: ColorTheme.DARK,
-      variant: ArticleVariant.SMALL,
-    },
-    {
-      id: "4",
-      type: BlockType.NEWSCARD,
-      imageIndex: 1,
-      theme: ColorTheme.DARK,
-      variant: ArticleVariant.SMALL,
-    },
-    {
-      id: "5",
-      type: BlockType.NEWSCARD,
-      imageIndex: 2,
-      theme: ColorTheme.DARK,
-      variant: ArticleVariant.SMALL,
-    },
-    {
-      id: "8",
-      type: BlockType.MULTIINFOCARD,
-      label:
-        "This is a label. Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum",
-      variant: ComponentVariant.SMALL,
-    },
-    {
-      id: "6",
-      type: BlockType.NEWSCARD,
-      imageIndex: 1,
-      theme: ColorTheme.DARK,
-      variant: ArticleVariant.SMALL,
-    },
-    {
-      id: "7",
-      type: BlockType.NEWSCARD,
-      imageIndex: 2,
-      theme: ColorTheme.DARK,
-      variant: ArticleVariant.SMALL,
-    },
-  ];
-
-  const element: JSX.Element = (
-    <ArticleCard
-      imageIndex={2}
-      variant={ArticleVariant.SMALL}
-      styles={{ height: "100%" }}
-    />
-  );
-
-  const element2: JSX.Element = (
-    <MultiInfoCard
-      label={`Lorem ipsum lorem ipsum lorem ipsum`}
-      variant={ComponentVariant.SMALL}
-      styles={{ height: "100%" }}
-    />
-  );
-
-  const items: CarouselItem[] = [
-    {
-      content: element,
-      slideStyles: {},
-    },
-    {
-      content: element,
-      slideStyles: {},
-    },
-    {
-      content: element,
-      slideStyles: {},
-    },
-    {
-      content: element,
-      slideStyles: {},
-    },
-    {
-      content: element,
-      slideStyles: {},
-    },
-  ];
-
+const Home: NextPage<{ homeRes: HomePageProps }> = ({
+  homeRes,
+}): JSX.Element => {
+  console.log(homeRes);
   return (
     <section>
       <Head>
@@ -122,26 +71,34 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ContentGrid blocks={blocks} />
-      <ArticleGrid />
+      <ContentGrid blocks={homeRes.attributes.contentGrid} />
 
-      {/* <MultiInfoCard
-        label={largeMultiInfoComponentText}
-        variant={ComponentVariant.LARGE}
-      /> */}
-      {/* <SectionHeading title={`title`} theme={ColorTheme.LIGHT} link={link} /> */}
-
-      {/* <Carousel swiperId="1" items={items} /> */}
-
-      <SectionWrapper>
-        {items.length > 0 ? (
-          <Carousel swiperId="1" items={items} styles={{ gap: [1] }} />
-        ) : (
-          <>Swiper not found</>
-        )}
-      </SectionWrapper>
+      {homeRes.attributes.blocks &&
+        homeRes.attributes.blocks.map((block, index) => {
+          return (
+            <div key={index}>
+              <BlockPicker block={block} index={index} />
+            </div>
+          );
+        })}
     </section>
   );
 };
+
+export async function getStaticProps() {
+  // Run API calls in parallel
+  const [homeRes] = await Promise.all([
+    fetchAPI("/home", {
+      populate: "deep",
+    }),
+  ]);
+
+  return {
+    props: {
+      homeRes: homeRes.data,
+    },
+    revalidate: 1,
+  };
+}
 
 export default Home;

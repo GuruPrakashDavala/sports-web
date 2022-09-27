@@ -46,7 +46,9 @@ const Carousel = (props: CarouselProps): JSX.Element => {
     theme: { space },
   } = useThemeUI();
 
-  if (!items) return <></>;
+  if (!items) {
+    return <></>;
+  }
 
   const [carouselAtEnd, setCarouselAtEnd] = useState(false);
   const [carouselAtBeginning, setCarouselAtBeginning] = useState(false);
@@ -54,7 +56,6 @@ const Carousel = (props: CarouselProps): JSX.Element => {
   const swiperRef = useRef<Swiper | null>(null);
   const swipeContainerRef = useRef<HTMLDivElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  console.log(swiperRef);
 
   const getEdgeSlidesOffset = () => {
     return space
@@ -107,8 +108,10 @@ const Carousel = (props: CarouselProps): JSX.Element => {
         }
       );
 
-      if (onInit) onInit(swiper);
-      swiperRef.current = swiper;
+      if (onInit) {
+        onInit(swiper);
+        swiperRef.current = swiper;
+      }
     } else {
       swiperRef.current.update();
     }
@@ -122,7 +125,6 @@ const Carousel = (props: CarouselProps): JSX.Element => {
       !swiperOptions?.slidesOffsetBefore &&
       !swiperOptions?.slidesOffsetAfter
     ) {
-      console.log(swiperRef);
       swiperRef.current.params.slidesOffsetBefore = getEdgeSlidesOffset();
       swiperRef.current.params.slidesOffsetAfter = getEdgeSlidesOffset();
 
@@ -132,11 +134,11 @@ const Carousel = (props: CarouselProps): JSX.Element => {
     }
   }, [bp, smallBp]);
 
-  //   useEffect(() => {
-  //     return () => {
-  //       swiperRef.current?.destroy();
-  //     };
-  //   }, []);
+  useEffect(() => {
+    return () => {
+      swiperRef.current?.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     if (swiperRef.current) {

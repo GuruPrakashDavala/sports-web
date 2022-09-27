@@ -1,12 +1,25 @@
 /** @jsxImportSource theme-ui */
 
+import { ColorTheme } from "../../../types/modifier";
+import { ArticleGrid } from "../../../types/blocks";
 import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
+import SectionHeading from "../../SectionHeading";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
+import { renderImage } from "../../../utils/util";
 
-const ArticleGrid = () => {
-  const items = new Array(6).fill({});
+type ArticleGridProps = { articleGrid: ArticleGrid; theme?: ColorTheme };
+
+const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
+  const { articles, title } = articleGrid;
   return (
-    <SectionWrapper>
+    <SectionWrapper theme={theme}>
+      {title && (
+        <SectionHeading
+          title={title}
+          theme={ColorTheme.LIGHT}
+          styles={{ px: [0, 1] }}
+        />
+      )}
       <div
         sx={{
           display: "flex",
@@ -16,7 +29,7 @@ const ArticleGrid = () => {
           padding: 0,
         }}
       >
-        {items.map((item, index) => {
+        {articles.data.map((block, index) => {
           return (
             <div
               sx={{
@@ -29,8 +42,15 @@ const ArticleGrid = () => {
               key={index}
             >
               <ArticleCard
-                imageIndex={index}
+                label={block.attributes.title}
+                imageSrc={renderImage(block.attributes.coverimage.data)}
                 variant={ArticleVariant.MEDIUM}
+                date={block.attributes.createdAt}
+                badge={block.attributes.badge?.data?.attributes.name}
+                type={block.attributes.type}
+                category={block.attributes.category}
+                slug={block.attributes.slug}
+                theme={theme}
                 styles={{ height: "100%" }}
               />
             </div>

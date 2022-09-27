@@ -1,8 +1,10 @@
 /** @jsxImportSource theme-ui */
 
+import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { ColorTheme } from "../../types/modifier";
 import Button, { ButtonVariants } from "../Primitives/Button";
+import Pill from "../Primitives/Pill";
 
 type Link = {
   label: string;
@@ -33,10 +35,10 @@ const SectionHeading = ({
   styles = {},
 }: SectionHeadingProps) => {
   return (
-    <>
+    <Fragment>
       {title ? (
         <div sx={{ ...wrapperStyles, ...styles }}>
-          {/* Pill component */} {title}
+          <Pill label={title} theme={theme} />
           {link && (
             <Button
               {...link}
@@ -46,7 +48,7 @@ const SectionHeading = ({
           )}
         </div>
       ) : null}
-    </>
+    </Fragment>
   );
 };
 

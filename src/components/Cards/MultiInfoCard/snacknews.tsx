@@ -4,8 +4,14 @@ import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ComponentVariant } from "../../../types/modifier";
+import Link from "../../Primitives/Link";
 
 type SnackNewsType = {
+  description: string;
+  description_uri: string;
+  imageSrc: string;
+  slug: string;
+  category?: string;
   styles?: ThemeUICSSObject;
   variant?: ComponentVariant;
 };
@@ -81,7 +87,7 @@ const getWrapperStyles = (variant: ComponentVariant): ThemeUICSSObject => {
   }
 };
 
-const imageWrapperStyles = {
+const imageWrapperStyles: ThemeUICSSObject = {
   position: "relative",
   display: "block",
   marginRight: 1,
@@ -89,7 +95,15 @@ const imageWrapperStyles = {
 };
 
 const SnackNews = (props: SnackNewsType) => {
-  const { styles = {}, variant = ComponentVariant.LARGE } = props;
+  const {
+    imageSrc,
+    description,
+    description_uri,
+    slug,
+    category,
+    styles = {},
+    variant = ComponentVariant.LARGE,
+  } = props;
 
   const articleVariantImageSize =
     variant === ComponentVariant.SMALL
@@ -100,11 +114,11 @@ const SnackNews = (props: SnackNewsType) => {
 
   return (
     <div sx={containerStyles}>
-      <a href="https://liverpoolfc.com" sx={getWrapperStyles(variant)}>
+      <Link href={`news/${slug}`} styles={getWrapperStyles(variant)}>
         <div sx={{ display: "flex", alignItems: "center" }}>
           <div sx={imageWrapperStyles}>
             <Image
-              src={"/assets/playerimage.png"}
+              src={imageSrc}
               layout="responsive"
               objectFit="cover"
               alt="image"
@@ -113,14 +127,15 @@ const SnackNews = (props: SnackNewsType) => {
             />
           </div>
           <h2>
-            <span sx={getKickerStyles(variant)}>Press conference</span>
-            <span sx={getInfoTextStyles(variant)}>
-              Thiago, student and teacher Thiago, student and teacher Thiago,
-              student
-            </span>
+            {category ? (
+              <span sx={getKickerStyles(variant)}>{category}</span>
+            ) : (
+              <></>
+            )}
+            <span sx={getInfoTextStyles(variant)}>{description}</span>
           </h2>
         </div>
-      </a>
+      </Link>
     </div>
   );
 };

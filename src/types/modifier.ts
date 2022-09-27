@@ -1,4 +1,5 @@
 export enum ColorTheme {
+  GRAY = "gray",
   LIGHT = "light",
   DARK = "dark",
 }

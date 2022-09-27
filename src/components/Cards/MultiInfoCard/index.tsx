@@ -1,14 +1,16 @@
 /** @jsxImportSource theme-ui */
-
+import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ColorThemeAll, ComponentVariant } from "../../../types/modifier";
 import SnackNews from "./snacknews";
 import RightArrowIcon from "../../Icons/RightArrow";
+import { MultiInfoComponent } from "../../../types/blocks";
+import Link from "../../Primitives/Link";
+import { renderImage } from "../../../utils/util";
 
-type MultiInfoCardType = {
-  label: string;
-  theme?: ColorThemeAll;
+type MultiInfoCardProps = {
+  block: MultiInfoComponent;
   styles?: ThemeUICSSObject;
   variant?: ComponentVariant;
 };
@@ -90,15 +92,15 @@ const getQuoteStyles = (variant: ComponentVariant): ThemeUICSSObject => {
   }
 };
 
-const MultiInfoCard = (props: MultiInfoCardType) => {
-  const { label, styles = {}, variant = ComponentVariant.LARGE } = props;
+const MultiInfoCard = (props: MultiInfoCardProps) => {
+  const { block, styles = {}, variant = ComponentVariant.LARGE } = props;
+  const { title_article, description_article } = block;
 
   return (
     <div sx={{ ...containerStyles, ...styles }}>
       <div
         sx={{
           display: "flex",
-          // paddingX: 1,
           flexWrap: "wrap",
           flexDirection: "column",
           height: "100%",
@@ -108,14 +110,30 @@ const MultiInfoCard = (props: MultiInfoCardType) => {
         }}
       >
         <q sx={getQuoteStyles(variant)}>
-          <a sx={quoteAnchorStyles} href="https://liverpoolfc.com">
-            {label}
-            <span sx={iconContainerStyles}>
-              <RightArrowIcon variant={variant} styles={{ marginLeft: -1 }} />
-            </span>
-          </a>
+          <Link
+            href={`news/${title_article.data.attributes.slug}`}
+            styles={quoteAnchorStyles}
+          >
+            <Fragment>
+              {title_article.data.attributes.title}
+              <span sx={iconContainerStyles}>
+                <RightArrowIcon variant={variant} styles={{ marginLeft: -1 }} />
+              </span>
+            </Fragment>
+          </Link>
         </q>
-        <SnackNews variant={variant} />
+        <SnackNews
+          imageSrc={renderImage(
+            description_article.data.attributes.coverimage.data
+          )}
+          slug={description_article.data.attributes.slug}
+          description={description_article.data.attributes.title}
+          description_uri={description_article.data.attributes.slug}
+          category={
+            description_article.data.attributes.category?.data?.attributes.name
+          }
+          variant={variant}
+        />
       </div>
     </div>
   );

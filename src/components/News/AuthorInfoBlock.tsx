@@ -1,14 +1,20 @@
 /** @jsxImportSource theme-ui */
 
-import { colors } from "../../styles/theme";
+import { ThemeUICSSObject } from "theme-ui";
 import AuthorInfo from "./AuthorInfo";
 import PublishInfo from "./PublishInfo";
 import SocialIcons from "./SocialIcons";
 
-const AuthorInfoBlock = (): JSX.Element => {
+type AuthorInfoBlockProps = {
+  date: string | Date;
+  styles?: ThemeUICSSObject;
+};
+
+const AuthorInfoBlock = (props: AuthorInfoBlockProps): JSX.Element => {
+  const { date, styles } = props;
   return (
     <div sx={{ display: "flex", flexDirection: "column" }}>
-      <PublishInfo />
+      <PublishInfo date={date} />
       <AuthorInfo />
       <SocialIcons />
     </div>

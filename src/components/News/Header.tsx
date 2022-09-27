@@ -4,7 +4,17 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import Image from "next/image";
 import { colors } from "../../styles/theme";
 
-const NewsHeader = (): JSX.Element => {
+type NewsHeaderProps = {
+  title: string;
+  imageSrc: string;
+  category?: string;
+};
+
+const NewsHeader = ({
+  title,
+  category,
+  imageSrc,
+}: NewsHeaderProps): JSX.Element => {
   const bp = useBreakpointIndex();
   const articleHeaderImageHeight = bp > 2 ? 54 : 74;
 
@@ -12,7 +22,7 @@ const NewsHeader = (): JSX.Element => {
     <div>
       <div>
         <Image
-          src={`/assets/pexel.jpg`}
+          src={imageSrc}
           layout="responsive"
           objectFit="cover"
           alt="image"
@@ -70,9 +80,9 @@ const NewsHeader = (): JSX.Element => {
                 fontSize: [null, null, 6, "36px"],
               }}
             >
-              News
+              {category}
             </span>
-            Jürgen Klopp lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+            {title}
           </h1>
         </div>
       ) : (
@@ -84,11 +94,9 @@ const NewsHeader = (): JSX.Element => {
               variant: "text.subheading2",
             }}
           >
-            News
+            {category}
           </span>
-          <span sx={{ variant: "text.heading1" }}>
-            Jürgen Klopp lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-          </span>
+          <span sx={{ variant: "text.heading1" }}>{title}</span>
         </h2>
       )}
     </div>

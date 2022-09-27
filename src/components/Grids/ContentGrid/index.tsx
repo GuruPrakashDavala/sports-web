@@ -1,42 +1,53 @@
 /** @jsxImportSource theme-ui */
 
+import { fetchAPI } from "../../../lib/strapi";
+import { getArticles } from "../../../lib/strapi-utils";
 import { ColorTheme, ComponentVariant } from "../../../types/modifier";
-import { Blocks, BlockType } from "../../../utils/blocks";
+import { ContentGrid } from "../../../types/blocks";
 import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
 import MultiInfoCard from "../../Cards/MultiInfoCard";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
+import { renderImage } from "../../../utils/util";
 
-type ContentGridBlocks = {
-  blocks: Blocks[];
+type ContentGridProps = {
+  blocks: ContentGrid[];
 };
 
-type BlockPickerProps = { block: Blocks; key: string };
+type BlockPickerProps = { block: ContentGrid };
 
 const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
-    case BlockType.NEWSCARD:
+    case "article":
       return (
         <ArticleCard
-          imageIndex={block.imageIndex}
+          label={block.article.data.attributes.title}
+          imageSrc={renderImage(block.article.data.attributes.coverimage.data)}
           theme={ColorTheme.DARK}
-          variant={block.variant}
+          variant={ArticleVariant.SMALL}
+          slug={block.article.data.attributes.slug}
+          date={block.article.data.attributes.createdAt}
+          badge={block.article.data.attributes.badge?.data?.attributes.name}
+          type={block.article.data.attributes.type}
+          category={block.article.data.attributes.category}
           styles={{ height: "100%" }}
         />
       );
-    case BlockType.MULTIINFOCARD:
+    case "multiinfocomponent": {
       return (
         <MultiInfoCard
-          label={block.label}
-          variant={block.variant}
+          block={block}
+          variant={ComponentVariant.SMALL}
           styles={{ height: "100%" }}
         />
       );
+    }
+
     default:
       return <></>;
   }
 };
 
-const ContentGrid = ({ blocks }: ContentGridBlocks): JSX.Element => {
+const ContentGrid = ({ blocks }: ContentGridProps): JSX.Element => {
   // ContentGrid theme should be always dark
   const theme = ColorTheme.DARK;
 
@@ -51,16 +62,18 @@ const ContentGrid = ({ blocks }: ContentGridBlocks): JSX.Element => {
           padding: 0,
         }}
       >
-        {blocks.map((block, index) => (
-          <div
-            sx={{
-              flexBasis: ["100%", null, "calc(100% / 3)"],
-              marginBottom: [null, null, 2],
-            }}
-          >
-            <BlockPicker block={block} key={block.id} />
-          </div>
-        ))}
+        {blocks &&
+          blocks.map((block, index) => (
+            <div
+              sx={{
+                flexBasis: ["100%", null, "calc(100% / 3)"],
+                marginBottom: [null, null, 2],
+              }}
+              key={index}
+            >
+              <BlockPicker block={block} />
+            </div>
+          ))}
       </div>
     </SectionWrapper>
   );

@@ -1,11 +1,12 @@
 /** @jsxImportSource theme-ui */
 
+import { ReactNode } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ColorTheme, ColorThemeAll } from "../../../types/modifier";
 
 type SectionWrapperProps = {
-  children: JSX.Element;
+  children: ReactNode;
   theme?: ColorThemeAll;
   styles?: ThemeUICSSObject;
 };
@@ -15,10 +16,15 @@ const SectionWrapper = (props: SectionWrapperProps): JSX.Element => {
   return (
     <div
       sx={{
-        display: "flex",
         paddingX: [2, null, 5, 6],
-        paddingY: [2, null, 6, 7],
-        background: theme === ColorTheme.DARK ? colors.red100 : colors.white,
+        paddingTop: [2, null, 5, 6],
+        paddingBottom: [2, null, 6, 7],
+        background:
+          theme === ColorTheme.GRAY
+            ? colors.gray300
+            : theme === ColorTheme.DARK
+            ? colors.red100
+            : colors.white,
         ...styles,
       }}
     >

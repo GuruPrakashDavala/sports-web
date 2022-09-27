@@ -4,9 +4,11 @@ import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ColorTheme, ColorThemeAll } from "../../../types/modifier";
-import { BlockType } from "../../../utils/blocks";
+import { CategoryType } from "../../../types/article";
 import PlayIcon from "../../Icons/Play";
 import Link from "../../Primitives/Link";
+import Pill from "../../Primitives/Pill";
+import getArticleFormattedDate from "../../../utils/util";
 
 const cardHoverStyles = {
   backgroundColor: colors.red150,
@@ -87,19 +89,42 @@ export enum ArticleVariant {
 }
 
 type NewscardProps = {
-  imageIndex: number;
+  label: string;
+  imageSrc: string;
+  date: Date | string;
+  slug: string;
   theme?: ColorThemeAll;
   variant?: ArticleVariant;
   styles?: ThemeUICSSObject;
+  badge?: string;
+  type?: string;
+  category?: CategoryType;
+};
+
+const getPillColor = (pillText: string) => {
+  switch (pillText) {
+    case "TV":
+      return ColorTheme.DARK;
+    default:
+      return ColorTheme.LIGHT;
+  }
 };
 
 const ArticleCard = (props: NewscardProps) => {
   const {
-    imageIndex = 1,
     theme = ColorTheme.LIGHT,
     variant = ArticleVariant.SMALL,
     styles = {},
+    imageSrc,
+    label,
+    slug,
+    badge,
+    type,
+    date,
+    category,
   } = props;
+
+  const articlePublishedDate = getArticleFormattedDate(date);
 
   const articleVariantImageSize =
     variant === ArticleVariant.SMALL
@@ -110,7 +135,12 @@ const ArticleCard = (props: NewscardProps) => {
 
   const cardContainer = {
     ...containerStyles,
-    ...(theme === ColorTheme.LIGHT
+    ...(theme === ColorTheme.GRAY
+      ? {
+          backgroundColor: colors.gray300,
+          "&:hover": { ...cardHoverStyles, backgroundColor: colors.gray300 },
+        }
+      : theme === ColorTheme.LIGHT
       ? {
           backgroundColor: colors.white,
           "&:hover": { ...cardHoverStyles, backgroundColor: colors.gray300 },
@@ -120,7 +150,7 @@ const ArticleCard = (props: NewscardProps) => {
   };
 
   const cardInfoColor = {
-    ...(theme === ColorTheme.LIGHT
+    ...(theme === ColorTheme.LIGHT || theme === ColorTheme.GRAY
       ? // light theme colors
         {
           "> p": {
@@ -142,28 +172,23 @@ const ArticleCard = (props: NewscardProps) => {
   };
 
   const cardBorderColor = {
-    ...(theme === ColorTheme.LIGHT
+    ...(theme === ColorTheme.LIGHT || theme === ColorTheme.GRAY
       ? {
           borderBottomColor: colors.gray200,
         }
       : {}),
   };
 
-  const slug = `news/1`;
+  const path = `news/${slug}`;
 
   return (
-    // Create a new primitive Link component that wraps child with <a> tag
-    <Link href={slug}>
+    <Link href={path}>
       <div sx={cardContainer}>
         <div sx={{ ...cardStyles, ...cardBorderColor }}>
           <div sx={imageContainer}>
             <div className="imageWrapper" sx={imageWrapper}>
               <Image
-                src={
-                  imageIndex % 2
-                    ? "/assets/pexel.jpg"
-                    : "/assets/playerimage.png"
-                }
+                src={imageSrc}
                 layout="responsive"
                 objectFit="cover"
                 alt="image"
@@ -172,7 +197,15 @@ const ArticleCard = (props: NewscardProps) => {
               />
 
               <div sx={imageIconStyles}>
-                <PlayIcon />
+                <div sx={{ display: "flex", flexDirection: "row" }}>
+                  {type === "Video" ? <PlayIcon /> : <></>}
+                  {/* Here badge should be a enum of categories */}
+                  {badge && badge !== "None" ? (
+                    <Pill label={badge} theme={getPillColor(badge)} />
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -180,7 +213,7 @@ const ArticleCard = (props: NewscardProps) => {
           <div sx={cardInfo}>
             <div className="info" sx={cardInfoTransition}>
               <div sx={cardInfoColor}>
-                <p sx={{ variant: "text.label2" }}>1 HOUR AGO</p>
+                <p sx={{ variant: "text.label2" }}>{articlePublishedDate}</p>
                 <h2>
                   <span
                     sx={{
@@ -190,13 +223,11 @@ const ArticleCard = (props: NewscardProps) => {
                       variant: "text.subheading4",
                     }}
                   >
-                    Interview
+                    {category?.data?.attributes.name && (
+                      <>{category.data.attributes.name}</>
+                    )}
                   </span>
-                  <span sx={{ variant: "text.heading5" }}>
-                    {imageIndex % 2
-                      ? " Thiago, student and teacher"
-                      : " Thiago, student and teacher  Thiago, student and teacher  Thiago, student and teacher  Thiago, student and teacher  Thiago, student and teacher"}
-                  </span>
+                  <span sx={{ variant: "text.heading5" }}>{label}</span>
                 </h2>
               </div>
             </div>

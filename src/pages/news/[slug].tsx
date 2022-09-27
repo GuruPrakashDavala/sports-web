@@ -4,7 +4,7 @@ import { alpha } from "@theme-ui/color";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import { cleanArticleFormattedText } from "../../utils/cleaner";
-import { getPost } from "../../lib/posts";
+import { markdownToHtml } from "../../lib/posts";
 import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
 import SocialIcons from "../../components/News/SocialIcons";
 import NewsHeader from "../../components/News/Header";
@@ -12,6 +12,15 @@ import AuthorInfoBlock from "../../components/News/AuthorInfoBlock";
 import { Fragment } from "theme-ui/jsx-runtime";
 import PublishInfo from "../../components/News/PublishInfo";
 import ArticleGrid from "../../components/Grids/ArticleGrid";
+import { fetchAPI } from "../../lib/strapi";
+import { ArticleBlocks, ArticleType } from "../../types/article";
+import Image from "next/image";
+import Carousel, { CarouselItem } from "../../components/Carousel";
+import SectionWrapper from "../../components/Wrappers/SectionWrapper";
+import SectionHeading from "../../components/SectionHeading";
+import { ColorTheme } from "../../types/modifier";
+import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
+import { imageHost, renderImage } from "../../utils/util";
 
 export const formattedTextStyles: ThemeUICSSObject = {
   // px: 2,
@@ -87,23 +96,90 @@ const sideAdBlock: ThemeUICSSObject = {
 };
 
 type ArticlePageProps = {
-  post: any;
+  data: ArticleType;
+  recentArticles: ArticleType[];
   styles?: ThemeUICSSObject;
 };
 
+type BlockPickerProps = {
+  block: ArticleBlocks;
+};
+
+const addHost = (str: string, host: string) => {
+  return str.replaceAll('src="/uploads', `src=\"${host}/uploads`);
+};
+
+const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
+  console.log(block);
+  switch (block.type) {
+    case "tweetembed":
+      return (
+        <div sx={{ px: [2], py: [4] }}>
+          {/* <p sx={{ variant: "text.heading1" }}> {block.title}</p> */}
+          <TwitterTweetEmbed tweetId={block.tweet_id} />
+        </div>
+      );
+    case "videocarousel":
+      return <div>New section - Video Carousel Block placeholder</div>;
+    case "imagecarousel": {
+      const carouselItems: CarouselItem[] = block.imagecarousel.data.map(
+        (image, index) => {
+          return {
+            content: (
+              <div key={index} sx={{ px: [null, null, 1], cursor: "pointer" }}>
+                <Image
+                  src={renderImage(image)}
+                  layout="responsive"
+                  objectFit="cover"
+                  alt="image"
+                  height={"100%"}
+                  width={"100%"}
+                />
+              </div>
+            ),
+            slideStyles: {},
+          };
+        }
+      );
+
+      return (
+        <div sx={{ py: [2, null, 4, 5] }}>
+          <Carousel swiperId="1" items={carouselItems} styles={{ gap: [1] }} />
+        </div>
+      );
+    }
+    case "richtext":
+      const { body } = markdownToHtml(block.richtext);
+      const html = addHost(body.html, imageHost);
+      return (
+        <div
+          sx={{ ...formattedTextStyles }}
+          dangerouslySetInnerHTML={{
+            __html: html,
+          }}
+        ></div>
+      );
+    default:
+      return <></>;
+  }
+};
+
 const ArticlePage = (props: ArticlePageProps) => {
-  const { post, styles = {} } = props;
-  const { body } = post;
-  const htmlText = body.html;
+  const { data, recentArticles, styles = {} } = props;
+  console.log(data);
+  console.log(recentArticles);
 
   return (
     <Fragment>
-      {/* Header */}
-      <NewsHeader />
+      <NewsHeader
+        title={data.attributes.title}
+        category={data.attributes.category?.data?.attributes.name}
+        imageSrc={renderImage(data.attributes.coverimage.data)}
+      />
       <div sx={articleContainerStyles}>
         <div sx={articleBodyWrapperStyles}>
           {/* Article author info block */}
-          <AuthorInfoBlock />
+          <AuthorInfoBlock date={data.attributes.createdAt} />
 
           {/* Article m ads */}
           <div></div>
@@ -113,16 +189,26 @@ const ArticlePage = (props: ArticlePageProps) => {
           <div>
             {/* Create a block picker which can hand pick the components and render inside the body */}
             <AdBlock variant={AdBlockVariant.HORIZONTAL} />
-            <div
+
+            {/* <div
               sx={{ ...formattedTextStyles, ...styles }}
               dangerouslySetInnerHTML={{
                 __html: htmlText,
               }}
-            ></div>
+            ></div> */}
+
+            {data.attributes.blocks?.map((block, i) => {
+              return (
+                <div key={i}>
+                  <BlockPicker block={block} />
+                </div>
+              );
+            })}
 
             {/* Published info */}
             <div>
               <PublishInfo
+                date={data.attributes.createdAt}
                 styles={{
                   variant: "text.label1",
                   color: colors.gray100,
@@ -138,7 +224,7 @@ const ArticlePage = (props: ArticlePageProps) => {
 
           <div sx={sideAdBlock}>
             <AdBlock variant={AdBlockVariant.SQUARE} height={60} />
-            <AdBlock variant={AdBlockVariant.SQUARE} />
+            <AdBlock variant={AdBlockVariant.SQUARE} height={60} />
           </div>
         </div>
 
@@ -148,7 +234,15 @@ const ArticlePage = (props: ArticlePageProps) => {
           height={12}
         />
       </div>
-      <ArticleGrid />
+      <ArticleGrid
+        articleGrid={{
+          articles: { data: recentArticles },
+          id: 1,
+          title: `Recent articles`,
+          type: `articlegrid`,
+        }}
+        theme={ColorTheme.GRAY}
+      />
     </Fragment>
   );
 };
@@ -158,21 +252,41 @@ export default ArticlePage;
 // pages/posts/[id].js
 
 // Generates `/posts/1` and `/posts/2`
-export async function getStaticPaths() {
-  return {
-    paths: [{ params: { slug: "1" } }, { params: { slug: "2" } }],
-    fallback: false, // can also be true or 'blocking'
-  };
-}
 
-export async function getStaticProps() {
-  const post = await getPost("");
-  // const post = await res.json();
-  // By returning { props: { posts } }, the Blog component
-  // will receive `posts` as a prop at build time
+// export async function getStaticPaths() {
+//   return {
+//     paths: [{ params: { slug: "1" } }, { params: { slug: "2" } }],
+//     fallback: false, // can also be true or 'blocking'
+//   };
+// }
+
+// export async function getStaticProps() {
+//   const post = await getPost("");
+//   // const post = await res.json();
+//   // By returning { props: { posts } }, the Blog component
+//   // will receive `posts` as a prop at build time
+//   return {
+//     props: {
+//       post,
+//     },
+//   };
+// }
+
+export async function getServerSideProps(context: any) {
+  const slug = context.params.slug;
+  const [article, recentArticles] = await Promise.all([
+    fetchAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep`),
+    fetchAPI(`/articles?populate=deep`),
+  ]);
+
+  if (!article.data || article.data.length === 0) {
+    console.log(article);
+    return {
+      notFound: true,
+    };
+  }
+
   return {
-    props: {
-      post,
-    },
+    props: { data: article.data[0], recentArticles: recentArticles.data },
   };
 }
