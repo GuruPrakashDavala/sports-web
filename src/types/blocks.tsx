@@ -51,7 +51,28 @@ export type ArticleGrid = {
   type: "articlegrid";
 };
 
-export type HomeBlocks = ArticleCarousel | VideoCarousel | ArticleGrid;
+export type Quote = {
+  id: number;
+  type: "quote";
+  quote: string;
+  pre?: string;
+  post?: string;
+};
+
+export type ImagePageBlock = {
+  id: number;
+  image: { data: ImageType };
+  source?: string;
+  type: "image";
+};
+
+export type ArticlePageBlock = {
+  article: { data: ArticleType };
+  id: number;
+  type: "article";
+};
+
+export type HomeBlocks = ArticleCarousel | VideoCarousel | ArticleGrid | Quote;
 
 export type ImageCarousel = {
   id: number;

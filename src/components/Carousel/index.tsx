@@ -40,15 +40,12 @@ export type CarouselProps = {
 
 const Carousel = (props: CarouselProps): JSX.Element => {
   const { swiperId, items, swiperOptions, styles = {}, onInit } = props;
+  // if (!items) return null;
   const bp = useBreakpointIndex({ defaultIndex: 0 });
   const smallBp = bp < 2;
   const {
     theme: { space },
   } = useThemeUI();
-
-  if (!items) {
-    return <></>;
-  }
 
   const [carouselAtEnd, setCarouselAtEnd] = useState(false);
   const [carouselAtBeginning, setCarouselAtBeginning] = useState(false);
@@ -179,7 +176,7 @@ const Carousel = (props: CarouselProps): JSX.Element => {
           <SwipeWrapper
             className="swiper-wrapper"
             ref={wrapperRef}
-            sx={{ gap: ["15px", null, 0] }}
+            // sx={{ gap: ["15px", null, 0] }}
           >
             {items.map((item, i) => {
               return (

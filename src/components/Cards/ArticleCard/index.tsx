@@ -10,7 +10,7 @@ import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 import getArticleFormattedDate from "../../../utils/util";
 
-const cardHoverStyles = {
+const cardHoverStyles: ThemeUICSSObject = {
   backgroundColor: colors.red150,
   transition:
     "background-color 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
@@ -18,6 +18,17 @@ const cardHoverStyles = {
     transform: "translateY(-3px)",
     transition: "transform 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
     willChange: "transform",
+  },
+};
+
+// Experimental card hover styles
+const simpleCardHoverStyles: ThemeUICSSObject = {
+  backgroundColor: colors.red150,
+  transition: ".25s ease",
+  willChange: "transform",
+  "&:hover": {
+    //opacity: ".875",
+    transform: "scale(0.985)",
   },
 };
 
@@ -110,7 +121,7 @@ const getPillColor = (pillText: string) => {
   }
 };
 
-const ArticleCard = (props: NewscardProps) => {
+const ArticleCard = (props: NewscardProps): JSX.Element => {
   const {
     theme = ColorTheme.LIGHT,
     variant = ArticleVariant.SMALL,
@@ -138,12 +149,18 @@ const ArticleCard = (props: NewscardProps) => {
     ...(theme === ColorTheme.GRAY
       ? {
           backgroundColor: colors.gray300,
-          "&:hover": { ...cardHoverStyles, backgroundColor: colors.gray300 },
+          "&:hover": {
+            ...cardHoverStyles,
+            backgroundColor: colors.gray300,
+          },
         }
       : theme === ColorTheme.LIGHT
       ? {
           backgroundColor: colors.white,
-          "&:hover": { ...cardHoverStyles, backgroundColor: colors.gray300 },
+          "&:hover": {
+            ...cardHoverStyles,
+            backgroundColor: colors.gray300,
+          },
         }
       : {}),
     ...styles,

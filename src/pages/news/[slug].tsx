@@ -18,9 +18,11 @@ import Image from "next/image";
 import Carousel, { CarouselItem } from "../../components/Carousel";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import SectionHeading from "../../components/SectionHeading";
-import { ColorTheme } from "../../types/modifier";
+import { ColorTheme, ComponentVariant } from "../../types/modifier";
 import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
 import { imageHost, renderImage } from "../../utils/util";
+import ArticleCard from "../../components/Cards/ArticleCard";
+import MultiInfoCard from "../../components/Cards/MultiInfoCard";
 
 export const formattedTextStyles: ThemeUICSSObject = {
   // px: 2,
@@ -103,24 +105,26 @@ type ArticlePageProps = {
 
 type BlockPickerProps = {
   block: ArticleBlocks;
+  index?: number;
 };
 
 const addHost = (str: string, host: string) => {
   return str.replaceAll('src="/uploads', `src=\"${host}/uploads`);
 };
 
-const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
-  console.log(block);
+const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
     case "tweetembed":
       return (
-        <div sx={{ px: [2], py: [4] }}>
+        <div sx={{ px: [2], py: [4] }} key={index}>
           {/* <p sx={{ variant: "text.heading1" }}> {block.title}</p> */}
           <TwitterTweetEmbed tweetId={block.tweet_id} />
         </div>
       );
     case "videocarousel":
-      return <div>New section - Video Carousel Block placeholder</div>;
+      return (
+        <div key={index}>New section - Video Carousel Block placeholder</div>
+      );
     case "imagecarousel": {
       const carouselItems: CarouselItem[] = block.imagecarousel.data.map(
         (image, index) => {
@@ -143,7 +147,14 @@ const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
       );
 
       return (
-        <div sx={{ py: [2, null, 4, 5] }}>
+        <div
+          sx={{
+            py: [2, null, 4, 5],
+            width: ["calc(100% + 30px)", null, null, "calc(200% + 120px)"],
+            marginLeft: ["-15px", null, null, "calc(-50% - 60px)"],
+          }}
+          key={block.id}
+        >
           <Carousel swiperId="1" items={carouselItems} styles={{ gap: [1] }} />
         </div>
       );
@@ -157,8 +168,107 @@ const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
           dangerouslySetInnerHTML={{
             __html: html,
           }}
+          key={index}
         ></div>
       );
+    case "article":
+      return (
+        <div sx={{ paddingY: [3, null, null, 4] }} key={index}>
+          <ArticleCard
+            label={block.article.data.attributes.title}
+            imageSrc={renderImage(
+              block.article.data.attributes.coverimage.data
+            )}
+            date={block.article.data.attributes.createdAt}
+            slug={block.article.data.attributes.slug}
+            badge={block.article.data.attributes.badge?.data?.attributes.name}
+            category={block.article.data.attributes.category}
+            theme={ColorTheme.DARK}
+            styles={{ paddingX: [2, null] }}
+          />
+        </div>
+      );
+    case "image":
+      return (
+        <div
+          sx={{
+            py: [2, null, 4, 5],
+            // width: ["calc(100% + 30px)", null, null, "calc(200% + 120px)"],
+            // marginLeft: ["-15px", null, null, "calc(-50% - 60px)"],
+          }}
+          key={index}
+        >
+          <img
+            src={renderImage(block.image.data)}
+            // layout="responsive"
+            // objectFit="cover"
+            sx={{ objectFit: "contain" }}
+            alt="image"
+            height={"100%"}
+            width={"100%"}
+          />
+          {block.source && (
+            <p sx={{ paddingTop: [1], variant: "text.label1" }}>
+              {block.source}
+            </p>
+          )}
+        </div>
+      );
+    case "quote":
+      return (
+        <div
+          sx={{
+            padding: [3],
+            marginTop: [3],
+            background: colors.gray300,
+            // background: "linear-gradient(45deg, #f3fff9, #abcae43d)",
+            borderRadius: [4],
+            // border: "1px solid",
+            // borderColor: colors.gray200,
+            display: "flex",
+            flexDirection: "column",
+          }}
+          key={index}
+        >
+          {block.pre && (
+            <span
+              sx={{
+                display: "inline-block",
+                color: colors.black,
+                variant: "text.subheading5",
+              }}
+            >
+              {block.pre}
+            </span>
+          )}
+          <q
+            sx={{
+              display: "flex",
+              variant: "text.quote2",
+              fontStyle: "italic",
+              paddingY: [3],
+              justifyContent: "center",
+            }}
+          >
+            {block.quote}
+          </q>
+
+          {block.post && (
+            <span
+              sx={{
+                color: colors.black,
+                variant: "text.subheading4",
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              &mdash; {block.post}
+            </span>
+          )}
+        </div>
+      );
+    case "multiinfocomponent":
+      return <MultiInfoCard block={block} variant={ComponentVariant.SMALL} />;
     default:
       return <></>;
   }
@@ -167,7 +277,6 @@ const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
 const ArticlePage = (props: ArticlePageProps) => {
   const { data, recentArticles, styles = {} } = props;
   console.log(data);
-  console.log(recentArticles);
 
   return (
     <Fragment>
@@ -198,11 +307,7 @@ const ArticlePage = (props: ArticlePageProps) => {
             ></div> */}
 
             {data.attributes.blocks?.map((block, i) => {
-              return (
-                <div key={i}>
-                  <BlockPicker block={block} />
-                </div>
-              );
+              return <BlockPicker block={block} index={i} />;
             })}
 
             {/* Published info */}

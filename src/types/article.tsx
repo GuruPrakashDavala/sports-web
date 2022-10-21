@@ -4,11 +4,16 @@ import {
   RichText,
   VideoCarousel,
   TweetEmbed,
+  ImagePageBlock,
+  ArticlePageBlock,
+  Quote,
+  MultiInfoComponent,
 } from "./blocks";
 
-type AuthorType = {
+type WriterType = {
   data: null | {
     attributes: {
+      articles: { data: ArticleType[] };
       createdAt: string;
       email: string;
       name: string;
@@ -113,7 +118,7 @@ export type Video = {
 
 export type ArticleType = {
   attributes: {
-    author?: AuthorType;
+    writer?: WriterType;
     badge?: BadgeType;
     blocks?: ArticleBlocks[];
     category?: CategoryType;
@@ -134,4 +139,8 @@ export type ArticleBlocks =
   | VideoCarousel
   | ImageCarousel
   | RichText
-  | TweetEmbed;
+  | TweetEmbed
+  | ImagePageBlock
+  | ArticlePageBlock
+  | Quote
+  | MultiInfoComponent;

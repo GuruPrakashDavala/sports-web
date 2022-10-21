@@ -25,7 +25,7 @@ const Pill = ({
         display: "inline-block",
         py: "5px",
         px: 2,
-        mx: 2,
+        // mx: 2,
         backgroundColor: theme === ColorTheme.LIGHT ? "black" : "red200",
         borderRadius: 20,
         ":focus-visible": {

@@ -43,6 +43,11 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
         title={block.title}
         theme={ColorTheme.LIGHT}
         styles={{ px: [0, 1] }}
+        link={{
+          href: `https://`,
+          external: false,
+          label: `View all`,
+        }}
       />
       <Carousel
         swiperId={block.id.toString()}
