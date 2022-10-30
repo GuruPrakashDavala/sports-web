@@ -15,7 +15,7 @@ export const getScore = (scoreboards: any, innings: any) => {
     .map((item: any) => {
       return `${item.total}-${item.wickets} (${item.overs} ov)`;
     });
-  return fullScore[0];
+  return fullScore[0] ? fullScore[0] : "Yet to bat";
 };
 
 export const getTeamDetails = (scoreboards: any, innings: any) => {
@@ -182,18 +182,6 @@ const FixtureCard = (props: {
               alignItems: "center",
             }}
           >
-            {/* <img
-              src="/assets/prime.png"
-              sx={{ height: bp > 1 ? "24px" : "20px" }}
-            />
-            <img
-              src="/assets/starsports_2.webp"
-              sx={{ height: bp > 1 ? "38px" : "30px" }}
-            />
-            <img
-              src="/assets/starsports_1.webp"
-              sx={{ height: bp > 1 ? "38px" : "30px" }}
-            /> */}
             <img
               src={fixture.league.image_path}
               sx={{ height: bp > 1 ? "44px" : "28px" }}
@@ -272,7 +260,7 @@ const FixtureCard = (props: {
             sx={{ variant: "text.label3", paddingY: 1, color: colors.red300 }}
           >{`${fixture.tosswon.name} elected to ${fixture.elected} first`}</p>
         ) : (
-          <p sx={{ variant: "text.label3", paddingY: 1, color: colors.red300 }}>
+          <p sx={{ variant: "text.label3", paddingY: 1, color: colors.black }}>
             {"Match scheduled for "}
             {format(new Date(fixture.starting_at), "iii d MMM")} -
             {format(new Date(fixture.starting_at), " p")}

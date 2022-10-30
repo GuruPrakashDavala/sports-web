@@ -3,7 +3,7 @@
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import { ColorThemeAll, ComponentVariant } from "../../types/modifier";
-import { MdOutlineSportsCricket } from "react-icons/md";
+import { MdInfoOutline } from "react-icons/md";
 
 export type IconProps = {
   theme?: ColorThemeAll;
@@ -22,16 +22,16 @@ export const getIconSize = (variant: ComponentVariant) => {
   }
 };
 
-const BatIcon = (props: IconProps) => {
+const InfoIcon = (props: IconProps) => {
   const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;
 
   return (
     <div sx={{ paddingX: [3], ...styles }}>
-      <MdOutlineSportsCricket
+      <MdInfoOutline
         sx={{ color: colors.black, height: getIconSize(variant), zIndex: 1 }}
       />
     </div>
   );
 };
 
-export default BatIcon;
+export default InfoIcon;

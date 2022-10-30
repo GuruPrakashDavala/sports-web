@@ -10,10 +10,11 @@ import { ThemeUICSSObject } from "theme-ui";
 import LiveCommentary from "../../components/Matchcenter/Livecommentary";
 import Scoreboard from "../../components/Matchcenter/Scoreboard";
 import { useRouter } from "next/router";
+import Header from "../../components/Matchcenter/Header";
+import { getYear } from "date-fns";
+import Link from "../../components/Primitives/Link";
 import BatIcon from "../../components/Icons/Bat";
-import LivePulse from "../../components/Icons/LivePulse";
-import Pill from "../../components/Primitives/Pill";
-import { ColorTheme } from "../../types/modifier";
+import InfoIcon from "../../components/Icons/Info";
 
 const getTeamLineup = (lineup: any, teamId: any) => {
   const teamLineup = lineup.filter((lineupItem: any) => {
@@ -57,7 +58,9 @@ export const tabStyles: ThemeUICSSObject = {
   },
   "> ul .react-tabs__tab": {
     flexGrow: 1,
-    display: "block",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     position: "relative",
     listStyle: "none",
     padding: 2,
@@ -95,6 +98,7 @@ export const tabStyles: ThemeUICSSObject = {
 const MatchCenter = (props: { fixture: any }): JSX.Element => {
   console.log(props.fixture);
   const fixture = props.fixture.data;
+
   if (fixture.status === "NS") {
     return <div>Game not started yet...</div>;
   }
@@ -102,6 +106,26 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
   if (fixture.status === "Aban." && fixture.runs.length === 0) {
     return <div>{fixture.note}</div>;
   }
+
+  const isLive =
+    fixture.status === "1st Innings" ||
+    fixture.status === "2nd Innings" ||
+    fixture.status === "Innings Break";
+
+  const baseUrl = `/matchcenter`;
+
+  const getRouteUrl = (
+    fixtureId: any,
+    s1TeamCode: any,
+    s2TeamCode: any,
+    leagueCode: any,
+    matchDate: any
+  ) => {
+    // constructed url would look like - /matchcenter/42776/wct20-ind-vs-rsa-2022/
+    const year = getYear(new Date(matchDate));
+    const routeUrl = `${baseUrl}/${fixtureId}/${leagueCode}-${s1TeamCode}-vs-${s2TeamCode}-${year}`;
+    return routeUrl;
+  };
 
   const bp = useBreakpointIndex();
   // WIP: S1 and S2 team details
@@ -372,193 +396,41 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
   return (
     <SectionWrapper styles={{ paddingX: bp > 3 ? 9 : 2 }}>
       {/* <p>Match center WIP</p> */}
-      {fixture && s1Team && s2Team && (
-        <div
-          sx={{
-            display: "flex",
-            flexDirection: ["column", "row"],
-            width: "fit-content",
-          }}
-        >
-          <Pill
-            label={`${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round} ${fixture.stage.name} `}
-            theme={ColorTheme.LIGHT}
-          />
-          <Pill
-            label={`Live`}
-            theme={ColorTheme.DARK}
-            styles={{ marginY: [1, 0], marginX: [0, 1], width: "fit-content" }}
-          />
-        </div>
-      )}
-
-      {fixture && s1Team && s2Team && (
-        <div
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: [null, null, "space-evenly"],
-            flexDirection: ["column", null, "row"],
-            padding: [1, null, null, 4],
-            background: colors.gray300,
-            border: "1px solid",
-            borderColor: "rgba(12, 12, 12, 0.17)",
-            borderTopLeftRadius: "5px",
-            borderTopRightRadius: "5px",
-            marginY: 2,
-          }}
-        >
-          <div
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              padding: [null, null, 1],
-            }}
-          >
-            {bp > 2 && (
-              <img
-                src={s1Team.image}
-                sx={{ height: ["35px", null, null, "65px"] }}
-              />
-            )}
-            <div
-              sx={{
-                display: "flex",
-                flexDirection: ["row", null, "column"],
-                alignItems: "center",
-              }}
-            >
-              <p
-                sx={{
-                  padding: 1,
-                  variant: bp > 3 ? "text.subheading3" : "text.label4",
-                }}
-              >
-                {s1Team.code}
-              </p>
-              <p
-                sx={{
-                  paddingX: 1,
-                  variant: bp > 3 ? "text.subheading2" : "text.label4",
-                }}
-              >
-                {getScore(fixture.scoreboards, "S1")}
-              </p>
-            </div>
-          </div>
-          {bp > 10 && (
-            <div
-              sx={{
-                padding: [null, null, null, 2],
-                background: colors.black,
-                borderRadius: "10px",
-              }}
-            >
-              <p
-                sx={{
-                  padding: [null, null, null, 2],
-                  color: colors.white,
-                  variant: "text.heading3",
-                }}
-              >
-                {/* Zimbabwe won by 1 run 🏆 */}
-                {fixture.status}
-              </p>
-            </div>
-          )}
-
-          <div
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              padding: [null, null, 1],
-            }}
-          >
-            {bp > 2 && (
-              <img
-                src={s2Team?.image}
-                sx={{ height: ["35px", null, null, "65px"] }}
-              />
-            )}
-
-            <div
-              sx={{
-                display: "flex",
-                flexDirection: ["row", null, "column"],
-                alignItems: "center",
-              }}
-            >
-              <p
-                sx={{
-                  padding: 1,
-                  variant: bp > 3 ? "text.subheading3" : "text.subheading3",
-                }}
-              >
-                {s2Team.code}
-              </p>
-              <p
-                sx={{
-                  paddingX: 1,
-                  variant: bp > 3 ? "text.subheading2" : "text.label4",
-                  fontWeight: "bold",
-                }}
-              >
-                {getScore(fixture.scoreboards, "S2")}
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* Match Header component */}
+      {s1Team && s2Team && fixture && (
+        <Header
+          fixture={fixture}
+          s1Team={s1Team}
+          s2Team={s2Team}
+          isLive={isLive}
+        />
       )}
 
       <Tabs
-        selectedIndex={tabIndex}
-        onSelect={(index) => setTabIndex(index)}
+        //  selectedIndex={tabIndex}
+        // onSelect={(index) => setTabIndex(index)}
+        defaultIndex={1}
         sx={{ ...tabStyles }}
       >
         <TabList>
-          <Tab
-          // onClick={() => {
-          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/match-info");
-          // }}
-          >
-            {/* <div sx={{ display: "flex", alignItems: "center" }}>
-              <BatIcon
-                styles={{
-                  paddingRight: 1,
-                  "> svg": { fontSize: "22px", color: colors.black },
-                }}
-              />
-              <p>Match info</p>
-            </div> */}
+          <Tab tabIndex="0">
+            {/* <InfoIcon
+              styles={{
+                paddingRight: 1,
+              }}
+            /> */}
             <p>Match info</p>
           </Tab>
-          <Tab
-          // onClick={() => {
-          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/live-commentary");
-          // }}
-          >
+          <Tab tabIndex="1">
             <p>Live commentary</p>
           </Tab>
-          <Tab
-          // onClick={() => {
-          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/scorecard");
-          // }}
-          >
+          <Tab tabIndex="2">
             <p>Scorecard</p>
           </Tab>
-          <Tab
-          // onClick={() => {
-          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/trending");
-          // }}
-          >
+          <Tab tabIndex="3">
             <p>Trending</p>
           </Tab>
-          <Tab
-          // onClick={() => {
-          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/news");
-          // }}
-          >
+          <Tab tabIndex="4">
             <p>News</p>
           </Tab>
         </TabList>

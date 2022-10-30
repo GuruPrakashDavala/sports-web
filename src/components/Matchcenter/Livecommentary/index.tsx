@@ -65,7 +65,17 @@ const PlayerBattingDetails = (props: {
         )
       ) : (
         // Batsman innings hasn't started yet
+        // Show name and stats as zero
         <ul sx={rowStyles}>
+          <li
+            sx={{
+              flexBasis: ["35%", "30%"],
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {batsman.lastname}
+          </li>
           <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>0</li>
           <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>0</li>
           <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>0</li>
