@@ -54,7 +54,7 @@ const Schedule = (props: { fixtures: any }): JSX.Element => {
 export async function getServerSideProps() {
   // Fetch data from external API
   const res = await fetch(
-    `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon&filter[season_id]=956&sort=starting_at`
+    `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=956&sort=starting_at`
   );
   const fixtures = await res.json();
 

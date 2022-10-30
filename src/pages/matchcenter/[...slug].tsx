@@ -3,12 +3,17 @@
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { getScore } from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
-import { colors } from "../../styles/theme";
 import { useState, useEffect } from "react";
-import InningsTable from "../../components/Matchcenter/InningsTable";
-import BowlingTable from "../../components/Matchcenter/BowlingTable";
-import InningsTableHeader from "../../components/Matchcenter/InningsTableHeader";
-import InningsAdditionalInfo from "../../components/Matchcenter/InningsAdditionalInfo";
+import { colors } from "../../styles/theme";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import { ThemeUICSSObject } from "theme-ui";
+import LiveCommentary from "../../components/Matchcenter/Livecommentary";
+import Scoreboard from "../../components/Matchcenter/Scoreboard";
+import { useRouter } from "next/router";
+import BatIcon from "../../components/Icons/Bat";
+import LivePulse from "../../components/Icons/LivePulse";
+import Pill from "../../components/Primitives/Pill";
+import { ColorTheme } from "../../types/modifier";
 
 const getTeamLineup = (lineup: any, teamId: any) => {
   const teamLineup = lineup.filter((lineupItem: any) => {
@@ -20,38 +25,88 @@ const getTeamLineup = (lineup: any, teamId: any) => {
 const getPlayersDidNotBat = (
   fixtureBatting: any,
   lineup: any,
-  innings: any,
-  teamId: any
+  innings: any
 ) => {
-  // fixtureBattings - contains the battings of both teams
-  // lineup - contains lineup of both teams (resource - player)
+  // fixtureBatting - contains the battings of both teams
+  // lineup - contains lineup of specific team (11 players)
   // innings - Enum: S1 or S2
   // teamId - number
 
   // The below filters the players who batted in the specified innings. Check innings param for innings code.
   const playerIdsWhoBattedInTheInnings = fixtureBatting
-    .filter((battingItem: any) => {
-      return battingItem.scoreboard === innings;
+    .filter((batting: any) => {
+      return batting.scoreboard === innings;
     })
     .map((item: any) => item.player_id);
 
-  const teamLineup = lineup.filter((lineupItem: any) => {
-    return lineupItem.lineup.team_id === teamId;
-  });
-
-  const playersNotBattedInTheInnings = teamLineup.filter((player: any) => {
+  const playersDidNotBatInTheInnings = lineup.filter((player: any) => {
     return playerIdsWhoBattedInTheInnings.indexOf(player.id) === -1;
   });
-  return playersNotBattedInTheInnings;
+
+  return playersDidNotBatInTheInnings;
+};
+
+export const tabStyles: ThemeUICSSObject = {
+  "> .react-tabs__tab-list": {
+    display: "flex",
+    flexWrap: "wrap",
+    width: "100%",
+    // borderBottom: "1px solid #aaa",
+    margin: "0 0 20px",
+    padding: "0",
+  },
+  "> ul .react-tabs__tab": {
+    flexGrow: 1,
+    display: "block",
+    position: "relative",
+    listStyle: "none",
+    padding: 2,
+    cursor: "pointer",
+    borderBottom: "1px solid #aaa",
+    "&:hover": {
+      "> p": {
+        color: colors.black,
+      },
+    },
+    "> p": {
+      variant: "text.subheading3",
+      color: "rgba(12, 12, 12, 0.3)",
+    },
+  },
+  "> ul .react-tabs__tab:focus": {
+    outline: "none",
+  },
+  "> ul .react-tabs__tab--selected": {
+    background: colors.white,
+    borderBottom: "2px solid",
+    borderColor: colors.red100,
+    "> p": {
+      color: colors.black,
+    },
+  },
+  "> .react-tabs__tab-panel": {
+    display: "none",
+  },
+  "> .react-tabs__tab-panel--selected": {
+    display: "block",
+  },
 };
 
 const MatchCenter = (props: { fixture: any }): JSX.Element => {
   console.log(props.fixture);
   const fixture = props.fixture.data;
+  if (fixture.status === "NS") {
+    return <div>Game not started yet...</div>;
+  }
+
+  if (fixture.status === "Aban." && fixture.runs.length === 0) {
+    return <div>{fixture.note}</div>;
+  }
+
   const bp = useBreakpointIndex();
   // WIP: S1 and S2 team details
 
-  // Util to get the opposite team info (toss lost team)
+  // Util to get the opposite team info (toss lost team - 2nd Innings)
   const getOppositeTeamInfo = (tosswonTeam: any) => {
     const teamInfo = [fixture.localteam, fixture.visitorteam]
       .filter((team) => tosswonTeam.code !== team.code)
@@ -67,7 +122,7 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
     return teamInfo[0];
   };
 
-  const getTeamInfo = () => {
+  const setS1AndS2TeamInfo = () => {
     const tosswonTeam = fixture.tosswon;
     switch (fixture.elected) {
       case "bowling":
@@ -105,55 +160,6 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
     }
   };
 
-  // divide this into sub components
-  const getInningsTable = (innings: any): JSX.Element => {
-    return fixture.batting.map((batting: any, index: number) => {
-      return batting.scoreboard === innings ? (
-        <div sx={{ display: "flex", padding: 1 }}>
-          <p sx={{ flexBasis: "16.66%" }}> {batting.batsman.fullname}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {batting.score}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {batting.ball}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {batting.four_x}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {batting.six_x}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {batting.rate}</p>
-        </div>
-      ) : (
-        <></>
-      );
-    });
-  };
-
-  const getBowlingTable = (innings: any): JSX.Element => {
-    return fixture.bowling.map((bowling: any, index: number) => {
-      return bowling.scoreboard === innings ? (
-        <div sx={{ display: "flex", padding: 1 }}>
-          <div
-            sx={{
-              flexBasis: "16.66%",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            {/* <img
-              src={bowling.bowler.image_path}
-              sx={{ height: "50px", borderRadius: "50%" }}
-            /> */}
-            <p sx={{}}>{bowling.bowler.fullname}</p>
-          </div>
-          <p sx={{ flexBasis: "16.66%" }}> {bowling.overs}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {bowling.medians}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {bowling.runs}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {bowling.wickets}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {bowling.noball}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {bowling.wide}</p>
-          <p sx={{ flexBasis: "16.66%" }}> {bowling.rate}</p>
-        </div>
-      ) : (
-        <></>
-      );
-    });
-  };
-
   const [s1Team, setS1Team] = useState<
     | {
         name: string;
@@ -183,6 +189,12 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
   const [s1Extras, setS1Extras] = useState();
   const [s2Extras, setS2Extras] = useState();
 
+  const [s1FallOfWickets, setS1FallOfWickets] = useState();
+  const [s2FallOfWickets, setS2FallOfWickets] = useState();
+
+  // main tab index
+  const [tabIndex, setTabIndex] = useState(1);
+
   // First useEffect to fetch both S1 and S2 team details
   useEffect(() => {
     /* 
@@ -192,7 +204,7 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
     See method internals to understand the implementation logics
     */
     if (fixture.resource === "fixtures") {
-      getTeamInfo();
+      setS1AndS2TeamInfo();
     }
   }, [fixture]);
 
@@ -214,7 +226,7 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
             scoreboardItem.scoreboard === "S1" &&
             scoreboardItem.type === "total"
         )?.length > 0
-          ? getPlayersDidNotBat(fixture.batting, s1TeamLineup, "S1", s1Team.id)
+          ? getPlayersDidNotBat(fixture.batting, s1TeamLineup, "S1")
           : s1TeamLineup;
 
       // S2Team player did not bat
@@ -224,11 +236,16 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
             scoreboardItem.scoreboard === "S2" &&
             scoreboardItem.type === "total"
         )?.length > 0
-          ? getPlayersDidNotBat(fixture.batting, s2TeamLineup, "S2", s2Team.id)
+          ? getPlayersDidNotBat(fixture.batting, s2TeamLineup, "S2")
           : s2TeamLineup;
 
-      setS1DidNotBat(s1DidNotBat);
-      setS2DidNotBat(s2DidNotBat);
+      s1DidNotBat.length > 0
+        ? setS1DidNotBat(s1DidNotBat)
+        : setS1DidNotBat(undefined);
+
+      s2DidNotBat.length > 0
+        ? setS2DidNotBat(s2DidNotBat)
+        : setS2DidNotBat(undefined);
     }
   }, [s1Team, s2Team, s1TeamLineup, s2TeamLineup]);
 
@@ -291,162 +308,318 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
     }
   }, [fixture.scoreboards, s1Team, s2Team]);
 
+  // Fifth useEffect to set S1Fow and S2Fow (Fall of wickets)
+  useEffect(() => {
+    if (fixture.batting.length > 0) {
+      // S1 fall of wickets
+      const s1Fow = fixture.batting
+        .filter(
+          (batting: any, index: number) =>
+            batting.scoreboard === "S1" && batting.result.is_wicket === true
+        )
+        .sort(
+          (batting1: any, batting2: any) =>
+            batting1.fow_balls - batting2.fow_balls
+        );
+
+      // Set S1 fall of wickets
+      s1Fow.length > 0
+        ? setS1FallOfWickets(s1Fow)
+        : setS1FallOfWickets(undefined);
+
+      // S2 fall of wickets
+      const s2Fow = fixture.batting
+        .filter(
+          (batting: any, index: number) =>
+            batting.scoreboard === "S2" && batting.result.is_wicket === true
+        )
+        .sort(
+          (batting1: any, batting2: any) =>
+            batting1.fow_balls - batting2.fow_balls
+        );
+
+      // Set S2 fall of wickets
+      s2Fow.length > 0
+        ? setS2FallOfWickets(s2Fow)
+        : setS2FallOfWickets(undefined);
+    }
+  }, [fixture.batting, s1Team, s2Team]);
+
+  const router = useRouter();
+
+  // Call this function whenever you want to
+  // refresh props!
+  // const refreshData = () => {
+  //   router.replace(router.asPath);
+  // };
+
+  // Timer to test/trigger state updates - testing purpose
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     console.log("timer initiated");
+  //     // setTabIndex(1);
+  //   }, 10000);
+  //   return () => clearTimeout(timer);
+  // }, []);
+
+  // useEffect(() => {
+  //   router.push(
+  //     `/matchcenter/${fixture.id}/${fixture.localteam.code}vs${fixture.visitorteam.code}/live-commentary`
+  //   );
+  // }, []);
+
   return (
-    <SectionWrapper styles={{ paddingX: 9 }}>
-      <p>Scorecard WIP</p>
-      <div sx={{ display: "flex", justifyContent: "center" }}>
-        <p>{fixture.note}</p>
-      </div>
-      {/* Table starts below */}
-      {/* <div
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          background: colors.gray300,
-          padding: 1,
-        }}
-      >
-        <p sx={{ variant: "text.subheading3" }}>{s1Team?.name} </p>
-
-        <p sx={{ variant: "text.subheading3" }}>
-          {fixture.status === "2nd Innings"
-            ? getScore(fixture.scoreboards, "S2")
-            : getScore(fixture.scoreboards, "S1")}
-        </p>
-      </div> */}
-
-      {/* render top scoreboard table */}
-      {s1Team && s2Team ? (
-        fixture.status === "2nd Innings" ? (
-          <>
-            <InningsTable
-              innings={"S2"}
-              fixture={fixture}
-              teamName={s2Team.name}
-            />
-            <InningsAdditionalInfo
-              extras={s2Extras}
-              score={getScore(fixture.scoreboards, "S2")}
-              playersDidNotBat={s2DidNotBat}
-            />
-          </>
-        ) : (
-          <>
-            <InningsTable
-              innings={"S1"}
-              fixture={fixture}
-              teamName={s1Team.name}
-            />
-            <InningsAdditionalInfo
-              extras={s1Extras}
-              score={getScore(fixture.scoreboards, "S1")}
-              playersDidNotBat={s1DidNotBat}
-            />
-          </>
-        )
-      ) : (
-        <></>
-      )}
-
-      {/* Start of innings additional info */}
-
-      <>
-        {/* <div
+    <SectionWrapper styles={{ paddingX: bp > 3 ? 9 : 2 }}>
+      {/* <p>Match center WIP</p> */}
+      {fixture && s1Team && s2Team && (
+        <div
           sx={{
-            backgroundColor: colors.black,
-            color: colors.white,
-            padding: 1,
-            mt: 1,
+            display: "flex",
+            flexDirection: ["column", "row"],
+            width: "fit-content",
           }}
         >
-          Extras
-        </div> */}
-        {/* <div
+          <Pill
+            label={`${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round} ${fixture.stage.name} `}
+            theme={ColorTheme.LIGHT}
+          />
+          <Pill
+            label={`Live`}
+            theme={ColorTheme.DARK}
+            styles={{ marginY: [1, 0], marginX: [0, 1], width: "fit-content" }}
+          />
+        </div>
+      )}
+
+      {fixture && s1Team && s2Team && (
+        <div
           sx={{
-            backgroundColor: colors.black,
-            color: colors.white,
-            padding: 1,
-            mt: 1,
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: [null, null, "space-evenly"],
+            flexDirection: ["column", null, "row"],
+            padding: [1, null, null, 4],
+            background: colors.gray300,
+            border: "1px solid",
+            borderColor: "rgba(12, 12, 12, 0.17)",
+            borderTopLeftRadius: "5px",
+            borderTopRightRadius: "5px",
+            marginY: 2,
           }}
         >
-          Total
-        </div> */}
-        {/* <div
-        sx={{
-          backgroundColor: colors.black,
-          color: colors.white,
-          padding: 1,
-          mt: 1,
-        }}
+          <div
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              padding: [null, null, 1],
+            }}
+          >
+            {bp > 2 && (
+              <img
+                src={s1Team.image}
+                sx={{ height: ["35px", null, null, "65px"] }}
+              />
+            )}
+            <div
+              sx={{
+                display: "flex",
+                flexDirection: ["row", null, "column"],
+                alignItems: "center",
+              }}
+            >
+              <p
+                sx={{
+                  padding: 1,
+                  variant: bp > 3 ? "text.subheading3" : "text.label4",
+                }}
+              >
+                {s1Team.code}
+              </p>
+              <p
+                sx={{
+                  paddingX: 1,
+                  variant: bp > 3 ? "text.subheading2" : "text.label4",
+                }}
+              >
+                {getScore(fixture.scoreboards, "S1")}
+              </p>
+            </div>
+          </div>
+          {bp > 10 && (
+            <div
+              sx={{
+                padding: [null, null, null, 2],
+                background: colors.black,
+                borderRadius: "10px",
+              }}
+            >
+              <p
+                sx={{
+                  padding: [null, null, null, 2],
+                  color: colors.white,
+                  variant: "text.heading3",
+                }}
+              >
+                {/* Zimbabwe won by 1 run 🏆 */}
+                {fixture.status}
+              </p>
+            </div>
+          )}
+
+          <div
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              padding: [null, null, 1],
+            }}
+          >
+            {bp > 2 && (
+              <img
+                src={s2Team?.image}
+                sx={{ height: ["35px", null, null, "65px"] }}
+              />
+            )}
+
+            <div
+              sx={{
+                display: "flex",
+                flexDirection: ["row", null, "column"],
+                alignItems: "center",
+              }}
+            >
+              <p
+                sx={{
+                  padding: 1,
+                  variant: bp > 3 ? "text.subheading3" : "text.subheading3",
+                }}
+              >
+                {s2Team.code}
+              </p>
+              <p
+                sx={{
+                  paddingX: 1,
+                  variant: bp > 3 ? "text.subheading2" : "text.label4",
+                  fontWeight: "bold",
+                }}
+              >
+                {getScore(fixture.scoreboards, "S2")}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Tabs
+        selectedIndex={tabIndex}
+        onSelect={(index) => setTabIndex(index)}
+        sx={{ ...tabStyles }}
       >
-        {s1DidNotBat &&
-          s1DidNotBat.map((item: any) => {
-            return <p>{item.lastname}</p>;
-          })}
-      </div> */}
+        <TabList>
+          <Tab
+          // onClick={() => {
+          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/match-info");
+          // }}
+          >
+            {/* <div sx={{ display: "flex", alignItems: "center" }}>
+              <BatIcon
+                styles={{
+                  paddingRight: 1,
+                  "> svg": { fontSize: "22px", color: colors.black },
+                }}
+              />
+              <p>Match info</p>
+            </div> */}
+            <p>Match info</p>
+          </Tab>
+          <Tab
+          // onClick={() => {
+          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/live-commentary");
+          // }}
+          >
+            <p>Live commentary</p>
+          </Tab>
+          <Tab
+          // onClick={() => {
+          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/scorecard");
+          // }}
+          >
+            <p>Scorecard</p>
+          </Tab>
+          <Tab
+          // onClick={() => {
+          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/trending");
+          // }}
+          >
+            <p>Trending</p>
+          </Tab>
+          <Tab
+          // onClick={() => {
+          //   router.push("/matchcenter/42776/ind-vs-rsa-2022/news");
+          // }}
+          >
+            <p>News</p>
+          </Tab>
+        </TabList>
+        <TabPanel>This section contains the match info</TabPanel>
+        <TabPanel>
+          {/* Livecommentary tab panel */}
+          {fixture.status !== "NA" &&
+            fixture.balls.length > 0 &&
+            s1Team &&
+            s2Team && (
+              <LiveCommentary
+                balls={fixture.balls}
+                status={fixture.status}
+                note={fixture.note}
+                batting={fixture.batting}
+                bowling={fixture.bowling}
+              />
+            )}
+        </TabPanel>
 
-        {/* <div
-        sx={{
-          backgroundColor: colors.black,
-          color: colors.white,
-          padding: 1,
-          mt: 1,
-        }}
-      >
-        Fall of wickets
-      </div> */}
-      </>
-
-      {/* End of innings additional info */}
-
-      {/* Innings 1 bowling stats - render based on 2nd innings or other status */}
-      {fixture.status === "2nd Innings" ? (
-        <BowlingTable fixture={fixture} innings={"S2"} />
-      ) : (
-        <BowlingTable fixture={fixture} innings={"S1"} />
-      )}
-
-      {/* render bottom scoreboard table */}
-      {s1Team && s2Team ? (
-        fixture.status === "2nd Innings" ? (
-          <InningsTable
-            fixture={fixture}
-            innings={"S1"}
-            teamName={s1Team.name}
-          />
-        ) : (
-          <InningsTable
-            fixture={fixture}
-            innings={"S2"}
-            teamName={s2Team.name}
-          />
-        )
-      ) : (
-        <></>
-      )}
-
-      {fixture.status === "2nd Innings" ? (
-        <BowlingTable fixture={fixture} innings={"S1"} />
-      ) : (
-        <BowlingTable fixture={fixture} innings={"S2"} />
-      )}
+        <TabPanel>
+          {/* Scorecard tab panel */}
+          {s1Team && s2Team && (
+            // Should apply mobile responsive custom styles
+            <Scoreboard
+              fixture={fixture}
+              s1Team={s1Team}
+              s1DidNotBat={s1DidNotBat}
+              s1Extras={s1Extras}
+              s1FallOfWickets={s1FallOfWickets}
+              s2Team={s2Team}
+              s2DidNotBat={s2DidNotBat}
+              s2Extras={s2Extras}
+              s2FallOfWickets={s2FallOfWickets}
+            />
+          )}
+        </TabPanel>
+        <TabPanel>This section contains trending socials</TabPanel>
+        <TabPanel>This section related articles</TabPanel>
+      </Tabs>
     </SectionWrapper>
   );
 };
 
 export async function getServerSideProps(context: any) {
-  // Fetch data from external API
   try {
     const slug = context.params.slug;
+    if (slug.length === 0) {
+      return {};
+    }
     console.log(slug);
     const fixtureId = slug[0];
     const res = await fetch(
-      `https://cricket.sportmonks.com/api/v2.0/fixtures/${fixtureId}?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, manofmatch, batting, batting.batsman, batting.batsmanout, batting.result, batting.bowler, batting.catchstump, batting.runoutby, odds.bookmaker, bowling, bowling.bowler, scoreboards.team,balls, lineup, tosswon`
+      `https://cricket.sportmonks.com/api/v2.0/fixtures/${fixtureId}?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, manofmatch, batting, batting.batsman, batting.batsmanout, batting.result, batting.bowler, batting.catchstump, batting.runoutby, odds.bookmaker, bowling, bowling.bowler, scoreboards.team,balls, balls.batsmanout, balls.batsmanone,balls.batsmantwo,balls.catchstump,balls.score,balls.runoutby, lineup, tosswon, runs,stage, runs.team`
     );
     const fixture = await res.json();
 
     // Pass data to the page via props
-    return { props: { fixture } };
+    return {
+      props: { fixture },
+    };
   } catch (err) {
     console.log(err);
     return {};

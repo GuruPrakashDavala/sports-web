@@ -4,16 +4,18 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
+import { ColorTheme } from "../../../types/modifier";
+import LivePulse from "../../Icons/LivePulse";
 import Link from "../../Primitives/Link";
+import Pill from "../../Primitives/Pill";
 
 export const getScore = (scoreboards: any, innings: any) => {
-  const fullScore = scoreboards.map((item: any) => {
-    // the below output format is - 159/5 (20 ov)
-    return item.scoreboard === innings && item.type == "total"
-      ? `${item.total}/${item.wickets} (${item.overs} ov)`
-      : ``;
-  });
-  return fullScore;
+  const fullScore = scoreboards
+    .filter((item: any) => item.scoreboard === innings && item.type === "total")
+    .map((item: any) => {
+      return `${item.total}-${item.wickets} (${item.overs} ov)`;
+    });
+  return fullScore[0];
 };
 
 export const getTeamDetails = (scoreboards: any, innings: any) => {
@@ -55,7 +57,7 @@ const FixtureCard = (props: {
   const bp = useBreakpointIndex();
 
   const s1TeamDetails =
-    fixture.status === "NS"
+    fixture.runs.length === 0
       ? {
           name: fixture.localteam.name,
           code: fixture.localteam.code,
@@ -65,7 +67,7 @@ const FixtureCard = (props: {
       : getTeamDetails(fixture.scoreboards, "S1");
 
   const s2TeamDetails =
-    fixture.status === "NS"
+    fixture.runs.length === 0
       ? {
           name: fixture.visitorteam.name,
           code: fixture.visitorteam.code,
@@ -93,6 +95,10 @@ const FixtureCard = (props: {
   const s1TeamImage = s1TeamDetails.image;
   const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.code;
   const s2TeamImage = s2TeamDetails.image;
+  const isLive =
+    fixture.status === "1st Innings" ||
+    fixture.status === "2nd Innings" ||
+    fixture.status === "Innings Break";
   return (
     <div
       sx={{
@@ -125,31 +131,27 @@ const FixtureCard = (props: {
             width: "100%",
           }}
         >
-          {/* {fixture.status !== "NS" && fixture.status !== "Finished" && (
+          <div sx={{ flexBasis: "70%" }}>
             <div
               sx={{
+                variant: "text.subheading3",
+                paddingTop: 1,
                 display: "flex",
-                justifyContent: "center",
                 alignItems: "center",
-                paddingY: 1,
-                paddingX: 2,
-                backgroundColor: colors.red150,
-                color: colors.white,
-                borderRadius: "25px",
-                variant: "text.subheading4",
-                widht: "fit-content",
               }}
             >
-              Live
-            </div>
-          )} */}
-          <div sx={{ flexBasis: "70%" }}>
-            <div sx={{ variant: "text.subheading3", paddingY: 1 }}>
               {bp > 3 ? fixture.league.name : fixture.league.code}
               {" - "}
               {fixture.round}
+              {isLive && (
+                <Pill
+                  label={`Live`}
+                  theme={ColorTheme.DARK}
+                  styles={{ marginX: 1 }}
+                />
+                // <LivePulse styles={{ height: "10px", width: "10px" }} />
+              )}
             </div>
-            {/* Live blinking badge */}
 
             {fixture.stage && fixture.season && (
               <p sx={{ variant: "text.label3", color: colors.gray100 }}>
