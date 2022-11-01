@@ -18,14 +18,15 @@ const InningsAdditionalInfo = (props: {
             padding: 1,
             mt: 1,
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            justifyContent: [null, "space-between"],
+            alignItems: [null, "center"],
+            flexDirection: ["column", "row"],
+            gap: [1, 0],
           }}
         >
           <ul
             sx={{
               display: "flex",
-              variant: "text.subheading4",
               color: colors.black,
             }}
           >
@@ -41,7 +42,7 @@ const InningsAdditionalInfo = (props: {
           <p
             sx={{
               color: colors.black,
-              variant: "text.subheading4",
+              variant: "text.subheading3",
             }}
           >
             Total: {score}

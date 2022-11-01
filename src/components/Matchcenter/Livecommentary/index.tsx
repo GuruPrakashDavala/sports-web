@@ -10,15 +10,24 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { getWicketCatchStumpRunout } from "../Scoreboard/InningsTable";
 import BatIcon from "../../Icons/Bat";
 import BallIcon from "../../Icons/Ball";
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 const PlayerBattingDetails = (props: {
   batsman: any;
-  batting: any;
+  fullBattingList: any;
   recentBall: any;
+  excludeWicketPlayer?: boolean;
+  styles?: any;
 }): JSX.Element => {
-  const { batsman, batting, recentBall } = props;
+  const {
+    batsman,
+    fullBattingList,
+    recentBall,
+    excludeWicketPlayer = true,
+    styles,
+  } = props;
   // Will always return single record (matching batsman record) or undefined
-  const battingInningsForBatsmanId = batting.filter(
+  const battingInningsForBatsmanId = fullBattingList.filter(
     (batting: any) => batsman.id === batting.batsman.id
   )?.[0];
 
@@ -26,10 +35,10 @@ const PlayerBattingDetails = (props: {
     <Fragment>
       {/* Batsman innings available */}
       {battingInningsForBatsmanId ? (
-        battingInningsForBatsmanId.result.is_wicket ? (
+        battingInningsForBatsmanId.result.is_wicket && excludeWicketPlayer ? (
           <></>
         ) : (
-          <ul sx={rowStyles}>
+          <ul sx={{ ...rowStyles, ...styles }}>
             <li
               sx={{
                 flexBasis: ["35%", "30%"],
@@ -42,9 +51,10 @@ const PlayerBattingDetails = (props: {
               {batsman.id === recentBall.batsman_id && (
                 <BatIcon
                   styles={{
-                    marginLeft: 1,
+                    display: "flex",
+                    marginLeft: "5px",
                     padding: 0,
-                    "> svg": { fontSize: "22px", color: colors.black },
+                    "> svg": { fontSize: "20px", color: colors.black },
                   }}
                 />
               )}
@@ -87,25 +97,39 @@ const PlayerBattingDetails = (props: {
 };
 
 const PlayerBowlingDetails = (props: {
-  bowlerId: any;
-  bowling: any;
+  bowler: any;
+  fullBowlersList: any;
+  currentBowler?: any;
 }): JSX.Element => {
-  const { bowlerId, bowling } = props;
+  const { bowler, fullBowlersList, currentBowler } = props;
   return (
-    <Fragment>
-      {bowling.map((bowler: any) => {
-        return bowlerId === bowler.bowler.id ? (
-          <Fragment key={bowler.bowler.id}>
-            <li sx={{ flexBasis: "17.5%" }}>{bowler.overs}</li>
-            <li sx={{ flexBasis: "17.5%" }}>{bowler.runs}</li>
-            <li sx={{ flexBasis: "17.5%" }}>{bowler.wickets}</li>
-            <li sx={{ flexBasis: "17.5%" }}>{bowler.rate}</li>
+    <ul sx={rowStyles}>
+      <li sx={{ flexBasis: "35%", display: "flex", alignItems: "center" }}>
+        {bowler.lastname}
+        {currentBowler && (
+          <BallIcon
+            styles={{
+              display: "flex",
+              marginLeft: "5px",
+              padding: 0,
+              "> svg": { fontSize: "18px", color: colors.black },
+            }}
+          />
+        )}
+      </li>
+      {fullBowlersList.map((bowling: any) => {
+        return bowler.id === bowling.bowler.id ? (
+          <Fragment key={bowling.bowler.id}>
+            <li sx={{ flexBasis: "16.25%" }}>{bowling.overs}</li>
+            <li sx={{ flexBasis: "16.25%" }}>{bowling.runs}</li>
+            <li sx={{ flexBasis: "16.25%" }}>{bowling.wickets}</li>
+            <li sx={{ flexBasis: "16.25%" }}>{bowling.rate}</li>
           </Fragment>
         ) : (
           <></>
         );
       })}
-    </Fragment>
+    </ul>
   );
 };
 
@@ -165,7 +189,6 @@ const LiveCommentary = (props: {
   );
   // reversedOrder contails the balls in reverse order. Example overs from 19.6 to 0.1
   const recentBall = reversedOrder[0];
-  // console.log(initialBalls);
   const previousOver = {
     lastOver: Number((recentBall.ball - 1).toFixed(1)),
     scoreboard: recentBall.scoreboard,
@@ -265,6 +288,8 @@ const LiveCommentary = (props: {
     // setBallsLimit((prev) => prev + 25);
   };
 
+  const bp = useBreakpointIndex();
+
   return (
     <div>
       {/* Live commentary innings box */}
@@ -273,8 +298,12 @@ const LiveCommentary = (props: {
         <div sx={rowWrapperStyles}>
           <ul sx={rowHeaderStyles}>
             <li sx={{ flexBasis: ["35%", "30%"] }}>Batsman</li>
-            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>Runs</li>
-            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>Balls</li>
+            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+              {bp > 1 ? `Runs` : `R`}
+            </li>
+            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+              {bp > 1 ? `Balls` : `B`}
+            </li>
             <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>4S</li>
             <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>6S</li>
           </ul>
@@ -282,14 +311,14 @@ const LiveCommentary = (props: {
           {/* Batsman one */}
           <PlayerBattingDetails
             batsman={recentBall.batsmanone}
-            batting={batting}
+            fullBattingList={batting}
             recentBall={recentBall}
           />
 
           {/* Batsman two */}
           <PlayerBattingDetails
             batsman={recentBall.batsmantwo}
-            batting={batting}
+            fullBattingList={batting}
             recentBall={recentBall}
           />
         </div>
@@ -297,45 +326,27 @@ const LiveCommentary = (props: {
         {/* Bowling table */}
         <div sx={{ ...rowWrapperStyles, marginTop: 4 }}>
           <ul sx={rowHeaderStyles}>
-            <li sx={{ flexBasis: "30%" }}>Bowler</li>
-            <li sx={{ flexBasis: "17.5%" }}>Ov</li>
-            <li sx={{ flexBasis: "17.5%" }}>R</li>
-            <li sx={{ flexBasis: "17.5%" }}>W</li>
-            <li sx={{ flexBasis: "17.5%" }}>Eco</li>
+            <li sx={{ flexBasis: "35%" }}>Bowler</li>
+            <li sx={{ flexBasis: "16.25%" }}>Ov</li>
+            <li sx={{ flexBasis: "16.25%" }}>R</li>
+            <li sx={{ flexBasis: "16.25%" }}>W</li>
+            <li sx={{ flexBasis: "16.25%" }}>Eco</li>
           </ul>
 
           {/* Bowler one */}
-          <ul sx={rowStyles}>
-            <li
-              sx={{ flexBasis: "30%", display: "flex", alignItems: "center" }}
-            >
-              {recentBall.bowler.lastname}
-              <BallIcon
-                styles={{
-                  marginLeft: 1,
-                  padding: 0,
-                  "> svg": { fontSize: "18px", color: colors.black },
-                }}
-              />
-            </li>
 
-            <PlayerBowlingDetails
-              bowlerId={recentBall.bowler.id}
-              bowling={bowling}
-            />
-          </ul>
+          <PlayerBowlingDetails
+            bowler={recentBall.bowler}
+            fullBowlersList={bowling}
+            currentBowler={true}
+          />
 
           {/* Previous bowler two */}
           {previousBowler && (
-            <ul sx={rowStyles}>
-              <li sx={{ flexBasis: "30%" }}>
-                {previousBowler.bowler.lastname}
-              </li>
-              <PlayerBowlingDetails
-                bowlerId={previousBowler.bowler.id}
-                bowling={bowling}
-              />
-            </ul>
+            <PlayerBowlingDetails
+              bowler={previousBowler.bowler}
+              fullBowlersList={bowling}
+            />
           )}
         </div>
       </div>
@@ -369,28 +380,25 @@ const LiveCommentary = (props: {
                   <Fragment>
                     <div
                       sx={{
+                        display: "flex",
                         margin: 1,
                         background: colors.red200,
                         borderRadius: "10px",
                       }}
                     >
-                      <ul sx={{ display: "flex", width: "100%" }}>
-                        <li
+                      <div sx={{ display: "flex", width: "100%" }}>
+                        <div
                           sx={{
                             display: "flex",
-                            justifyContent: "center",
+                            justifyContent: ["flex-start", null],
                             flexWrap: "wrap",
                             width: "100%",
                             alignItems: "center",
-                            padding: 1,
                           }}
                         >
                           <div
                             sx={{
                               display: "flex",
-                              // background: colors.red150,
-                              // border: "1px solid",
-                              // borderColor: colors.gray300,
                               height: "fit-content",
                               width: "fit-content",
                               alignItems: "center",
@@ -411,140 +419,51 @@ const LiveCommentary = (props: {
                             sx={{
                               display: "flex",
                               flexDirection: "column",
-                              padding: 1,
+                              flexBasis: "70%",
                             }}
                           >
-                            <p
+                            <ul
                               sx={{
-                                variant: "text.subheading3",
-                                color: colors.white,
-                                padding: 1,
+                                ...rowHeaderStyles,
+                                background: "transparent",
+                                display: "flex",
+                                "> li": {
+                                  color: colors.white,
+                                  variant: "text.subheading3",
+                                },
                               }}
                             >
-                              {ball.batsmanout.fullname}
-                            </p>
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
+                              <li sx={{ flexBasis: ["35%", "30%"] }}>
+                                Batsman
+                              </li>
+                              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+                                {bp > 1 ? `Runs` : `R`}
+                              </li>
+                              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+                                {bp > 1 ? `Balls` : `B`}
+                              </li>
+                              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+                                4S
+                              </li>
+                              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+                                6S
+                              </li>
+                            </ul>
+                            <PlayerBattingDetails
+                              batsman={ball.batsmanout}
+                              fullBattingList={batting}
+                              recentBall={recentBall}
+                              excludeWicketPlayer={false}
+                              styles={{
+                                ">li": {
+                                  color: colors.white,
+                                  variant: "text.heading4",
+                                },
                               }}
-                            >
-                              {getWicketCatchStumpRunout(
-                                result,
-                                catchstump,
-                                bowlerName,
-                                runoutBy
-                              )}
-                            </p>
+                            />
                           </div>
-                          <div
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              padding: 1,
-                            }}
-                          >
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              6s
-                            </p>
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              0
-                            </p>
-                          </div>
-                          <div
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              padding: 1,
-                            }}
-                          >
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              6s
-                            </p>
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              0
-                            </p>
-                          </div>
-                          <div
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              padding: 1,
-                            }}
-                          >
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              6s
-                            </p>
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              0
-                            </p>
-                          </div>
-                          <div
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              padding: 1,
-                            }}
-                          >
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              6s
-                            </p>
-                            <p
-                              sx={{
-                                variant: "text.heading4",
-                                color: colors.white,
-                                padding: 1,
-                              }}
-                            >
-                              0
-                            </p>
-                          </div>
-                        </li>
-                      </ul>
-                      <ul></ul>
+                        </div>
+                      </div>
                     </div>
                     <li
                       key={ball.id}

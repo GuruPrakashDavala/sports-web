@@ -56,7 +56,7 @@ const InningsTableHeader = (props: {
       >
         <li
           sx={{
-            flexBasis: "30%",
+            flexBasis: "40%",
             variant: "text.subheading3",
             color: "rgba(12, 12, 12, 0.3)",
           }}
@@ -65,7 +65,7 @@ const InningsTableHeader = (props: {
         </li>
         <li
           sx={{
-            flexBasis: "17.5%",
+            flexBasis: "15%",
             variant: "text.subheading3",
             color: "rgba(12, 12, 12, 0.3)",
           }}
@@ -74,7 +74,7 @@ const InningsTableHeader = (props: {
         </li>
         <li
           sx={{
-            flexBasis: "17.5%",
+            flexBasis: "15%",
             variant: "text.subheading3",
             color: "rgba(12, 12, 12, 0.3)",
           }}
@@ -83,7 +83,7 @@ const InningsTableHeader = (props: {
         </li>
         <li
           sx={{
-            flexBasis: "17.5%",
+            flexBasis: "15%",
             variant: "text.subheading3",
             color: "rgba(12, 12, 12, 0.3)",
           }}
@@ -92,7 +92,7 @@ const InningsTableHeader = (props: {
         </li>
         <li
           sx={{
-            flexBasis: "17.5%",
+            flexBasis: "15%",
             variant: "text.subheading3",
             color: "rgba(12, 12, 12, 0.3)",
           }}

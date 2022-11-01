@@ -26,14 +26,22 @@ const matchCardStyles: ThemeUICSSObject = {
   flexWrap: "wrap",
   justifyContent: [null, null, "space-evenly"],
   flexDirection: ["column", null, "row"],
-  padding: [1, null, null, 4],
+  padding: ["5px", null, null, 4],
   background: colors.gray300,
   border: "1px solid",
   borderColor: "rgba(12, 12, 12, 0.17)",
-  borderTopLeftRadius: "5px",
-  borderTopRightRadius: "5px",
+  // borderTopLeftRadius: "5px",
+  // borderTopRightRadius: "5px",
+  borderRadius: "5px",
   marginY: 2,
-  alignItems: "center",
+  alignItems: [null, null, "center"],
+  gap: [2, null, 0],
+};
+
+const infoText: ThemeUICSSObject = {
+  variant: "text.label3",
+  paddingY: 1,
+  color: colors.black,
 };
 
 const Header = (props: HeaderProps) => {
@@ -42,6 +50,10 @@ const Header = (props: HeaderProps) => {
   const bp = useBreakpointIndex();
   const firstInningsInPlay = fixture.status === "1st Innings";
   const secondInningsInPlay = fixture.status === "2nd Innings";
+  const fixtureTitle =
+    bp < 2
+      ? `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round}`
+      : `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round} ${fixture.stage.name} `;
   const matchNote = firstInningsInPlay
     ? `Live`
     : secondInningsInPlay
@@ -50,10 +62,8 @@ const Header = (props: HeaderProps) => {
   return (
     <Fragment>
       <div sx={pillsWrapperStyles}>
-        <Pill
-          label={`${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round} ${fixture.stage.name} `}
-          theme={ColorTheme.LIGHT}
-        />
+        {/* Title */}
+        <Pill label={fixtureTitle} theme={ColorTheme.LIGHT} />
       </div>
 
       <div sx={matchCardStyles}>
@@ -64,7 +74,7 @@ const Header = (props: HeaderProps) => {
           inPlay={firstInningsInPlay}
         />
 
-        {isLive && (
+        {isLive && bp > 1 && (
           <div
             sx={{
               display: "flex",
@@ -85,28 +95,27 @@ const Header = (props: HeaderProps) => {
             {fixture.status === "1st Innings" && (
               // TODO: Message should be gramatically correct. Handle message properly
               <p
-                sx={{
-                  variant: "text.label3",
-                  paddingY: 1,
-                  color: colors.black,
-                }}
+                sx={infoText}
               >{`${fixture.tosswon.name} elected to ${fixture.elected} first`}</p>
+            )}
+            {fixture.status === "Innings Break" && (
+              // TODO: Message should be gramatically correct. Handle message properly
+              <p sx={infoText}>{`${fixture.status}`}</p>
             )}
           </div>
         )}
-        {isMatchFinished && (
-          <div>
-            <Pill
-              label={`${fixture.note}`}
-              theme={ColorTheme.LIGHT}
-              styles={{
-                marginY: [1, 0],
-                marginX: [0, 1],
-                width: "fit-content",
-                background: colors.green,
-              }}
-            />
-          </div>
+
+        {isMatchFinished && bp > 1 && (
+          <Pill
+            label={`${fixture.note}`}
+            theme={ColorTheme.LIGHT}
+            styles={{
+              marginY: [1, 0],
+              marginX: [0, 1],
+              width: "fit-content",
+              background: colors.green,
+            }}
+          />
         )}
 
         <TeamInfo
@@ -116,6 +125,11 @@ const Header = (props: HeaderProps) => {
           inPlay={secondInningsInPlay}
         />
       </div>
+      {fixture.status === "Finished" && bp < 2 && (
+        <p sx={{ variant: "text.heading4", color: colors.green, paddingX: 1 }}>
+          {fixture.note}
+        </p>
+      )}
     </Fragment>
   );
 };

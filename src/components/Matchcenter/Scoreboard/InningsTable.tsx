@@ -74,11 +74,12 @@ const InningsTable = (props: InningsTableProps) => {
               alignItems: "center",
               borderBottom: "1px solid",
               borderColor: "rgba(12, 12, 12, 0.17)",
+              gap: 1,
             }}
           >
             <li
               sx={{
-                flexBasis: "30%",
+                flexBasis: "40%",
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -101,12 +102,12 @@ const InningsTable = (props: InningsTableProps) => {
                   : `Not out`}
               </p>
             </li>
-            <li sx={{ flexBasis: "17.5%" }}>
+            <li sx={{ flexBasis: "15%" }}>
               {batting.score} {` (${batting.ball})`}
             </li>
-            <li sx={{ flexBasis: "17.5%" }}> {batting.four_x}</li>
-            <li sx={{ flexBasis: "17.5%" }}> {batting.six_x}</li>
-            <li sx={{ flexBasis: "17.5%" }}> {batting.rate}</li>
+            <li sx={{ flexBasis: "15%" }}> {batting.four_x}</li>
+            <li sx={{ flexBasis: "15%" }}> {batting.six_x}</li>
+            <li sx={{ flexBasis: "15%" }}> {batting.rate}</li>
           </ul>
         ) : (
           <></>

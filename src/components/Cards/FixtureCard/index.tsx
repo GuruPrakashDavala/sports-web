@@ -143,21 +143,13 @@ const FixtureCard = (props: {
               {bp > 3 ? fixture.league.name : fixture.league.code}
               {" - "}
               {fixture.round}
-              {isLive && (
-                <Pill
-                  label={`Live`}
-                  theme={ColorTheme.DARK}
-                  styles={{ marginX: 1 }}
-                />
-                // <LivePulse styles={{ height: "10px", width: "10px" }} />
-              )}
             </div>
 
-            {fixture.stage && fixture.season && (
+            {/* {fixture.stage && fixture.season && (
               <p sx={{ variant: "text.label3", color: colors.gray100 }}>
                 {fixture.stage.name}, {fixture.season.code}
               </p>
-            )}
+            )} */}
 
             {/* <p sx={{ variant: "text.label3", color: colors.gray100 }}>
               {fixture.round} -{" "}
@@ -171,6 +163,14 @@ const FixtureCard = (props: {
               {format(new Date(fixture.starting_at), "iii d MMM")} -
               {format(new Date(fixture.starting_at), " p")}
             </p>
+            {isLive && (
+              <Pill
+                label={`Live`}
+                theme={ColorTheme.DARK}
+                styles={{ marginY: 1 }}
+              />
+              // <LivePulse styles={{ height: "10px", width: "10px" }} />
+            )}
           </div>
 
           <div
