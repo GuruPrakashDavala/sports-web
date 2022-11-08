@@ -8,6 +8,7 @@ import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
 import MultiInfoCard from "../../Cards/MultiInfoCard";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { renderImage } from "../../../utils/util";
+import SectionHeading from "../../SectionHeading";
 
 type ContentGridProps = {
   blocks: ContentGrid[];
@@ -53,6 +54,15 @@ const ContentGrid = ({ blocks }: ContentGridProps): JSX.Element => {
 
   return (
     <SectionWrapper theme={theme}>
+      {/* <SectionHeading
+        title={`Match schedule & results`}
+        theme={ColorTheme.DARK}
+        link={{
+          href: `/schedule`,
+          external: false,
+          label: `all schedule`,
+        }}
+      /> */}
       <div
         sx={{
           display: "flex",

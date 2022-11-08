@@ -44,10 +44,10 @@ const InningsTable = (props: InningsTableProps) => {
   const isScoreboardAvailable = fixture.batting.filter(
     (batting: any, index: number) => batting.scoreboard === innings
   );
+  const bp = useBreakpointIndex();
   if (isScoreboardAvailable.length === 0) {
     return <>Batting innings not available</>;
   }
-  const bp = useBreakpointIndex();
   return (
     <Fragment>
       <InningsTableHeader
@@ -67,6 +67,7 @@ const InningsTable = (props: InningsTableProps) => {
         const runoutBy = batting.runoutby ? batting.runoutby.lastname : "";
         return batting.scoreboard === innings ? (
           <ul
+            key={index}
             sx={{
               display: "flex",
               padding: 1,
@@ -87,7 +88,6 @@ const InningsTable = (props: InningsTableProps) => {
               <p sx={{ variant: "text.subheading3" }}>{batsmanName}</p>
               <p
                 sx={{
-                  // variant: "text.label1",
                   paddingTop: 1,
                   color: colors.gray100,
                 }}

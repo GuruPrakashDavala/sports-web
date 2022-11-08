@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ColorTheme } from "../../../types/modifier";
-import LivePulse from "../../Icons/LivePulse";
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 
@@ -160,8 +159,7 @@ const FixtureCard = (props: {
                 : "TBC"}
             </p> */}
             <p sx={{ variant: "text.label3", color: colors.gray100 }}>
-              {format(new Date(fixture.starting_at), "iii d MMM")} -
-              {format(new Date(fixture.starting_at), " p")}
+              {format(new Date(fixture.starting_at), "iii d MMM - p OOOO")}
             </p>
             {isLive && (
               <Pill
@@ -267,18 +265,20 @@ const FixtureCard = (props: {
           </p>
         )}
 
-        <Link
-          href={`/matchcenter/${fixture.id}/ind-vs-rsa-2022`}
-          styles={{
-            padding: 2,
-            background: colors.black,
-            marginTop: "auto",
-          }}
-        >
-          <p sx={{ variant: "text.subheading4", color: colors.white }}>
-            View scorecard
-          </p>
-        </Link>
+        {fixture.status === "Finished" && (
+          <Link
+            href={`/matchcenter/${fixture.id}/ind-vs-rsa-2022`}
+            styles={{
+              padding: 2,
+              background: colors.black,
+              marginTop: "auto",
+            }}
+          >
+            <p sx={{ variant: "text.subheading4", color: colors.white }}>
+              View scorecard
+            </p>
+          </Link>
+        )}
       </div>
     </div>
   );

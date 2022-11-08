@@ -3,8 +3,6 @@
 import { alpha } from "@theme-ui/color";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
-import { cleanArticleFormattedText } from "../../utils/cleaner";
-import { markdownToHtml } from "../../lib/posts";
 import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
 import SocialIcons from "../../components/News/SocialIcons";
 import NewsHeader from "../../components/News/Header";
@@ -17,12 +15,12 @@ import { ArticleBlocks, ArticleType } from "../../types/article";
 import Image from "next/image";
 import Carousel, { CarouselItem } from "../../components/Carousel";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
-import SectionHeading from "../../components/SectionHeading";
-import { ColorTheme, ComponentVariant } from "../../types/modifier";
 import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
-import { imageHost, renderImage } from "../../utils/util";
+import { renderImage } from "../../utils/util";
 import ArticleCard from "../../components/Cards/ArticleCard";
 import MultiInfoCard from "../../components/Cards/MultiInfoCard";
+import { ColorTheme, ComponentVariant } from "../../types/modifier";
+import { markdownToHtml } from "../../lib/posts";
 
 export const formattedTextStyles: ThemeUICSSObject = {
   // px: 2,
@@ -74,7 +72,7 @@ const articleContainerStyles: ThemeUICSSObject = {
   paddingY: [null, null, 5],
 };
 
-const articleBodyWrapperStyles: ThemeUICSSObject = {
+export const articleBodyWrapperStyles: ThemeUICSSObject = {
   display: "grid",
   gridTemplateColumns: ["100%", null, null, "16.66% 8.3% 50% 25%"],
   // gridTemplateRows: "[row1] auto [row2] auto [row3] auto",
@@ -108,9 +106,9 @@ type BlockPickerProps = {
   index?: number;
 };
 
-const addHost = (str: string, host: string) => {
-  return str.replaceAll('src="/uploads', `src=\"${host}/uploads`);
-};
+// const addHost = (str: string, host: string) => {
+//   return str.replaceAll('src="/uploads', `src=\"${host}/uploads`);
+// };
 
 const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
@@ -161,7 +159,8 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
     }
     case "richtext":
       const { body } = markdownToHtml(block.richtext);
-      const html = addHost(body.html, imageHost);
+      // const html = addHost(body.html, imageHost);
+      const html = body.html;
       return (
         <div
           sx={{ ...formattedTextStyles }}
@@ -299,15 +298,12 @@ const ArticlePage = (props: ArticlePageProps) => {
             {/* Create a block picker which can hand pick the components and render inside the body */}
             <AdBlock variant={AdBlockVariant.HORIZONTAL} />
 
-            {/* <div
-              sx={{ ...formattedTextStyles, ...styles }}
-              dangerouslySetInnerHTML={{
-                __html: htmlText,
-              }}
-            ></div> */}
-
             {data.attributes.blocks?.map((block, i) => {
-              return <BlockPicker block={block} index={i} />;
+              return (
+                <Fragment key={i}>
+                  <BlockPicker block={block} index={i} />
+                </Fragment>
+              );
             })}
 
             {/* Published info */}
@@ -339,6 +335,7 @@ const ArticlePage = (props: ArticlePageProps) => {
           height={12}
         />
       </div>
+      {/* Recent articles */}
       <ArticleGrid
         articleGrid={{
           articles: { data: recentArticles },

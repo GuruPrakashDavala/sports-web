@@ -6,6 +6,7 @@ import { ThemeUICSSObject } from "theme-ui";
 export enum AdBlockVariant {
   SQUARE = "square",
   HORIZONTAL = "horizontal",
+  VERTICAL = "vertical",
 }
 
 type AdBlockProps = {
@@ -21,12 +22,16 @@ const AdBlock = (props: AdBlockProps): JSX.Element => {
     ? height
     : variant === AdBlockVariant.SQUARE
     ? 35
+    : variant === AdBlockVariant.VERTICAL
+    ? 220
     : 20;
 
   const adBlockPath =
     variant === AdBlockVariant.SQUARE
       ? `/assets/squaread.gif`
-      : `/assets/horizontalad.gif`;
+      : variant === AdBlockVariant.HORIZONTAL
+      ? `/assets/horizontalad.gif`
+      : `/assets/vertical-banner.gif`;
 
   return (
     <div

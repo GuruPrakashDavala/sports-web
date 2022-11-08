@@ -1,12 +1,12 @@
 /** @jsxImportSource theme-ui */
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
+import { format } from "date-fns";
 import { Fragment } from "react";
-import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
-import { ColorTheme } from "../../../types/modifier";
-import Pill from "../../Primitives/Pill";
-import TeamInfo from "./TeamInfo";
+import { getScore } from "../../Cards/FixtureCard";
+import CalendarIcon from "../../Icons/CalendarIcon";
+import StadiumIcon from "../../Icons/Stadium";
 
 type HeaderProps = {
   fixture: any;
@@ -15,122 +15,329 @@ type HeaderProps = {
   isLive: any;
 };
 
-const pillsWrapperStyles: ThemeUICSSObject = {
-  display: "flex",
-  flexDirection: ["column", "row"],
-  width: "fit-content",
-};
-
-const matchCardStyles: ThemeUICSSObject = {
-  display: "flex",
-  flexWrap: "wrap",
-  justifyContent: [null, null, "space-evenly"],
-  flexDirection: ["column", null, "row"],
-  padding: ["5px", null, null, 4],
-  background: colors.gray300,
-  border: "1px solid",
-  borderColor: "rgba(12, 12, 12, 0.17)",
-  // borderTopLeftRadius: "5px",
-  // borderTopRightRadius: "5px",
-  borderRadius: "5px",
-  marginY: 2,
-  alignItems: [null, null, "center"],
-  gap: [2, null, 0],
-};
-
-const infoText: ThemeUICSSObject = {
-  variant: "text.label3",
-  paddingY: 1,
-  color: colors.black,
-};
-
 const Header = (props: HeaderProps) => {
   const { fixture, s1Team, s2Team, isLive } = props;
+  console.log(fixture);
   const isMatchFinished = fixture.status === "Finished";
   const bp = useBreakpointIndex();
   const firstInningsInPlay = fixture.status === "1st Innings";
   const secondInningsInPlay = fixture.status === "2nd Innings";
+
   const fixtureTitle =
     bp < 2
       ? `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round}`
       : `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round} ${fixture.stage.name} `;
+
   const matchNote = firstInningsInPlay
     ? `Live`
     : secondInningsInPlay
     ? `Live - ${s2Team.code} ${fixture.note}`
     : `Live`;
+
+  const matchStartingDate = new Date(fixture.starting_at);
   return (
-    <Fragment>
-      <div sx={pillsWrapperStyles}>
-        {/* Title */}
-        <Pill label={fixtureTitle} theme={ColorTheme.LIGHT} />
-      </div>
-
-      <div sx={matchCardStyles}>
-        <TeamInfo
-          team={s1Team}
-          innings={`S1`}
-          fixture={fixture}
-          inPlay={firstInningsInPlay}
-        />
-
-        {isLive && bp > 1 && (
+    <div
+      sx={{
+        // background: `radial-gradient(circle, ${colors.red150} 0,${colors.red300} 100%)`,
+        background: `radial-gradient(circle, #343353 0, #010028 100%)`,
+        color: colors.white,
+        paddingY: 2,
+      }}
+    >
+      {/* Title - league and stage name */}
+      <div sx={{ display: "flex", paddingX: 1, alignItems: "center" }}>
+        <div
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
+            width: "100%",
+          }}
+        >
           <div
             sx={{
               display: "flex",
-              flexDirection: "column",
+              background: colors.white,
               justifyContent: "center",
               alignItems: "center",
+              borderRadius: "99%",
+              marginRight: "5px",
             }}
           >
-            <Pill
-              label={matchNote}
-              theme={ColorTheme.DARK}
-              styles={{
-                marginY: [1, 0],
-                marginX: [0, 1],
-                width: "fit-content",
+            <img
+              src={fixture.league.image_path}
+              sx={{
+                display: "block",
+                width: ["24px", "34px"],
+                height: ["24px", "34px"],
+                maxWidth: "100%",
+                verticalAlign: "middle",
+                borderRadius: "99%",
               }}
             />
-            {fixture.status === "1st Innings" && (
-              // TODO: Message should be gramatically correct. Handle message properly
-              <p
-                sx={infoText}
-              >{`${fixture.tosswon.name} elected to ${fixture.elected} first`}</p>
-            )}
-            {fixture.status === "Innings Break" && (
-              // TODO: Message should be gramatically correct. Handle message properly
-              <p sx={infoText}>{`${fixture.status}`}</p>
+          </div>
+
+          <div
+            sx={{
+              display: "flex",
+              marginLeft: "5px",
+              flexDirection: ["column", "row"],
+            }}
+          >
+            <div
+              sx={{
+                color: colors.white,
+                variant: bp > 1 ? "text.heading4" : "text.label2",
+              }}
+            >
+              {fixture.league.code}
+            </div>
+
+            <div
+              sx={{
+                display: "flex",
+                marginLeft: [0, 1],
+                opacity: "0.6",
+                color: colors.white,
+                variant: bp > 1 ? "text.heading4" : "text.label2",
+              }}
+            >
+              {fixture.stage.name}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Body - team 1 and team 2 */}
+      <div
+        sx={{
+          display: "flex",
+          paddingX: 1,
+          alignItems: "center",
+          flexDirection: "column",
+          borderBottom: "1.5px solid",
+          borderColor: "rgba(229,231,235, .4)",
+          paddingBottom: 1,
+        }}
+      >
+        <div
+          sx={{
+            display: "grid",
+            paddingTop: [3, 4],
+            justifyContent: "center",
+            gridTemplateColumns: "repeat(12,minmax(0,1fr))",
+          }}
+        >
+          <div
+            sx={{
+              display: "flex",
+              justifySelf: "end",
+              alignItems: "center",
+              flexDirection: "row",
+              gridColumn: "span 5/span 5",
+              color: colors.white,
+            }}
+          >
+            <div
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <span
+                sx={{
+                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                }}
+              >
+                {s1Team.name}
+              </span>
+              <span
+                sx={{
+                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                }}
+              >
+                {getScore(fixture.scoreboards, "S1")}
+              </span>
+            </div>
+
+            <div
+              sx={{
+                flexShrink: 0,
+                marginLeft: 1,
+                position: "relative",
+                background: colors.white,
+              }}
+            >
+              <img
+                src={s1Team.image}
+                sx={{
+                  display: "block",
+                  width: ["35px", "55px"],
+                  height: ["35px", "55px"],
+                  verticalAlign: "center",
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              gridColumn: "span 2/span 2",
+              marginLeft: [3, 4],
+            }}
+          >
+            {!isMatchFinished && (
+              <Fragment>
+                <div
+                  sx={{
+                    display: "flex",
+                    textAlign: "center",
+                    position: "relative",
+                  }}
+                >
+                  <div sx={{ variant: "text.label2" }}>{fixture.status}</div>
+                </div>
+                <div
+                  sx={{
+                    background: "#010028", // design system colour
+                    borderRadius: "999px",
+                    marginY: "5px",
+                    paddingX: [1, 3],
+                  }}
+                >
+                  <div
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      paddingY: "5px",
+                      variant: bp > 1 ? "text.subheading2" : "text.label1",
+                    }}
+                  >
+                    <span>{format(matchStartingDate, "kk:mm")}</span>
+                  </div>
+                </div>
+              </Fragment>
             )}
           </div>
-        )}
 
-        {isMatchFinished && bp > 1 && (
-          <Pill
-            label={`${fixture.note}`}
-            theme={ColorTheme.LIGHT}
-            styles={{
-              marginY: [1, 0],
-              marginX: [0, 1],
-              width: "fit-content",
-              background: colors.green,
+          <div
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifySelf: "start",
+              flexDirection: "row",
+              gridColumn: "span 5/span 5",
+              marginLeft: [3, 4],
             }}
-          />
-        )}
+          >
+            <div
+              sx={{
+                order: "2",
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <span
+                sx={{
+                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                }}
+              >
+                {s2Team.name}
+              </span>
+              <span
+                sx={{
+                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                }}
+              >
+                {getScore(fixture.scoreboards, "S2")}
+              </span>
+            </div>
 
-        <TeamInfo
-          team={s2Team}
-          innings={`S2`}
-          fixture={fixture}
-          inPlay={secondInningsInPlay}
-        />
+            <div
+              sx={{
+                flexShrink: 0,
+                marginRight: "0.5rem",
+                position: "relative",
+                background: colors.white,
+              }}
+            >
+              <img
+                src={s2Team.image}
+                sx={{
+                  display: "block",
+                  width: ["35px", "55px"],
+                  height: ["35px", "55px"],
+                  verticalAlign: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {isMatchFinished && (
+          <div
+            sx={{
+              background: "#010028",
+              borderRadius: "999px",
+              marginBottom: "5px",
+              marginTop: [2, 3],
+              paddingX: [1, 3],
+            }}
+          >
+            <div
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                paddingY: 1,
+                paddingX: "5px",
+                variant: bp > 1 ? "text.subheading4" : "text.label1",
+              }}
+            >
+              <span sx={{ opacity: "0.9" }}>{fixture.note}</span>
+            </div>
+          </div>
+        )}
       </div>
-      {fixture.status === "Finished" && bp < 2 && (
-        <p sx={{ variant: "text.heading4", color: colors.green, paddingX: 1 }}>
-          {fixture.note}
-        </p>
-      )}
-    </Fragment>
+
+      <div
+        sx={{
+          opacity: "0.6",
+          display: "flex",
+          justifyContent: "space-around",
+          paddingTop: [2],
+          paddingX: 1,
+        }}
+      >
+        <div sx={{ display: "flex", alignItems: "center" }}>
+          <CalendarIcon styles={{ width: "24px", height: "24px" }} />
+          <div
+            sx={{
+              marginX: 1,
+              variant: bp > 1 ? "text.heading4" : "text.label2",
+            }}
+          >
+            {format(matchStartingDate, "iii d MMM - p OOOO")}
+          </div>
+        </div>
+
+        <div sx={{ display: "flex", alignItems: "center" }}>
+          <StadiumIcon styles={{ width: "24px", height: "24px" }} />
+          <div
+            sx={{
+              marginX: 1,
+              variant: bp > 1 ? "text.heading4" : "text.label2",
+            }}
+          >
+            {fixture.venue.name}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

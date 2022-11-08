@@ -1,9 +1,11 @@
 import { differenceInHours, format } from "date-fns";
 import { ImageType } from "../types/article";
 
-export const imageHost = `http://localhost:1337`;
+// required only in localhost
+// export const imageHost = `http://localhost:1337`;
 
 const getArticleFormattedDate = (articleDate: string | Date) => {
+  console.log(articleDate);
   const now = new Date();
   const articlePublishedDate = new Date(articleDate);
   const differenceFromCurrentTime = differenceInHours(
@@ -15,7 +17,7 @@ const getArticleFormattedDate = (articleDate: string | Date) => {
     differenceFromCurrentTime === 0
       ? `Just now`
       : differenceFromCurrentTime > 24
-      ? format(articlePublishedDate, "Mo MMMM yyyy")
+      ? format(articlePublishedDate, "do MMMM yyyy")
       : `${differenceFromCurrentTime} hrs ago`;
 
   return formattedDate;
@@ -28,7 +30,8 @@ export const renderImage = (image: ImageType) => {
     ? image.attributes.formats.medium.url
     : image.attributes.formats.small.url;
 
-  return `${imageHost}${imageSrc}`;
+  // return `${imageHost}${imageSrc}`;
+  return imageSrc;
 };
 
 export default getArticleFormattedDate;

@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   images: {
     loader: "default",
-    domains: ["localhost"],
+    domains: ["localhost", "urbansports-backend.s3.amazonaws.com"],
   },
 };
 

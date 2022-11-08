@@ -2,7 +2,11 @@
 
 import { colors } from "../../../styles/theme";
 
-const BallInfoCircle = (props: { ball: any; color?: string; runs?: any }) => {
+const BallInfoCircle = (props: {
+  ball: string | number;
+  color?: string;
+  runs?: number;
+}) => {
   const { ball, color, runs } = props;
   return (
     <div

@@ -21,8 +21,8 @@ const TeamInfo = (props: TeamInfoProps) => {
         padding: [null, null, 1],
       }}
     >
-      {bp > 2 && (
-        <img src={team.image} sx={{ height: ["35px", null, null, "65px"] }} />
+      {bp > 1 && (
+        <img src={team.image} sx={{ height: ["45px", null, null, "65px"] }} />
       )}
       <div
         sx={{

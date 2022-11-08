@@ -14,6 +14,7 @@ type ArticleCarouselProps = {
 };
 
 const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
+  console.log(props)
   const { block, theme = ColorTheme.LIGHT, styles = {} } = props;
   const carouselItems: CarouselItem[] = block.articles.data.map(
     (article, index) => {

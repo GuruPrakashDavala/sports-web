@@ -99,7 +99,7 @@ export enum ArticleVariant {
   LARGE = "large",
 }
 
-type NewscardProps = {
+export type NewscardProps = {
   label: string;
   imageSrc: string;
   date: Date | string;

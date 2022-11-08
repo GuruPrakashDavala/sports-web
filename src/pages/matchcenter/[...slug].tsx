@@ -1,7 +1,6 @@
 /** @jsxImportSource theme-ui */
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import { getScore } from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { useState, useEffect } from "react";
 import { colors } from "../../styles/theme";
@@ -12,21 +11,42 @@ import Scoreboard from "../../components/Matchcenter/Scoreboard";
 import { useRouter } from "next/router";
 import Header from "../../components/Matchcenter/Header";
 import { getYear } from "date-fns";
-import Link from "../../components/Primitives/Link";
-import BatIcon from "../../components/Icons/Bat";
-import InfoIcon from "../../components/Icons/Info";
+import { articleBodyWrapperStyles } from "../news/[slug]";
+import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
+import ArticleCard, {
+  ArticleVariant,
+} from "../../components/Cards/ArticleCard";
+import { fetchAPI } from "../../lib/strapi";
+import { ColorTheme } from "../../types/modifier";
+import ArticleMicroCard from "../../components/Cards/ArticleMicroCard";
+import { renderImage } from "../../utils/util";
+import {
+  Batting as BattingT,
+  Fixture as FixtureT,
+  Scoreboard as ScoreboardT,
+  Player as PlayerT,
+  Team as TeamT,
+} from "../../types/sportmonks";
+import { ArticleType } from "../../types/article";
+import { Extras, FixtureStatus } from "../../types/matchcenter";
 
-const getTeamLineup = (lineup: any, teamId: any) => {
-  const teamLineup = lineup.filter((lineupItem: any) => {
-    return lineupItem.lineup.team_id === teamId;
+type MatchCenterProps = {
+  fixture: FixtureT;
+  recentArticles: ArticleType[];
+};
+
+// lineup array contains team players (player resource)
+const getTeamLineup = (lineup: PlayerT[], teamId: number) => {
+  const teamLineup = lineup.filter((lineupItem) => {
+    return lineupItem.lineup?.team_id === teamId;
   });
   return teamLineup;
 };
 
 const getPlayersDidNotBat = (
-  fixtureBatting: any,
-  lineup: any,
-  innings: any
+  fixtureBatting: BattingT[],
+  lineup: PlayerT[],
+  innings: string
 ) => {
   // fixtureBatting - contains the battings of both teams
   // lineup - contains lineup of specific team (11 players)
@@ -35,12 +55,12 @@ const getPlayersDidNotBat = (
 
   // The below filters the players who batted in the specified innings. Check innings param for innings code.
   const playerIdsWhoBattedInTheInnings = fixtureBatting
-    .filter((batting: any) => {
+    .filter((batting) => {
       return batting.scoreboard === innings;
     })
-    .map((item: any) => item.player_id);
+    .map((item) => item.player_id);
 
-  const playersDidNotBatInTheInnings = lineup.filter((player: any) => {
+  const playersDidNotBatInTheInnings = lineup.filter((player) => {
     return playerIdsWhoBattedInTheInnings.indexOf(player.id) === -1;
   });
 
@@ -54,7 +74,7 @@ export const tabStyles: ThemeUICSSObject = {
     width: "100%",
     // borderBottom: "1px solid #aaa",
     margin: "0 0 20px",
-    padding: "0",
+    paddingY: 1,
   },
   "> ul .react-tabs__tab": {
     flexGrow: 1,
@@ -95,31 +115,32 @@ export const tabStyles: ThemeUICSSObject = {
   },
 };
 
-const MatchCenter = (props: { fixture: any }): JSX.Element => {
-  console.log(props.fixture);
-  const fixture = props.fixture.data;
+const MatchCenter = (props: MatchCenterProps): JSX.Element => {
+  console.log(props);
+  const { fixture, recentArticles } = props;
 
-  if (fixture.status === "NS") {
-    return <div>Game not started yet...</div>;
-  }
+  // if (fixture.status === FixtureStatus.NotStarted) {
+  //   return <div>Game not started yet...</div>;
+  // }
 
-  if (fixture.status === "Aban." && fixture.runs.length === 0) {
-    return <div>{fixture.note}</div>;
-  }
+  // if (fixture.status === FixtureStatus.Abandoned && fixture.runs.length === 0) {
+  //   return <div>{fixture.note}</div>;
+  // }
 
   const isLive =
-    fixture.status === "1st Innings" ||
-    fixture.status === "2nd Innings" ||
-    fixture.status === "Innings Break";
+    fixture.status === FixtureStatus.FirstInnings ||
+    fixture.status === FixtureStatus.SecondInnings ||
+    fixture.status === FixtureStatus.InningsBreak ||
+    fixture.status === FixtureStatus.Interrupted;
 
   const baseUrl = `/matchcenter`;
 
   const getRouteUrl = (
-    fixtureId: any,
-    s1TeamCode: any,
-    s2TeamCode: any,
-    leagueCode: any,
-    matchDate: any
+    fixtureId: number,
+    s1TeamCode: string,
+    s2TeamCode: string,
+    leagueCode: string,
+    matchDate: string
   ) => {
     // constructed url would look like - /matchcenter/42776/wct20-ind-vs-rsa-2022/
     const year = getYear(new Date(matchDate));
@@ -131,7 +152,7 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
   // WIP: S1 and S2 team details
 
   // Util to get the opposite team info (toss lost team - 2nd Innings)
-  const getOppositeTeamInfo = (tosswonTeam: any) => {
+  const getOppositeTeamInfo = (tosswonTeam: TeamT) => {
     const teamInfo = [fixture.localteam, fixture.visitorteam]
       .filter((team) => tosswonTeam.code !== team.code)
       .map((team) => {
@@ -148,6 +169,9 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
 
   const setS1AndS2TeamInfo = () => {
     const tosswonTeam = fixture.tosswon;
+    if (!tosswonTeam) {
+      return;
+    }
     switch (fixture.elected) {
       case "bowling":
         setS2Team({
@@ -204,17 +228,24 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
     | undefined
   >(undefined);
 
-  const [s1TeamLineup, setS1TeamLineup] = useState();
-  const [s2TeamLineup, setS2TeamLineup] = useState();
+  const [s1TeamLineup, setS1TeamLineup] = useState<undefined | PlayerT[]>(
+    undefined
+  );
+  const [s2TeamLineup, setS2TeamLineup] = useState<undefined | PlayerT[]>();
 
-  const [s1DidNotBat, setS1DidNotBat] = useState();
-  const [s2DidNotBat, setS2DidNotBat] = useState();
+  const [s1DidNotBat, setS1DidNotBat] = useState<undefined | PlayerT[]>();
+  const [s2DidNotBat, setS2DidNotBat] = useState<undefined | PlayerT[]>();
 
-  const [s1Extras, setS1Extras] = useState();
-  const [s2Extras, setS2Extras] = useState();
+  const [s1Extras, setS1Extras] = useState<undefined | Extras>(undefined);
+  const [s2Extras, setS2Extras] = useState<undefined | Extras>(undefined);
 
-  const [s1FallOfWickets, setS1FallOfWickets] = useState();
-  const [s2FallOfWickets, setS2FallOfWickets] = useState();
+  const [s1FallOfWickets, setS1FallOfWickets] = useState<
+    undefined | BattingT[]
+  >(undefined);
+
+  const [s2FallOfWickets, setS2FallOfWickets] = useState<
+    undefined | BattingT[]
+  >(undefined);
 
   // main tab index
   const [tabIndex, setTabIndex] = useState(1);
@@ -227,7 +258,7 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
     2. Sets the second batting team info in the s2Team
     See method internals to understand the implementation logics
     */
-    if (fixture.resource === "fixtures") {
+    if (fixture.resource === "fixtures" && fixture.tosswon) {
       setS1AndS2TeamInfo();
     }
   }, [fixture]);
@@ -246,7 +277,7 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
       // S1Team player did not bat
       const s1DidNotBat =
         fixture.scoreboards.filter(
-          (scoreboardItem: any) =>
+          (scoreboardItem) =>
             scoreboardItem.scoreboard === "S1" &&
             scoreboardItem.type === "total"
         )?.length > 0
@@ -256,7 +287,7 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
       // S2Team player did not bat
       const s2DidNotBat =
         fixture.scoreboards.filter(
-          (scoreboardItem: any) =>
+          (scoreboardItem) =>
             scoreboardItem.scoreboard === "S2" &&
             scoreboardItem.type === "total"
         )?.length > 0
@@ -277,13 +308,13 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
   useEffect(() => {
     if (fixture.scoreboards && s1Team && s2Team) {
       const s1ExtrasScoreboard = fixture.scoreboards.filter(
-        (scoreboardItem: any) =>
+        (scoreboardItem) =>
           scoreboardItem.scoreboard === "S1" && scoreboardItem.type === "extra"
       );
 
       const s1Extras =
         s1ExtrasScoreboard.length > 0
-          ? s1ExtrasScoreboard.map((scoreboardItem: any) => {
+          ? s1ExtrasScoreboard.map((scoreboardItem: ScoreboardT) => {
               return {
                 b: scoreboardItem.bye,
                 lb: scoreboardItem.leg_bye,
@@ -304,13 +335,13 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
       setS1Extras(s1Extras);
 
       const s2ExtrasScoreboard = fixture.scoreboards.filter(
-        (scoreboardItem: any) =>
+        (scoreboardItem) =>
           scoreboardItem.scoreboard === "S2" && scoreboardItem.type === "extra"
       );
 
       const s2Extras =
         s2ExtrasScoreboard.length > 0
-          ? s2ExtrasScoreboard.map((scoreboardItem: any) => {
+          ? s2ExtrasScoreboard.map((scoreboardItem) => {
               return {
                 b: scoreboardItem.bye,
                 lb: scoreboardItem.leg_bye,
@@ -338,13 +369,10 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
       // S1 fall of wickets
       const s1Fow = fixture.batting
         .filter(
-          (batting: any, index: number) =>
+          (batting) =>
             batting.scoreboard === "S1" && batting.result.is_wicket === true
         )
-        .sort(
-          (batting1: any, batting2: any) =>
-            batting1.fow_balls - batting2.fow_balls
-        );
+        .sort((batting1, batting2) => batting1.fow_balls - batting2.fow_balls);
 
       // Set S1 fall of wickets
       s1Fow.length > 0
@@ -354,13 +382,10 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
       // S2 fall of wickets
       const s2Fow = fixture.batting
         .filter(
-          (batting: any, index: number) =>
+          (batting, index) =>
             batting.scoreboard === "S2" && batting.result.is_wicket === true
         )
-        .sort(
-          (batting1: any, batting2: any) =>
-            batting1.fow_balls - batting2.fow_balls
-        );
+        .sort((batting1, batting2) => batting1.fow_balls - batting2.fow_balls);
 
       // Set S2 fall of wickets
       s2Fow.length > 0
@@ -370,12 +395,6 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
   }, [fixture.batting, s1Team, s2Team]);
 
   const router = useRouter();
-
-  // Call this function whenever you want to
-  // refresh props!
-  // const refreshData = () => {
-  //   router.replace(router.asPath);
-  // };
 
   // Timer to test/trigger state updates - testing purpose
 
@@ -394,103 +413,167 @@ const MatchCenter = (props: { fixture: any }): JSX.Element => {
   // }, []);
 
   return (
-    <SectionWrapper styles={{ paddingX: bp > 3 ? 9 : 2 }}>
-      {/* <p>Match center WIP</p> */}
-      {/* Match Header component */}
-      {s1Team && s2Team && fixture && (
-        <Header
-          fixture={fixture}
-          s1Team={s1Team}
-          s2Team={s2Team}
-          isLive={isLive}
-        />
-      )}
-
-      <Tabs
-        //  selectedIndex={tabIndex}
-        // onSelect={(index) => setTabIndex(index)}
-        defaultIndex={1}
-        sx={{ ...tabStyles }}
+    <SectionWrapper styles={{ paddingX: [2, null, null, 0] }}>
+      <div
+        sx={{
+          ...articleBodyWrapperStyles,
+          gridTemplateColumns: ["100%", null, null, "16.66% 58.3% 25%"],
+        }}
       >
-        <TabList>
-          <Tab tabIndex="0">
-            {/* <InfoIcon
-              styles={{
-                paddingRight: 1,
-              }}
-            /> */}
-            <p>Match info</p>
-          </Tab>
-          <Tab tabIndex="1">
-            <p>Live commentary</p>
-          </Tab>
-          <Tab tabIndex="2">
-            <p>Scorecard</p>
-          </Tab>
-          <Tab tabIndex="3">
-            <p>Trending</p>
-          </Tab>
-          <Tab tabIndex="4">
-            <p>News</p>
-          </Tab>
-        </TabList>
-        <TabPanel>This section contains the match info</TabPanel>
-        <TabPanel>
-          {/* Livecommentary tab panel */}
-          {fixture.status !== "NA" &&
-            fixture.balls.length > 0 &&
-            s1Team &&
-            s2Team && (
-              <LiveCommentary
-                balls={fixture.balls}
-                status={fixture.status}
-                note={fixture.note}
-                batting={fixture.batting}
-                bowling={fixture.bowling}
-              />
-            )}
-        </TabPanel>
+        <div>
+          {/* <AdBlock variant={AdBlockVariant.VERTICAL} />
+          {recentArticles.length > 0 &&
+            recentArticles.map((block, index) => {
+              return (
+                <div sx={{ paddingX: 2 }} key={block.attributes.slug}>
+                  <ArticleCard
+                    label={block.attributes.title}
+                    imageSrc={renderImage(block.attributes.coverimage.data)}
+                    variant={ArticleVariant.MEDIUM}
+                    date={block.attributes.createdAt}
+                    badge={block.attributes.badge?.data?.attributes.name}
+                    type={block.attributes.type}
+                    category={block.attributes.category}
+                    slug={block.attributes.slug}
+                    theme={ColorTheme.DARK}
+                    styles={{ height: "100%" }}
+                  />
+                </div>
+              );
+            })} */}
+        </div>
 
-        <TabPanel>
-          {/* Scorecard tab panel */}
-          {s1Team && s2Team && (
-            // Should apply mobile responsive custom styles
-            <Scoreboard
+        <div>
+          {/* Match Header component */}
+          {s1Team && s2Team && fixture && (
+            <Header
               fixture={fixture}
               s1Team={s1Team}
-              s1DidNotBat={s1DidNotBat}
-              s1Extras={s1Extras}
-              s1FallOfWickets={s1FallOfWickets}
               s2Team={s2Team}
-              s2DidNotBat={s2DidNotBat}
-              s2Extras={s2Extras}
-              s2FallOfWickets={s2FallOfWickets}
+              isLive={isLive}
             />
           )}
-        </TabPanel>
-        <TabPanel>This section contains trending socials</TabPanel>
-        <TabPanel>This section related articles</TabPanel>
-      </Tabs>
+
+          <Tabs
+            //  selectedIndex={tabIndex}
+            // onSelect={(index) => setTabIndex(index)}
+            defaultIndex={1}
+            sx={{ ...tabStyles }}
+          >
+            <TabList>
+              <Tab tabIndex="0">
+                <p>Match info</p>
+              </Tab>
+              <Tab tabIndex="1">
+                <p>Live commentary</p>
+              </Tab>
+              <Tab tabIndex="2">
+                <p>Scorecard</p>
+              </Tab>
+              <Tab tabIndex="3">
+                <p>Trending</p>
+              </Tab>
+            </TabList>
+            <TabPanel>This section contains the match info</TabPanel>
+            <TabPanel>
+              {/* Livecommentary tab panel */}
+              {fixture.status !== FixtureStatus.NotStarted &&
+                fixture.balls.length > 0 &&
+                s1Team &&
+                s2Team && (
+                  <LiveCommentary
+                    balls={fixture.balls}
+                    status={fixture.status}
+                    note={fixture.note}
+                    batting={fixture.batting}
+                    bowling={fixture.bowling}
+                  />
+                )}
+            </TabPanel>
+
+            <TabPanel>
+              {/* Scorecard tab panel */}
+              {s1Team && s2Team && fixture.scoreboards.length > 0 && (
+                // Should apply mobile responsive custom styles
+                <Scoreboard
+                  fixture={fixture}
+                  s1Team={s1Team}
+                  s1DidNotBat={s1DidNotBat}
+                  s1Extras={s1Extras}
+                  s1FallOfWickets={s1FallOfWickets}
+                  s2Team={s2Team}
+                  s2DidNotBat={s2DidNotBat}
+                  s2Extras={s2Extras}
+                  s2FallOfWickets={s2FallOfWickets}
+                />
+              )}
+            </TabPanel>
+            <TabPanel>This section contains trending socials</TabPanel>
+          </Tabs>
+        </div>
+
+        {bp > 2 && (
+          <div sx={{ paddingX: [0, 3], paddingTop: 5 }}>
+            <AdBlock variant={AdBlockVariant.SQUARE} />
+            {recentArticles.length > 0 &&
+              recentArticles.map((block, index) => {
+                return (
+                  <div sx={{ paddingX: 2 }} key={block.attributes.slug}>
+                    {/* <ArticleCard
+                      label={block.attributes.title}
+                      imageSrc={renderImage(block.attributes.coverimage.data)}
+                      variant={ArticleVariant.MEDIUM}
+                      date={block.attributes.createdAt}
+                      badge={block.attributes.badge?.data?.attributes.name}
+                      type={block.attributes.type}
+                      category={block.attributes.category}
+                      slug={block.attributes.slug}
+                      theme={ColorTheme.GRAY}
+                      styles={{ height: "100%" }}
+                    /> */}
+
+                    <ArticleMicroCard
+                      label={block.attributes.title}
+                      imageSrc={renderImage(block.attributes.coverimage.data)}
+                      variant={ArticleVariant.MEDIUM}
+                      date={block.attributes.createdAt}
+                      badge={block.attributes.badge?.data?.attributes.name}
+                      type={block.attributes.type}
+                      category={block.attributes.category}
+                      slug={block.attributes.slug}
+                      theme={ColorTheme.GRAY}
+                      styles={{ height: "100%" }}
+                    />
+                  </div>
+                );
+              })}
+          </div>
+        )}
+      </div>
     </SectionWrapper>
   );
 };
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(
+  context: any
+): Promise<MatchCenterProps | {}> {
   try {
     const slug = context.params.slug;
+
     if (slug.length === 0) {
       return {};
     }
-    console.log(slug);
-    const fixtureId = slug[0];
-    const res = await fetch(
-      `https://cricket.sportmonks.com/api/v2.0/fixtures/${fixtureId}?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, manofmatch, batting, batting.batsman, batting.batsmanout, batting.result, batting.bowler, batting.catchstump, batting.runoutby, odds.bookmaker, bowling, bowling.bowler, scoreboards.team,balls, balls.batsmanout, balls.batsmanone,balls.batsmantwo,balls.catchstump,balls.score,balls.runoutby, lineup, tosswon, runs,stage, runs.team`
-    );
-    const fixture = await res.json();
 
-    // Pass data to the page via props
+    const fixtureId = slug[0];
+    const fixtureURI = `https://cricket.sportmonks.com/api/v2.0/fixtures/${fixtureId}?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, manofmatch, batting, batting.batsman, batting.batsmanout, batting.result, batting.bowler, batting.catchstump, batting.runoutby, odds.bookmaker, odds, odds.market, bowling, bowling.bowler, scoreboards.team,balls, balls.batsmanout, balls.batsmanone,balls.batsmantwo,balls.catchstump,balls.score,balls.runoutby, lineup, tosswon, runs,stage, runs.team`;
+
+    const [fixture, recentArticles] = await Promise.all([
+      fetch(fixtureURI).then((res) => res.json()),
+      fetchAPI(`/articles?populate=deep,2`),
+    ]);
+
     return {
-      props: { fixture },
+      props: { fixture: fixture.data, recentArticles: recentArticles.data },
     };
   } catch (err) {
     console.log(err);

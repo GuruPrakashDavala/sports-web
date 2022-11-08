@@ -27,6 +27,7 @@ import { differenceInCalendarDays, format } from "date-fns";
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
 const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
+  console.log(block.type);
   switch (block.type) {
     case "articlecarousel": {
       return (
