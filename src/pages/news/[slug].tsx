@@ -377,8 +377,8 @@ export default ArticlePage;
 export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
-    fetchAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep`),
-    fetchAPI(`/articles?populate=deep`),
+    fetchAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 2`),
+    fetchAPI(`/articles?populate=deep, 2`),
   ]);
 
   if (!article.data || article.data.length === 0) {
