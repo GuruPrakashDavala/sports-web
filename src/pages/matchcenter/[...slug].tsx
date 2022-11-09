@@ -8,7 +8,6 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
 import LiveCommentary from "../../components/Matchcenter/Livecommentary";
 import Scoreboard from "../../components/Matchcenter/Scoreboard";
-import { useRouter } from "next/router";
 import Header from "../../components/Matchcenter/Header";
 import { getYear } from "date-fns";
 import { articleBodyWrapperStyles } from "../news/[slug]";
@@ -394,7 +393,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
     }
   }, [fixture.batting, s1Team, s2Team]);
 
-  const router = useRouter();
+  // const router = useRouter();
 
   // Timer to test/trigger state updates - testing purpose
 
@@ -457,7 +456,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
           <Tabs
             //  selectedIndex={tabIndex}
             // onSelect={(index) => setTabIndex(index)}
-            defaultIndex={1}
+            // defaultIndex={1}
             sx={{ ...tabStyles }}
           >
             <TabList>

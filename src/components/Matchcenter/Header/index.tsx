@@ -187,7 +187,7 @@ const Header = (props: HeaderProps) => {
               alignItems: "center",
               flexDirection: "column",
               gridColumn: "span 2/span 2",
-              marginLeft: [3, 4],
+              marginLeft: [2, 3],
             }}
           >
             {!isMatchFinished && (
@@ -231,7 +231,7 @@ const Header = (props: HeaderProps) => {
               justifySelf: "start",
               flexDirection: "row",
               gridColumn: "span 5/span 5",
-              marginLeft: [3, 4],
+              marginLeft: [2, 3],
             }}
           >
             <div

@@ -4,6 +4,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
+import { FixtureStatus } from "../../../types/matchcenter";
 import { ColorTheme } from "../../../types/modifier";
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
@@ -94,10 +95,17 @@ const FixtureCard = (props: {
   const s1TeamImage = s1TeamDetails.image;
   const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.code;
   const s2TeamImage = s2TeamDetails.image;
+
   const isLive =
-    fixture.status === "1st Innings" ||
-    fixture.status === "2nd Innings" ||
-    fixture.status === "Innings Break";
+    fixture.status === FixtureStatus.FirstInnings ||
+    fixture.status === FixtureStatus.SecondInnings ||
+    fixture.status === FixtureStatus.InningsBreak ||
+    fixture.status === FixtureStatus.Interrupted;
+
+  const showScorecard =
+    fixture.status === FixtureStatus.Finished ||
+    fixture.status !== FixtureStatus.NotStarted;
+
   return (
     <div
       sx={{
@@ -265,7 +273,7 @@ const FixtureCard = (props: {
           </p>
         )}
 
-        {fixture.status === "Finished" && (
+        {showScorecard && (
           <Link
             href={`/matchcenter/${fixture.id}/ind-vs-rsa-2022`}
             styles={{

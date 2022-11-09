@@ -45,10 +45,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
   const path = `news/${slug}`;
 
   return (
-    <Link
-      href={path}
-      styles={{ padding: 2, paddingBottom: 0, cursor: "pointer" }}
-    >
+    <Link href={path} styles={{ cursor: "pointer" }}>
       <div sx={cardWrapperStyles}>
         {
           <div sx={imageWrapperStyles}>

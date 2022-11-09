@@ -21,7 +21,9 @@ const NewsPage = (props: { articles: ArticleType[] }) => {
 export default NewsPage;
 
 export async function getServerSideProps(context: any) {
-  const [articles] = await Promise.all([fetchAPI(`/articles?populate=deep`)]);
+  const [articles] = await Promise.all([
+    fetchAPI(`/articles?populate=deep, 2`),
+  ]);
 
   return {
     props: { articles: articles.data },
