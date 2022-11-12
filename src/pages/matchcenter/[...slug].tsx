@@ -410,7 +410,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                 >
                   <TabList>
                     {tabLists.map((tab) => (
-                      <Tab tabIndex={tab.id}>
+                      <Tab tabIndex={tab.id} key={tab.id}>
                         <p>{tab.name}</p>
                       </Tab>
                     ))}
