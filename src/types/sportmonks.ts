@@ -98,7 +98,7 @@ export type Batting = {
   bowler: Player;
   catchstump: Player;
   batsmanout: null | string;
-  runoutby: null | string;
+  runoutby: null | string | any;
   result: Scores;
 };
 

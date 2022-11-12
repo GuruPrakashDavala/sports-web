@@ -4,7 +4,13 @@ import { Fragment, useState, useEffect } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
 import { tabStyles } from "../../../pages/matchcenter/[...slug]";
-import { ComponentVariant } from "../../../types/modifier";
+import { colors } from "../../../styles/theme";
+import { Extras, TeamInfo } from "../../../types/matchcenter";
+import {
+  Batting as BattingT,
+  Fixture as FixtureT,
+  Player as PlayerT,
+} from "../../../types/sportmonks";
 import { getScore } from "../../Cards/FixtureCard";
 import LivePulse from "../../Icons/LivePulse";
 import BowlingTable from "./BowlingTable";
@@ -13,24 +19,24 @@ import InningsAdditionalInfo from "./InningsAdditionalInfo";
 import InningsTable from "./InningsTable";
 
 type ScoreboardContentProps = {
-  innings: any;
-  fixture: any;
-  team: any;
-  extras: any;
-  didNotBat: any;
-  fallOfWickets: any;
+  innings: string;
+  fixture: FixtureT;
+  team: TeamInfo;
+  extras: Extras;
+  didNotBat?: PlayerT[];
+  fallOfWickets?: BattingT[];
 };
 
 type ScoreboardProps = {
-  s1Team: any;
-  s1Extras: any;
-  s1DidNotBat: any;
-  s1FallOfWickets: any;
-  s2Team: any;
-  s2Extras: any;
-  s2DidNotBat: any;
-  s2FallOfWickets: any;
-  fixture: any;
+  fixture: FixtureT;
+  s1Team: TeamInfo;
+  s2Team: TeamInfo;
+  s1Extras: Extras;
+  s2Extras: Extras;
+  s1DidNotBat?: PlayerT[];
+  s2DidNotBat?: PlayerT[];
+  s1FallOfWickets?: BattingT[];
+  s2FallOfWickets?: BattingT[];
 };
 
 const tabItemStyles: ThemeUICSSObject = {
@@ -40,8 +46,9 @@ const tabItemStyles: ThemeUICSSObject = {
 };
 
 const tabTeamImageStyles: ThemeUICSSObject = {
-  borderRadius: "50%",
-  height: "40px",
+  background: colors.white,
+  height: ["24px", "35px"],
+  width: ["24px", "35px"],
   marginRight: 1,
 };
 
@@ -76,6 +83,11 @@ const Scoreboard = (props: ScoreboardProps) => {
 
   const [tabIndex, setTabIndex] = useState(0);
 
+  const scoreboardTabStyles: ThemeUICSSObject = {
+    ...tabStyles,
+    // "> .react-tabs__tab-list": { paddingY: 0 },
+  };
+
   useEffect(() => {
     if (fixture.status === "2nd Innings") {
       setTabIndex(1);
@@ -86,18 +98,13 @@ const Scoreboard = (props: ScoreboardProps) => {
     <Tabs
       selectedIndex={tabIndex}
       onSelect={(index) => setTabIndex(index)}
-      sx={tabStyles}
+      sx={scoreboardTabStyles}
     >
       <TabList>
         <Tab>
           <div sx={tabItemStyles}>
             <img src={s1Team.image} sx={tabTeamImageStyles} />
-
             <p>{s1Team.name}</p>
-            {/* <p>
-              {s1Team.name}: {getScore(fixture.scoreboards, "S1")}
-            </p> */}
-
             {fixture.status === "1st Innings" && <LivePulse />}
           </div>
         </Tab>
@@ -105,10 +112,6 @@ const Scoreboard = (props: ScoreboardProps) => {
           <div sx={tabItemStyles}>
             <img src={s2Team.image} sx={tabTeamImageStyles} />
             <p>{s2Team.name}</p>
-            {/* <p>
-                      {s2Team.name}: {getScore(fixture.scoreboards, "S2")}
-                    </p> */}
-
             {fixture.status === "2nd Innings" && <LivePulse />}
           </div>
         </Tab>

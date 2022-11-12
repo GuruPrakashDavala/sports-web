@@ -2,18 +2,23 @@
 
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
+import { Batting as BattingT } from "../../../types/sportmonks";
 
-const FallofWickets = (props: { fallOfWickets: any }) => {
+type FallOfWicketsProps = {
+  fallOfWickets?: BattingT[];
+};
+
+const FallofWickets = (props: FallOfWicketsProps) => {
   const { fallOfWickets } = props;
-  console.log(fallOfWickets);
 
   return (
     <Fragment>
       {fallOfWickets && (
-        <>
+        <Fragment>
           <p sx={{ variant: "text.subheading3", paddingY: 2, paddingX: 1 }}>
             Fall of wickets
           </p>
+
           <ul
             sx={{
               display: "flex",
@@ -29,7 +34,8 @@ const FallofWickets = (props: { fallOfWickets: any }) => {
             </li>
             <li sx={{ flexBasis: "25%", variant: "text.subheading3" }}>Over</li>
           </ul>
-          {fallOfWickets.map((batting: any, index: number) => {
+
+          {fallOfWickets.map((batting, index: number) => {
             return (
               <ul
                 key={index}
@@ -50,7 +56,7 @@ const FallofWickets = (props: { fallOfWickets: any }) => {
               </ul>
             );
           })}
-        </>
+        </Fragment>
       )}
     </Fragment>
   );

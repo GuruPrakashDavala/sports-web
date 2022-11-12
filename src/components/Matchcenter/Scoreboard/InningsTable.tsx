@@ -3,18 +3,20 @@
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
+import { TeamInfo } from "../../../types/matchcenter";
+import { Fixture as FixtureT } from "../../../types/sportmonks";
 import InningsTableHeader from "./InningsTableHeader";
 
 type InningsTableProps = {
-  fixture: any;
-  teamInfo: any;
-  innings?: any;
+  fixture: FixtureT;
+  teamInfo: TeamInfo;
+  innings: string;
 };
 
 export const getWicketCatchStumpRunout = (
-  wicketType: any,
-  catchstump: any,
-  bowlerName: any,
+  wicketType: string,
+  catchstump: string,
+  bowlerName: string,
   runoutBy: any
 ) => {
   const wicketPlayerNames = wicketType.includes("Catch Out")
@@ -37,17 +39,19 @@ export const getWicketCatchStumpRunout = (
   return wicketPlayerNames;
 };
 
-const getLabel = (bp: any, sm: any, lg: any) => {};
-
 const InningsTable = (props: InningsTableProps) => {
   const { fixture, teamInfo, innings } = props;
+
   const isScoreboardAvailable = fixture.batting.filter(
-    (batting: any, index: number) => batting.scoreboard === innings
+    (batting) => batting.scoreboard === innings
   );
+
   const bp = useBreakpointIndex();
+
   if (isScoreboardAvailable.length === 0) {
     return <>Batting innings not available</>;
   }
+
   return (
     <Fragment>
       <InningsTableHeader
@@ -55,7 +59,7 @@ const InningsTable = (props: InningsTableProps) => {
         teamInfo={teamInfo}
         innings={innings}
       />
-      {fixture.batting.map((batting: any, index: number) => {
+      {fixture.batting.map((batting, index: number) => {
         const batsmanName =
           bp > 3 ? batting.batsman.fullname : batting.batsman.lastname;
         const isBatsmanOut = batting.result.is_wicket;

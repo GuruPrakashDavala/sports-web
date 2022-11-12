@@ -4,20 +4,21 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
+import { TeamInfo } from "../../../types/matchcenter";
+import { Fixture as FixtureT } from "../../../types/sportmonks";
 import { getScore } from "../../Cards/FixtureCard";
 import CalendarIcon from "../../Icons/CalendarIcon";
 import StadiumIcon from "../../Icons/Stadium";
 
 type HeaderProps = {
-  fixture: any;
-  s1Team: any;
-  s2Team: any;
-  isLive: any;
+  fixture: FixtureT;
+  s1Team: TeamInfo;
+  s2Team: TeamInfo;
+  isLive: boolean;
 };
 
 const Header = (props: HeaderProps) => {
   const { fixture, s1Team, s2Team, isLive } = props;
-  console.log(fixture);
   const isMatchFinished = fixture.status === "Finished";
   const bp = useBreakpointIndex();
   const firstInningsInPlay = fixture.status === "1st Innings";
@@ -173,8 +174,8 @@ const Header = (props: HeaderProps) => {
                 src={s1Team.image}
                 sx={{
                   display: "block",
-                  width: ["35px", "55px"],
-                  height: ["35px", "55px"],
+                  width: ["35px", "45px"],
+                  height: ["35px", "45px"],
                   verticalAlign: "center",
                 }}
               />
@@ -270,8 +271,8 @@ const Header = (props: HeaderProps) => {
                 src={s2Team.image}
                 sx={{
                   display: "block",
-                  width: ["35px", "55px"],
-                  height: ["35px", "55px"],
+                  width: ["35px", "45px"],
+                  height: ["35px", "45px"],
                   verticalAlign: "center",
                 }}
               />

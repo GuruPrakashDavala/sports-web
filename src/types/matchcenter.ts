@@ -18,3 +18,10 @@ export enum FixtureStatus {
   Interrupted = "Int.",
   Finished = "Finished",
 }
+
+export type TeamInfo = {
+  name: string;
+  code: string;
+  image: string;
+  id: number;
+};

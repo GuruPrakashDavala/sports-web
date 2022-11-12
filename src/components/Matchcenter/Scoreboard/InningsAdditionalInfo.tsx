@@ -2,11 +2,13 @@
 
 import { colors } from "../../../styles/theme";
 import { Fragment } from "react";
+import { Extras } from "../../../types/matchcenter";
+import { Player as PlayerT } from "../../../types/sportmonks";
 
 const InningsAdditionalInfo = (props: {
-  extras: any;
-  score: any;
-  playersDidNotBat: any;
+  extras: Extras;
+  score: string;
+  playersDidNotBat?: PlayerT[];
 }) => {
   const { extras, score, playersDidNotBat } = props;
   return (
@@ -64,7 +66,7 @@ const InningsAdditionalInfo = (props: {
           }}
         >
           <p sx={{ variant: "text.subheading3" }}>Did not Bat:&nbsp;</p>
-          {playersDidNotBat.map((player: any, index: number) => (
+          {playersDidNotBat.map((player, index: number) => (
             <p key={index}>
               {player.lastname}
               {`${index !== playersDidNotBat.length - 1 ? `,` : ``}`}&nbsp;
@@ -72,29 +74,6 @@ const InningsAdditionalInfo = (props: {
           ))}
         </div>
       )}
-
-      {/* {fallOfWickets && (
-        <div
-          sx={{
-            backgroundColor: colors.gray300,
-            color: colors.black,
-            padding: 1,
-            mt: 1,
-            display: "flex",
-            variant: "text.subheading4",
-          }}
-        >
-          <p>Fall of Wickets:&nbsp;</p>
-          {fallOfWickets.map((batting: any, index: number) => (
-            <p>
-              {`${batting.fow_score} - ${index + 1} (${
-                batting.batsman.lastname
-              }, ${batting.fow_balls})`}
-              {`${index !== fallOfWickets.length - 1 ? " , " : " "}`}
-            </p>
-          ))}
-        </div>
-      )} */}
     </Fragment>
   );
 };

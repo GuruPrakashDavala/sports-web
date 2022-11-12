@@ -1,24 +1,28 @@
 /** @jsxImportSource theme-ui */
 
+import { Fixture as FixtureT } from "../../../types/sportmonks";
 import BowlingTableHeader from "./BowlingTableHeader";
 
 type InningsTableProps = {
-  fixture: any;
-  innings: any;
+  fixture: FixtureT;
+  innings: string;
 };
 
 const BowlingTable = (props: InningsTableProps) => {
   const { fixture, innings } = props;
+
   const isBowlingStatsAvailable = fixture.bowling.filter(
-    (bowling: any, index: number) => bowling.scoreboard === innings
+    (bowling) => bowling.scoreboard === innings
   );
+
   if (isBowlingStatsAvailable.length === 0) {
     return null;
   }
+
   return (
     <div sx={{ paddingY: 1 }}>
       <BowlingTableHeader />
-      {fixture.bowling.map((bowling: any, index: number) => {
+      {fixture.bowling.map((bowling) => {
         return bowling.scoreboard === innings ? (
           <ul
             sx={{

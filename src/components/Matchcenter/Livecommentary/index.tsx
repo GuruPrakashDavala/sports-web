@@ -182,12 +182,6 @@ const WicketBallInfo = (props: {
   const { ball, fullBattingList, recentBall } = props;
   return (
     <Fragment>
-      {/* <WicketCard
-        ball={ball}
-        fullBattingList={fullBattingList}
-        recentBall={recentBall}
-      /> */}
-
       <BallInfo ball={ball} isWicket={true} />
     </Fragment>
   );
@@ -199,7 +193,7 @@ const tableWrapperStyles: ThemeUICSSObject = {
   flexWrap: "wrap",
   height: "100%",
   width: "100%",
-  paddingX: 1,
+  paddingX: [0, 1],
 };
 
 export const rowWrapperStyles: ThemeUICSSObject = {
@@ -244,13 +238,14 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
         display: "flex",
         alignItems: "center",
         padding: 1,
-        margin: 1,
+        marginY: 1,
+        marginX: [0, 1],
         background: colors.gray300,
         borderRadius: "10px",
       }}
     >
       {isWicket ? (
-        <>
+        <Fragment>
           <BallInfoCircle ball={`W`} color={colors.red100} />
           <span sx={{ paddingY: 1, paddingX: 1 }}>
             <p sx={{ display: "inline-block" }}>
@@ -265,7 +260,7 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
               That&apos;s a wicket. {getWicketCommentary(ball, ball.score.name)}
             </p>
           </span>
-        </>
+        </Fragment>
       ) : (
         <>
           {/* {(ball.ball % 1).toFixed(1) === "0.6" &&
@@ -393,13 +388,20 @@ const LiveCommentary = (props: {
       </div>
 
       {status === FixtureStatus.Finished && (
-        <>
-          <div sx={{ padding: 1, margin: 1, background: colors.mint }}>
+        <Fragment>
+          <div
+            sx={{
+              padding: 1,
+              marginX: [0, 1],
+              marginY: [1],
+              background: colors.mint,
+            }}
+          >
             <p sx={{ variant: "text.subheading3", color: colors.white }}>
               🏆 {note}
             </p>
           </div>
-          <div sx={{ margin: 2 }}>
+          <div sx={{ marginY: 2, marginX: [0, 1] }}>
             <p>
               Well that&apos;s a wrap. Check the points table here. Hope you
               have a good day.Check points table here... Stay connected with us
@@ -407,7 +409,7 @@ const LiveCommentary = (props: {
               care. Team cricfanatic
             </p>
           </div>
-        </>
+        </Fragment>
       )}
 
       {/* Ball by ball commentary infinite scroll */}

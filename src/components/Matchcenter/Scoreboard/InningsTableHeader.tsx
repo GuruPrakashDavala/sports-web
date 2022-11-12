@@ -3,11 +3,13 @@
 import { colors } from "../../../styles/theme";
 import { getScore } from "../../Cards/FixtureCard";
 import { Fragment } from "react";
+import { Fixture as FixtureT } from "../../../types/sportmonks";
+import { TeamInfo } from "../../../types/matchcenter";
 
 const InningsTableHeader = (props: {
-  fixture: any;
-  teamInfo: any;
-  innings: any;
+  fixture: FixtureT;
+  teamInfo: TeamInfo;
+  innings: string;
 }) => {
   const { fixture, teamInfo, innings } = props;
   const teamName = teamInfo.name;
@@ -32,10 +34,6 @@ const InningsTableHeader = (props: {
             alignItems: "center",
           }}
         >
-          <img
-            src={teamInfo.image}
-            sx={{ height: "35px", marginRight: 1, borderRadius: "20px" }}
-          />
           {teamName} Batting
         </li>
 
