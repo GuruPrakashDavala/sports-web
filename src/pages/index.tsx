@@ -224,7 +224,7 @@ export async function getStaticProps() {
   const currentDate = format(now, "yyyy-MM-d");
   const [homeRes, fixtures] = await Promise.all([
     fetchAPI("/home", {
-      populate: "deep",
+      populate: "deep, 4",
     }),
     (async () => {
       // const response = await fetch(
