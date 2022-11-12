@@ -28,9 +28,9 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   );
 
   return (
-    <SectionWrapper styles={{ paddingX: [2, 9] }}>
-      <div sx={{}}>
-        <Tabs defaultIndex={1} sx={{ ...tabStyles }}>
+    <SectionWrapper styles={{ paddingX: [2, 3, 5, 7] }}>
+      <div sx={{ display: "flex" }}>
+        <Tabs defaultIndex={1} sx={{ ...tabStyles, width: "100%" }}>
           <TabList>
             {tabLists.map((tab) => (
               <Tab tabIndex={tab.id} key={tab.id}>

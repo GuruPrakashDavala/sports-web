@@ -54,6 +54,7 @@ const Header = (props: HeaderProps) => {
             alignItems: "center",
             flexWrap: "wrap",
             width: "100%",
+            paddingY: "5px",
           }}
         >
           <div
@@ -70,8 +71,8 @@ const Header = (props: HeaderProps) => {
               src={fixture.league.image_path}
               sx={{
                 display: "block",
-                width: ["24px", "34px"],
-                height: ["24px", "34px"],
+                width: ["34px"],
+                height: ["34px"],
                 maxWidth: "100%",
                 verticalAlign: "middle",
                 borderRadius: "99%",
@@ -89,7 +90,7 @@ const Header = (props: HeaderProps) => {
             <div
               sx={{
                 color: colors.white,
-                variant: bp > 1 ? "text.heading4" : "text.label2",
+                variant: bp > 1 ? "text.heading4" : "text.label1",
               }}
             >
               {fixture.league.code}
@@ -101,7 +102,7 @@ const Header = (props: HeaderProps) => {
                 marginLeft: [0, 1],
                 opacity: "0.6",
                 color: colors.white,
-                variant: bp > 1 ? "text.heading4" : "text.label2",
+                variant: bp > 1 ? "text.heading4" : "text.label1",
               }}
             >
               {fixture.stage.name}
@@ -126,6 +127,7 @@ const Header = (props: HeaderProps) => {
           sx={{
             display: "grid",
             paddingTop: [3, 4],
+            paddingBottom: [1, 2],
             justifyContent: "center",
             gridTemplateColumns: "repeat(12,minmax(0,1fr))",
           }}
@@ -144,6 +146,7 @@ const Header = (props: HeaderProps) => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
+                alignItems: "center",
               }}
             >
               <span
@@ -238,7 +241,7 @@ const Header = (props: HeaderProps) => {
             <div
               sx={{
                 order: "2",
-                textAlign: "center",
+                alignItems: "center",
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -296,7 +299,7 @@ const Header = (props: HeaderProps) => {
                 alignItems: "center",
                 paddingY: 1,
                 paddingX: "5px",
-                variant: bp > 1 ? "text.subheading4" : "text.label1",
+                variant: bp > 1 ? "text.subheading4" : "text.label2",
               }}
             >
               <span sx={{ opacity: "0.9" }}>{fixture.note}</span>

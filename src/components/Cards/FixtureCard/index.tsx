@@ -93,10 +93,6 @@ const FixtureCard = (props: {
     fixture.status === FixtureStatus.InningsBreak ||
     fixture.status === FixtureStatus.Interrupted;
 
-  // const showMatchcenterCta =
-  //   fixture.status === FixtureStatus.Finished ||
-  //   fixture.status !== FixtureStatus.NotStarted;
-
   const showMatchcenterCta = true;
 
   return (
@@ -106,7 +102,6 @@ const FixtureCard = (props: {
         paddingY: 1,
         height: "100%",
         width: "100%",
-        cursor: "pointer",
         ...styles,
       }}
     >
