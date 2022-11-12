@@ -65,7 +65,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
         sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
       >
         <TabList>
-          <div sx={{ display: "flex", flexBasis: "50%" }}>
+          <div sx={{ display: "flex" }}>
             {tabLists.map((tab) => (
               <Tab tabIndex={tab.id} key={tab.id}>
                 <p>{tab.name}</p>
@@ -73,16 +73,43 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
             ))}
           </div>
 
-          <Select defaultValue="Hello">
-            <option>Hello</option>
-            <option>Hi</option>
-            <option>Beep</option>
-            <option>Boop</option>
-          </Select>
+          <div sx={{ display: "flex", gap: 2 }}>
+            {/* <select
+              name="season"
+              sx={{
+                display: "flex",
+                padding: 1,
+                paddingRight: 3,
+                marginBottom: 1,
+                border: "none",
+                background: colors.gray300,
+                "> option": { background: colors.white, padding: 1 },
+              }}
+            >
+              <option value="2020">2020-21</option>
+              <option value="2021">2021-22</option>
+            </select> */}
+
+            <select
+              name="league"
+              sx={{
+                display: "flex",
+                padding: 1,
+                paddingRight: 3,
+                marginBottom: 1,
+                border: "none",
+                background: colors.gray300,
+                "> option": { background: colors.white, padding: 1 },
+              }}
+            >
+              <option value="ipl">IPL</option>
+              <option value="wct20">WCT20</option>
+            </select>
+          </div>
         </TabList>
 
         <TabPanel id="upcoming">
-          <div sx={{ paddingX: [0, 3] }}>
+          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [2, 3] }}>
             {upcomingFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>
@@ -94,7 +121,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
         </TabPanel>
 
         <TabPanel id="recent">
-          <div sx={{ paddingX: [0, 5] }}>
+          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [2, 3] }}>
             {recentFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>

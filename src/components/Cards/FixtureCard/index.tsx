@@ -196,15 +196,17 @@ const FixtureCard = (props: {
             <p sx={{ marginLeft: 2 }}>{s1TeamName}</p>
           </div>
           {/* score for s1 innings */}
-          <div
-            sx={{
-              display: "flex",
-              variant: "text.heading4",
-              alignItems: "center",
-            }}
-          >
-            <p>{getScore(fixture.scoreboards, "S1")}</p>
-          </div>
+          {fixture.status !== FixtureStatus.NotStarted && (
+            <div
+              sx={{
+                display: "flex",
+                variant: "text.heading4",
+                alignItems: "center",
+              }}
+            >
+              <p>{getScore(fixture.scoreboards, "S1")}</p>
+            </div>
+          )}
         </div>
 
         <div
@@ -231,15 +233,17 @@ const FixtureCard = (props: {
           </div>
 
           {/* score for s2 innings */}
-          <div
-            sx={{
-              display: "flex",
-              variant: "text.heading4",
-              alignItems: "center",
-            }}
-          >
-            <p>{getScore(fixture.scoreboards, "S2")}</p>
-          </div>
+          {fixture.status !== FixtureStatus.NotStarted && (
+            <div
+              sx={{
+                display: "flex",
+                variant: "text.heading4",
+                alignItems: "center",
+              }}
+            >
+              <p>{getScore(fixture.scoreboards, "S2")}</p>
+            </div>
+          )}
         </div>
 
         {fixture.note.length > 0 ? (
