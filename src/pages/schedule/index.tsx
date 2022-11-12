@@ -39,7 +39,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
       width: "100%",
       borderBottom: [null, "1px solid"],
       borderColor: [null, colors.gray200],
-      margin: "0 0 20px",
+      margin: 0,
       paddingTop: 1,
       gap: [2, 0],
     },
@@ -122,7 +122,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
         </TabList>
 
         <TabPanel id="upcoming">
-          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [2, 3] }}>
+          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [null, 3, 5] }}>
             {upcomingFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>
@@ -134,7 +134,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
         </TabPanel>
 
         <TabPanel id="recent">
-          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [2, 3] }}>
+          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [null, 3, 5] }}>
             {recentFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>
