@@ -39,9 +39,10 @@ export const tabStyles: ThemeUICSSObject = {
     display: "flex",
     flexWrap: "wrap",
     width: "100%",
-    // borderBottom: "1px solid #aaa",
+    borderBottom: "1px solid",
+    borderColor: colors.gray200,
     margin: "0 0 20px",
-    paddingY: 1,
+    paddingTop: 1,
   },
   "> ul .react-tabs__tab": {
     flexGrow: 1,
@@ -52,7 +53,7 @@ export const tabStyles: ThemeUICSSObject = {
     listStyle: "none",
     padding: 2,
     cursor: "pointer",
-    borderBottom: "1px solid #aaa",
+    // borderBottom: "1px solid #aaa",
     "&:hover": {
       "> p": {
         color: colors.black,
@@ -92,14 +93,6 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
     { id: "3", name: "trending" },
   ];
 
-  // if (fixture.status === FixtureStatus.NotStarted) {
-  //   return <div>Game not started yet...</div>;
-  // }
-
-  // if (fixture.status === FixtureStatus.Abandoned && fixture.runs.length === 0) {
-  //   return <div>{fixture.note}</div>;
-  // }
-
   const isLive =
     fixture.status === FixtureStatus.FirstInnings ||
     fixture.status === FixtureStatus.SecondInnings ||
@@ -126,9 +119,23 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
 
   const setS1AndS2TeamInfo = (): void => {
     const tosswonTeam = fixture.tosswon;
+
     if (!tosswonTeam) {
+      setS1Team({
+        name: fixture.localteam.name,
+        code: fixture.localteam.code,
+        image: fixture.localteam.image_path,
+        id: fixture.localteam.id,
+      });
+      setS2Team({
+        name: fixture.visitorteam.name,
+        code: fixture.visitorteam.code,
+        image: fixture.visitorteam.image_path,
+        id: fixture.visitorteam.id,
+      });
       return;
     }
+
     switch (fixture.elected) {
       case "bowling":
         setS2Team({
@@ -209,7 +216,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
     2. Sets the second batting team info in the s2Team
     See method internals to understand the implementation logics
     */
-    if (fixture.resource === "fixtures" && fixture.tosswon) {
+    if (fixture.resource === "fixtures") {
       setS1AndS2TeamInfo();
     }
   }, [fixture]);
@@ -402,24 +409,11 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                   sx={{ ...tabStyles }}
                 >
                   <TabList>
-                    {/* {tabLists.map((tab) => (
+                    {tabLists.map((tab) => (
                       <Tab tabIndex={tab.id}>
                         <p>{tab.name}</p>
                       </Tab>
-                    ))} */}
-
-                    <Tab tabIndex="0">
-                      <p>test</p>
-                    </Tab>
-                    <Tab tabIndex="1">
-                      <p>test</p>
-                    </Tab>
-                    <Tab tabIndex="2">
-                      <p>test</p>
-                    </Tab>
-                    <Tab tabIndex="3">
-                      <p>test</p>
-                    </Tab>
+                    ))}
                   </TabList>
 
                   <TabPanel id="matchinfo">
@@ -428,22 +422,24 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
 
                   <TabPanel id="livecommentary">
                     {fixture.status !== FixtureStatus.NotStarted &&
-                      fixture.balls.length > 0 &&
-                      s1Team &&
-                      s2Team && (
-                        <LiveCommentary
-                          balls={fixture.balls}
-                          status={fixture.status}
-                          note={fixture.note}
-                          batting={fixture.batting}
-                          bowling={fixture.bowling}
-                        />
-                      )}
+                    fixture.balls.length > 0 &&
+                    s1Team &&
+                    s2Team ? (
+                      <LiveCommentary
+                        balls={fixture.balls}
+                        status={fixture.status}
+                        note={fixture.note}
+                        batting={fixture.batting}
+                        bowling={fixture.bowling}
+                      />
+                    ) : (
+                      <>Match not started yet loader...</>
+                    )}
                   </TabPanel>
 
                   <TabPanel id="scoreboard">
                     {/* Scorecard tab panel */}
-                    {s1Team && s2Team && fixture.scoreboards.length > 0 && (
+                    {s1Team && s2Team && fixture.scoreboards.length > 0 ? (
                       // Should apply mobile responsive custom styles
                       <Scoreboard
                         fixture={fixture}
@@ -456,6 +452,8 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         s2Extras={s2Extras}
                         s2FallOfWickets={s2FallOfWickets}
                       />
+                    ) : (
+                      <>Match not started yet loader...</>
                     )}
                   </TabPanel>
 

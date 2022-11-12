@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import FixtureCard from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { Fixture as FixtureT } from "../../types/sportmonks";
-import { Select, Box } from "theme-ui";
+import { Select, Box, ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { tabStyles } from "../matchcenter/[...slug]";
@@ -27,39 +27,93 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
     (fixture) => compareAsc(new Date(fixture.starting_at), now) > 0
   );
 
+  const fixtureTabStyles: ThemeUICSSObject = {
+    "> .react-tabs__tab-list": {
+      justifyContent: "space-between",
+      display: "flex",
+      flexWrap: "wrap",
+      width: "100%",
+      borderBottom: "1px solid",
+      borderColor: colors.gray200,
+      margin: "0 0 20px",
+      paddingTop: 1,
+    },
+    "> ul .react-tabs__tab": {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+      listStyle: "none",
+      padding: 2,
+      cursor: "pointer",
+      "&:hover": {
+        "> p": {
+          color: colors.black,
+        },
+      },
+      "> p": {
+        variant: "text.subheading3",
+        color: "rgba(12, 12, 12, 0.3)",
+      },
+    },
+  };
+
   return (
     <SectionWrapper styles={{ paddingX: [2, 3, 5, 7] }}>
-      <div sx={{ display: "flex" }}>
-        <Tabs defaultIndex={1} sx={{ ...tabStyles, width: "100%" }}>
-          <TabList>
+      <Tabs
+        defaultIndex={0}
+        sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
+      >
+        <TabList>
+          <div sx={{ display: "flex", flexBasis: "50%" }}>
             {tabLists.map((tab) => (
               <Tab tabIndex={tab.id} key={tab.id}>
                 <p>{tab.name}</p>
               </Tab>
             ))}
-          </TabList>
+          </div>
 
-          <TabPanel id="upcoming">
-            <div
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                flexDirection: "row",
-                margin: 0,
-                padding: 0,
-              }}
-            >
-              {upcomingFixtures.map((fixture) => {
-                return (
-                  <Fragment key={fixture.id}>
-                    <FixtureCard fixture={fixture} styles={{}} />
-                  </Fragment>
-                );
-              })}
-            </div>
-          </TabPanel>
+          <Select
+            arrow={
+              <Box
+                as="svg"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentcolor"
+                sx={{
+                  ml: -28,
+                  alignSelf: "center",
+                  pointerEvents: "none",
+                }}
+              >
+                <path d="M7.41 7.84l4.59 4.58 4.59-4.58 1.41 1.41-6 6-6-6z" />
+              </Box>
+            }
+            defaultValue="Hello"
+          >
+            <option>Hello</option>
+            <option>Hi</option>
+            <option>Beep</option>
+            <option>Boop</option>
+          </Select>
+        </TabList>
 
-          <TabPanel id="recent">
+        <TabPanel id="upcoming">
+          <div sx={{ paddingX: [0, 3] }}>
+            {upcomingFixtures.map((fixture) => {
+              return (
+                <Fragment key={fixture.id}>
+                  <FixtureCard fixture={fixture} styles={{}} />
+                </Fragment>
+              );
+            })}
+          </div>
+        </TabPanel>
+
+        <TabPanel id="recent">
+          <div sx={{ paddingX: [0, 5] }}>
             {recentFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>
@@ -67,9 +121,9 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
                 </Fragment>
               );
             })}
-          </TabPanel>
-        </Tabs>
-      </div>
+          </div>
+        </TabPanel>
+      </Tabs>
     </SectionWrapper>
   );
 };

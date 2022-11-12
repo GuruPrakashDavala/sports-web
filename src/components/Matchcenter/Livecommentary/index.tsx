@@ -363,15 +363,15 @@ const LiveCommentary = (props: {
       : undefined;
 
   useEffect(() => {
-    if (ballsLimit < reversedOrder.length) {
-      setBallsInList(reversedOrder.slice(0, ballsLimit));
-    }
+    setBallsInList(reversedOrder.slice(0, ballsLimit));
   }, [ballsLimit]);
 
   const getMoreBalls = () => {
     // setTimeout(() => {
     //   setBallsLimit((prev) => prev + 25);
     // }, 1000);
+    console.log(ballsLimit);
+    console.log(reversedOrder.length);
     setBallsLimit((prev) => prev + 25);
   };
 
