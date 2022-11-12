@@ -84,7 +84,6 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: any }> = ({
   // Year-Month-Date
   const now = new Date();
   const currentDate = format(now, "yyyy-MM-d");
-  console.log(currentDate);
 
   // WIP: fixtures date sorting
 

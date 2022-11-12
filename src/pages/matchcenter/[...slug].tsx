@@ -85,6 +85,12 @@ export const tabStyles: ThemeUICSSObject = {
 const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   console.log(props);
   const { fixture, recentArticles } = props;
+  const tabLists = [
+    { id: "0", name: "match info" },
+    { id: "1", name: "live commentary" },
+    { id: "2", name: "scorecard" },
+    { id: "3", name: "trending" },
+  ];
 
   // if (fixture.status === FixtureStatus.NotStarted) {
   //   return <div>Game not started yet...</div>;
@@ -396,21 +402,29 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                   sx={{ ...tabStyles }}
                 >
                   <TabList>
+                    {/* {tabLists.map((tab) => (
+                      <Tab tabIndex={tab.id}>
+                        <p>{tab.name}</p>
+                      </Tab>
+                    ))} */}
+
                     <Tab tabIndex="0">
-                      <p>Match info</p>
+                      <p>test</p>
                     </Tab>
                     <Tab tabIndex="1">
-                      <p>Live commentary</p>
+                      <p>test</p>
                     </Tab>
                     <Tab tabIndex="2">
-                      <p>Scorecard</p>
+                      <p>test</p>
                     </Tab>
                     <Tab tabIndex="3">
-                      <p>Trending</p>
+                      <p>test</p>
                     </Tab>
                   </TabList>
 
-                  <TabPanel>This section contains the match info</TabPanel>
+                  <TabPanel id="matchinfo">
+                    This section contains the match info
+                  </TabPanel>
 
                   <TabPanel id="livecommentary">
                     {fixture.status !== FixtureStatus.NotStarted &&
@@ -445,7 +459,9 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                     )}
                   </TabPanel>
 
-                  <TabPanel>This section contains trending socials</TabPanel>
+                  <TabPanel id="trending">
+                    This section contains trending socials
+                  </TabPanel>
                 </Tabs>
               </Fragment>
             )}

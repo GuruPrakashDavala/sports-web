@@ -48,8 +48,6 @@ const InningsTableHeader = (props: {
           background: colors.gray300,
           paddingX: 1,
           paddingY: 1,
-          // borderBottom: "1px solid",
-          // borderColor: "rgba(12, 12, 12, 0.17)",
         }}
       >
         <li

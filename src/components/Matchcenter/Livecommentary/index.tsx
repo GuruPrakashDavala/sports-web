@@ -346,6 +346,7 @@ const LiveCommentary = (props: {
   );
 
   // reversedOrder contails the balls in reverse order. Example overs from 19.6 to 0.1
+  // Balls data
   const recentBall = reversedOrder[0];
   const previousOver = {
     lastOver: Number((recentBall.ball - 1).toFixed(1)),
@@ -365,16 +366,14 @@ const LiveCommentary = (props: {
     if (ballsLimit < reversedOrder.length) {
       setBallsInList(reversedOrder.slice(0, ballsLimit));
     }
-  }, [ballsLimit, reversedOrder]);
+  }, [ballsLimit]);
 
   const getMoreBalls = () => {
-    setTimeout(() => {
-      setBallsLimit((prev) => prev + 25);
-    }, 1000);
-    // setBallsLimit((prev) => prev + 25);
+    // setTimeout(() => {
+    //   setBallsLimit((prev) => prev + 25);
+    // }, 1000);
+    setBallsLimit((prev) => prev + 25);
   };
-
-  const bp = useBreakpointIndex();
 
   return (
     <div>

@@ -6,37 +6,28 @@ import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { FixtureStatus } from "../../../types/matchcenter";
 import { ColorTheme } from "../../../types/modifier";
+import {
+  Fixture as FixtureT,
+  Scoreboard as ScoreboardT,
+} from "../../../types/sportmonks";
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 
-export const getScore = (scoreboards: any, innings: any) => {
+export const getScore = (scoreboards: [] | ScoreboardT[], innings: string) => {
   const fullScore = scoreboards
-    .filter((item: any) => item.scoreboard === innings && item.type === "total")
-    .map((item: any) => {
+    .filter((item) => item.scoreboard === innings && item.type === "total")
+    .map((item) => {
       return `${item.total}-${item.wickets} (${item.overs} ov)`;
     });
   return fullScore[0] ? fullScore[0] : "Yet to bat";
 };
 
-export const getTeamDetails = (scoreboards: any, innings: any) => {
-  // Only returns the team details by seaching through the scoreboards
-
-  // If match hasn't started we return the local
-  // if (fixture.status === "NS") {
-  //   if (innings === "S1") {
-  //     return {
-  //       name: fixture.localteam.name,
-  //       code: fixture.localteam.code,
-  //       image: fixture.localteam.image_path,
-  //       id: fixture.localteam.id,
-  //     };
-  //   } else {
-  //   }
-  // }
-
-  const scoreboard = scoreboards.find((item: any) =>
+// Only returns the team details by seaching through the scoreboards
+export const getTeamDetails = (scoreboards: ScoreboardT[], innings: string) => {
+  const scoreboard = scoreboards.find((item) =>
     item.scoreboard === innings ? item : null
   );
+
   const teamDetails = scoreboard
     ? {
         name: scoreboard.team.name,
@@ -49,7 +40,7 @@ export const getTeamDetails = (scoreboards: any, innings: any) => {
 };
 
 const FixtureCard = (props: {
-  fixture: any;
+  fixture: FixtureT;
   styles?: ThemeUICSSObject;
 }): JSX.Element => {
   const fixture = props.fixture;
@@ -78,7 +69,7 @@ const FixtureCard = (props: {
       ? (() => {
           const s2Team = [fixture.localteam, fixture.visitorteam]
             .filter((team) => s1TeamDetails.code !== team.code)
-            .map((team, index) => {
+            .map((team) => {
               return {
                 name: team.name,
                 code: team.code,
@@ -102,15 +93,17 @@ const FixtureCard = (props: {
     fixture.status === FixtureStatus.InningsBreak ||
     fixture.status === FixtureStatus.Interrupted;
 
-  const showScorecard =
-    fixture.status === FixtureStatus.Finished ||
-    fixture.status !== FixtureStatus.NotStarted;
+  // const showMatchcenterCta =
+  //   fixture.status === FixtureStatus.Finished ||
+  //   fixture.status !== FixtureStatus.NotStarted;
+
+  const showMatchcenterCta = true;
 
   return (
     <div
       sx={{
         display: "flex",
-        padding: 1,
+        paddingY: 1,
         height: "100%",
         width: "100%",
         cursor: "pointer",
@@ -152,23 +145,10 @@ const FixtureCard = (props: {
               {fixture.round}
             </div>
 
-            {/* {fixture.stage && fixture.season && (
-              <p sx={{ variant: "text.label3", color: colors.gray100 }}>
-                {fixture.stage.name}, {fixture.season.code}
-              </p>
-            )} */}
-
-            {/* <p sx={{ variant: "text.label3", color: colors.gray100 }}>
-              {fixture.round} -{" "}
-              {fixture.venue
-                ? `${fixture.venue.name}, ${
-                    fixture.venue.country ? fixture.venue.country.name : ""
-                  }`
-                : "TBC"}
-            </p> */}
             <p sx={{ variant: "text.label3", color: colors.gray100 }}>
               {format(new Date(fixture.starting_at), "iii d MMM - p OOOO")}
             </p>
+
             {isLive && (
               <Pill
                 label={`Live`}
@@ -190,7 +170,10 @@ const FixtureCard = (props: {
           >
             <img
               src={fixture.league.image_path}
-              sx={{ height: bp > 1 ? "44px" : "28px" }}
+              sx={{
+                height: ["32px", "44px"],
+                width: ["32px", "44px"],
+              }}
             />
           </div>
         </div>
@@ -211,7 +194,10 @@ const FixtureCard = (props: {
               alignItems: "center",
             }}
           >
-            <img src={s1TeamImage} sx={{ height: "44px", width: "auto" }} />
+            <img
+              src={s1TeamImage}
+              sx={{ height: ["32px", "44px"], width: ["32px", "44px"] }}
+            />
             <p sx={{ marginLeft: 2 }}>{s1TeamName}</p>
           </div>
           {/* score for s1 innings */}
@@ -225,6 +211,7 @@ const FixtureCard = (props: {
             <p>{getScore(fixture.scoreboards, "S1")}</p>
           </div>
         </div>
+
         <div
           sx={{
             display: "flex",
@@ -241,7 +228,10 @@ const FixtureCard = (props: {
               alignItems: "center",
             }}
           >
-            <img src={s2TeamImage} sx={{ height: "44px", width: "auto" }} />
+            <img
+              src={s2TeamImage}
+              sx={{ height: ["32px", "44px"], width: ["32px", "44px"] }}
+            />
             <p sx={{ marginLeft: 2 }}>{s2TeamName}</p>
           </div>
 
@@ -256,6 +246,7 @@ const FixtureCard = (props: {
             <p>{getScore(fixture.scoreboards, "S2")}</p>
           </div>
         </div>
+
         {fixture.note.length > 0 ? (
           <p sx={{ variant: "text.label3", paddingY: 1, color: colors.red300 }}>
             {/* Innings break note should be handled appropriately */}
@@ -264,16 +255,15 @@ const FixtureCard = (props: {
         ) : fixture.toss_won_team_id ? (
           <p
             sx={{ variant: "text.label3", paddingY: 1, color: colors.red300 }}
-          >{`${fixture.tosswon.name} elected to ${fixture.elected} first`}</p>
+          >{`${fixture.tosswon?.name} elected to ${fixture.elected} first`}</p>
         ) : (
           <p sx={{ variant: "text.label3", paddingY: 1, color: colors.black }}>
-            {"Match scheduled for "}
-            {format(new Date(fixture.starting_at), "iii d MMM")} -
-            {format(new Date(fixture.starting_at), " p")}
+            {"Match starts at "}
+            {format(new Date(fixture.starting_at), "iii d MMM - p")}
           </p>
         )}
 
-        {showScorecard && (
+        {showMatchcenterCta && (
           <Link
             href={`/matchcenter/${fixture.id}/ind-vs-rsa-2022`}
             styles={{

@@ -108,6 +108,7 @@ const Scoreboard = (props: ScoreboardProps) => {
             {fixture.status === "1st Innings" && <LivePulse />}
           </div>
         </Tab>
+
         <Tab>
           <div sx={tabItemStyles}>
             <img src={s2Team.image} sx={tabTeamImageStyles} />
@@ -116,6 +117,7 @@ const Scoreboard = (props: ScoreboardProps) => {
           </div>
         </Tab>
       </TabList>
+
       <TabPanel>
         {/* First innings team stats */}
         <ScoreboardContent
@@ -127,6 +129,7 @@ const Scoreboard = (props: ScoreboardProps) => {
           fallOfWickets={s1FallOfWickets}
         />
       </TabPanel>
+
       <TabPanel>
         {/* Second innings team stats */}
         <ScoreboardContent

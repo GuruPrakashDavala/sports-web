@@ -15,7 +15,7 @@ export type Fixture = {
   last_period: any;
   note: string;
   venue_id: number;
-  toss_won_team_id: number;
+  toss_won_team_id: null | number;
   winner_team_id: number;
   draw_noresult: null | boolean;
   first_umpire_id: null | number;

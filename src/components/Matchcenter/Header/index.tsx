@@ -4,7 +4,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
-import { TeamInfo } from "../../../types/matchcenter";
+import { TeamInfo as TeamInfoT } from "../../../types/matchcenter";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
 import { getScore } from "../../Cards/FixtureCard";
 import CalendarIcon from "../../Icons/CalendarIcon";
@@ -12,8 +12,8 @@ import StadiumIcon from "../../Icons/Stadium";
 
 type HeaderProps = {
   fixture: FixtureT;
-  s1Team: TeamInfo;
-  s2Team: TeamInfo;
+  s1Team: TeamInfoT;
+  s2Team: TeamInfoT;
   isLive: boolean;
 };
 

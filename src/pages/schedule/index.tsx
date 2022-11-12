@@ -1,50 +1,74 @@
 /** @jsxImportSource theme-ui */
 
+import { Fragment } from "react";
 import FixtureCard from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
+import { Fixture as FixtureT } from "../../types/sportmonks";
+import { Select, Box } from "theme-ui";
 import { colors } from "../../styles/theme";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { tabStyles } from "../matchcenter/[...slug]";
+import { compareAsc, format } from "date-fns";
 
-const Schedule = (props: { fixtures: any }): JSX.Element => {
-  const fixtures = props.fixtures.data;
-  console.log(fixtures);
+const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
+  const fixtures = props.fixtures;
+  const tabLists = [
+    { id: "0", name: "upcoming" },
+    { id: "1", name: "recent" },
+    // { id: "2", name: "scorecard" },
+    // { id: "3", name: "trending" },
+  ];
+
+  const now = new Date();
+  const recentFixtures = fixtures
+    .filter((fixture) => compareAsc(new Date(fixture.starting_at), now) < 1)
+    .reverse();
+  const upcomingFixtures = fixtures.filter(
+    (fixture) => compareAsc(new Date(fixture.starting_at), now) > 0
+  );
+
   return (
-    <SectionWrapper>
-      <div
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "row",
-          margin: 0,
-          padding: 0,
-        }}
-      >
-        {fixtures.map((fixture: any, index: number) => {
-          return (
-            <>
-              <FixtureCard fixture={fixture} styles={{}} />
-              {index > 0 && index % 10 === 0 ? (
-                <div
-                  sx={{
-                    display: "flex",
-                    padding: 5,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    background: colors.mint,
-                    width: "100%",
-                    marginX: 1,
-                    marginY: 2,
-                  }}
-                >
-                  <p sx={{ variant: "text.subheading2", color: colors.white }}>
-                    Game week 10 - Sun 09 oct 2022
-                  </p>
-                </div>
-              ) : (
-                <></>
-              )}
-            </>
-          );
-        })}
+    <SectionWrapper styles={{ paddingX: [2, 9] }}>
+      <div sx={{}}>
+        <Tabs defaultIndex={1} sx={{ ...tabStyles }}>
+          <TabList>
+            {tabLists.map((tab) => (
+              <Tab tabIndex={tab.id} key={tab.id}>
+                <p>{tab.name}</p>
+              </Tab>
+            ))}
+          </TabList>
+
+          <TabPanel id="upcoming">
+            <div
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                flexDirection: "row",
+                margin: 0,
+                padding: 0,
+              }}
+            >
+              {upcomingFixtures.map((fixture) => {
+                return (
+                  <Fragment key={fixture.id}>
+                    <FixtureCard fixture={fixture} styles={{}} />
+                  </Fragment>
+                );
+              })}
+            </div>
+          </TabPanel>
+
+          <TabPanel id="recent">
+            {recentFixtures.map((fixture) => {
+              return (
+                <Fragment key={fixture.id}>
+                  <FixtureCard fixture={fixture} styles={{}} />
+                </Fragment>
+              );
+            })}
+          </TabPanel>
+        </Tabs>
       </div>
     </SectionWrapper>
   );
@@ -59,7 +83,7 @@ export async function getServerSideProps() {
   const fixtures = await res.json();
 
   // Pass data to the page via props
-  return { props: { fixtures: fixtures } };
+  return { props: { fixtures: fixtures.data } };
 }
 
 export default Schedule;
