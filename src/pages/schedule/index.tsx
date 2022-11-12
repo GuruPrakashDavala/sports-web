@@ -9,6 +9,7 @@ import { colors } from "../../styles/theme";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { tabStyles } from "../matchcenter/[...slug]";
 import { compareAsc, format } from "date-fns";
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   const fixtures = props.fixtures;
@@ -27,17 +28,22 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
     (fixture) => compareAsc(new Date(fixture.starting_at), now) > 0
   );
 
+  const bp = useBreakpointIndex();
+
   const fixtureTabStyles: ThemeUICSSObject = {
     "> .react-tabs__tab-list": {
       justifyContent: "space-between",
       display: "flex",
+      flexDirection: ["column", "row"],
       flexWrap: "wrap",
       width: "100%",
-      borderBottom: "1px solid",
-      borderColor: colors.gray200,
+      borderBottom: [null, "1px solid"],
+      borderColor: [null, colors.gray200],
       margin: "0 0 20px",
       paddingTop: 1,
+      gap: [2, 0],
     },
+
     "> ul .react-tabs__tab": {
       display: "flex",
       justifyContent: "center",
@@ -59,13 +65,20 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   };
 
   return (
-    <SectionWrapper styles={{ paddingX: [2, 3, 5, 7] }}>
+    <SectionWrapper styles={{ paddingX: [2, 3, 5, 7], paddingTop: 1 }}>
       <Tabs
         defaultIndex={0}
         sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
       >
         <TabList>
-          <div sx={{ display: "flex" }}>
+          <div
+            sx={{
+              display: "flex",
+              ...(bp < 1
+                ? { borderBottom: ["1px solid"], borderColor: [colors.gray200] }
+                : {}),
+            }}
+          >
             {tabLists.map((tab) => (
               <Tab tabIndex={tab.id} key={tab.id}>
                 <p>{tab.name}</p>
@@ -74,31 +87,31 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
           </div>
 
           <div sx={{ display: "flex", gap: 2 }}>
-            {/* <select
+            <select
               name="season"
               sx={{
-                display: "flex",
                 padding: 1,
                 paddingRight: 3,
                 marginBottom: 1,
                 border: "none",
                 background: colors.gray300,
+                width: "50%",
                 "> option": { background: colors.white, padding: 1 },
               }}
             >
               <option value="2020">2020-21</option>
               <option value="2021">2021-22</option>
-            </select> */}
+            </select>
 
             <select
               name="league"
               sx={{
-                display: "flex",
                 padding: 1,
                 paddingRight: 3,
                 marginBottom: 1,
                 border: "none",
                 background: colors.gray300,
+                width: "50%",
                 "> option": { background: colors.white, padding: 1 },
               }}
             >
