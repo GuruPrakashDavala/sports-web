@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import Image from "next/image";
 import { Fragment, useState, useEffect } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
@@ -44,6 +45,9 @@ const tabItemStyles: ThemeUICSSObject = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  // height: "100%",
+  // width: "100%",
+  position: "relative",
 };
 
 const tabTeamImageStyles: ThemeUICSSObject = {
@@ -104,16 +108,17 @@ const Scoreboard = (props: ScoreboardProps) => {
       <TabList>
         <Tab>
           <div sx={tabItemStyles}>
-            <img src={s1Team.image} sx={tabTeamImageStyles} />
-            <p>{s1Team.name}</p>
+            <Image src={s1Team.image} width={24} height={24} />
+            <p sx={{ marginLeft: 1 }}>{s1Team.name}</p>
             {fixture.status === "1st Innings" && <LivePulse />}
           </div>
         </Tab>
 
         <Tab>
           <div sx={tabItemStyles}>
-            <img src={s2Team.image} sx={tabTeamImageStyles} />
-            <p>{s2Team.name}</p>
+            {/* <img src={s2Team.image} sx={tabTeamImageStyles} /> */}
+            <Image src={s2Team.image} width={24} height={24} />
+            <p sx={{ marginLeft: 1 }}>{s2Team.name}</p>
             {fixture.status === "2nd Innings" && <LivePulse />}
           </div>
         </Tab>

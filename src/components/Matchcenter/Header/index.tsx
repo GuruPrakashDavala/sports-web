@@ -2,6 +2,7 @@
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
+import Image from "next/image";
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
 import {
@@ -68,18 +69,15 @@ const Header = (props: HeaderProps) => {
               alignItems: "center",
               borderRadius: "99%",
               marginRight: "5px",
+              position: "relative",
             }}
           >
-            <img
+            <Image
               src={fixture.league.image_path}
-              sx={{
-                display: "block",
-                width: ["34px"],
-                height: ["34px"],
-                maxWidth: "100%",
-                verticalAlign: "middle",
-                borderRadius: "99%",
-              }}
+              height={28}
+              width={28}
+              style={{ borderRadius: "99%" }}
+              alt={fixture.league.name}
             />
           </div>
 
@@ -177,6 +175,7 @@ const Header = (props: HeaderProps) => {
                 marginLeft: 1,
                 position: "relative",
                 background: colors.white,
+                borderRadius: "99%",
               }}
             >
               <img
@@ -186,7 +185,9 @@ const Header = (props: HeaderProps) => {
                   width: ["35px", "45px"],
                   height: ["35px", "45px"],
                   verticalAlign: "center",
+                  borderRadius: "99%",
                 }}
+                alt={s1Team.name}
               />
             </div>
           </div>
@@ -277,6 +278,7 @@ const Header = (props: HeaderProps) => {
                 marginRight: "0.5rem",
                 position: "relative",
                 background: colors.white,
+                borderRadius: "99%",
               }}
             >
               <img
@@ -286,7 +288,9 @@ const Header = (props: HeaderProps) => {
                   width: ["35px", "45px"],
                   height: ["35px", "45px"],
                   verticalAlign: "center",
+                  borderRadius: "99%",
                 }}
+                alt={s2Team.name}
               />
             </div>
           </div>

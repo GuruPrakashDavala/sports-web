@@ -4,24 +4,41 @@ import { Fragment } from "react";
 import FixtureCard from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { Fixture as FixtureT } from "../../types/sportmonks";
-import { Select, Box, ThemeUICSSObject } from "theme-ui";
+import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { tabStyles } from "../matchcenter/[...slug]";
-import { compareAsc, format } from "date-fns";
+import { compareAsc } from "date-fns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
+
+const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
+  const { fixtures } = props;
+  return (
+    <div sx={{ paddingX: [0, 3, 5], paddingTop: [null, 3, 5] }}>
+      {fixtures.map((fixture) => {
+        return (
+          <Fragment key={fixture.id}>
+            <FixtureCard fixture={fixture} styles={{ paddingX: 0 }} />
+          </Fragment>
+        );
+      })}
+    </div>
+  );
+};
 
 const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   const fixtures = props.fixtures;
-  console.log(props);
   const tabLists = [
-    { id: "0", name: "upcoming" },
-    { id: "1", name: "recent" },
-    // { id: "2", name: "scorecard" },
-    // { id: "3", name: "trending" },
+    { id: "0", name: "live" },
+    { id: "1", name: "upcoming" },
+    { id: "2", name: "recent" },
   ];
 
   const now = new Date();
+  const todayFixtures = fixtures.filter(
+    (fixture) => compareAsc(new Date(fixture.starting_at), now) === 0
+  );
+
   const recentFixtures = fixtures
     .filter((fixture) => compareAsc(new Date(fixture.starting_at), now) < 1)
     .reverse();
@@ -77,7 +94,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
             sx={{
               display: "flex",
               ...(bp < 1
-                ? { borderBottom: ["1px solid"], borderColor: [colors.gray200] }
+                ? { borderBottom: "1px solid", borderColor: [colors.gray200] }
                 : {}),
             }}
           >
@@ -123,39 +140,24 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
           </div>
         </TabList>
 
-        <TabPanel id="upcoming">
-          <div sx={{ paddingX: [0, 3, 5], paddingTop: [null, 3, 5] }}>
-            {upcomingFixtures.map((fixture) => {
-              return (
-                <Fragment key={fixture.id}>
-                  <FixtureCard fixture={fixture} styles={{ paddingX: 0 }} />
-                </Fragment>
-              );
-            })}
-          </div>
+        <TabPanel id="todayfixtures">
+          <TabPanelContent fixtures={todayFixtures} />
         </TabPanel>
 
-        <TabPanel id="recent">
-          <div sx={{ paddingX: [0, 3, 5], paddingTop: [null, 3, 5] }}>
-            {recentFixtures.map((fixture) => {
-              return (
-                <Fragment key={fixture.id}>
-                  <FixtureCard fixture={fixture} styles={{}} />
-                </Fragment>
-              );
-            })}
-          </div>
+        <TabPanel id="upcomingfixtures">
+          <TabPanelContent fixtures={upcomingFixtures} />
+        </TabPanel>
+
+        <TabPanel id="recentfixtures">
+          <TabPanelContent fixtures={recentFixtures} />
         </TabPanel>
       </Tabs>
     </SectionWrapper>
   );
 };
 
-// This gets called on every request
 export async function getServerSideProps() {
-  // Fetch data from external API
   const res = await fetch(
-    // `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=956&sort=starting_at`
     `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=782`
   );
   const fixtures = await res.json();
