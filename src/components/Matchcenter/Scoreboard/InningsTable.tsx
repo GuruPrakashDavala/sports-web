@@ -91,7 +91,7 @@ const InningsTable = (props: InningsTableProps) => {
             >
               <p
                 sx={{
-                  variant: bp === 0 ? "text.subheading5" : "text.subheading3",
+                  variant: bp === 0 ? "text.subheading4" : "text.subheading3",
                 }}
               >
                 {batsmanName}
@@ -100,7 +100,7 @@ const InningsTable = (props: InningsTableProps) => {
                 sx={{
                   paddingTop: [null, "5px"],
                   color: colors.gray100,
-                  variant: bp === 0 ? "text.label2" : "text.body4",
+                  variant: "text.body4",
                 }}
               >
                 {isBatsmanOut
@@ -114,24 +114,18 @@ const InningsTable = (props: InningsTableProps) => {
               </p>
             </li>
             <li sx={{ flexBasis: "20%" }}>
-              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
+              <p sx={{ variant: "text.body4" }}>
                 {batting.score} {` (${batting.ball})`}
               </p>
             </li>
             <li sx={{ flexBasis: "13.333%" }}>
-              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
-                {batting.four_x}
-              </p>
+              <p sx={{ variant: "text.body4" }}> {batting.four_x}</p>
             </li>
             <li sx={{ flexBasis: "13.333%" }}>
-              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
-                {batting.six_x}
-              </p>
+              <p sx={{ variant: "text.body4" }}>{batting.six_x}</p>
             </li>
             <li sx={{ flexBasis: "13.333%" }}>
-              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
-                {batting.rate}
-              </p>
+              <p sx={{ variant: "text.body4" }}>{batting.rate}</p>{" "}
             </li>
           </ul>
         ) : (
