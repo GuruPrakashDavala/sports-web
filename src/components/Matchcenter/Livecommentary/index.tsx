@@ -8,7 +8,6 @@ import { ThemeUICSSObject } from "theme-ui";
 import InfiniteScroll from "react-infinite-scroll-component";
 import BatIcon from "../../Icons/Bat";
 import BallIcon from "../../Icons/Ball";
-import { useBreakpointIndex } from "@theme-ui/match-media";
 import { FixtureStatus } from "../../../types/matchcenter";
 import {
   Ball as BallT,
@@ -19,6 +18,7 @@ import {
 } from "../../../types/sportmonks";
 import LiveBatting from "./LiveBatting";
 import LiveBowling from "./LiveBowling";
+import SectionWrapper from "../../Wrappers/SectionWrapper";
 
 export const PlayerBattingDetails = (props: {
   batsman: PlayerT;
@@ -111,7 +111,7 @@ export const PlayerBowlingDetails = (props: {
 }): JSX.Element => {
   const { bowler, fullBowlersList, currentBowler } = props;
   return (
-    <ul sx={rowStyles}>
+    <ul sx={rowStyles} key={bowler.id}>
       <li sx={{ flexBasis: "35%", display: "flex", alignItems: "center" }}>
         {bowler.lastname}
         {currentBowler && (
@@ -125,6 +125,7 @@ export const PlayerBowlingDetails = (props: {
           />
         )}
       </li>
+
       {fullBowlersList.map((bowling) => {
         return bowler.id === bowling.bowler.id ? (
           <Fragment key={bowling.bowler.id}>
@@ -337,7 +338,7 @@ const LiveCommentary = (props: {
   note: string;
   batting: BattingT[];
   bowling: BowlingT[];
-}) => {
+}): JSX.Element => {
   const { balls, status, note, batting, bowling } = props;
   const reversedOrder = [...balls].reverse();
   const [ballsLimit, setBallsLimit] = useState<number>(25);
@@ -370,13 +371,11 @@ const LiveCommentary = (props: {
     // setTimeout(() => {
     //   setBallsLimit((prev) => prev + 25);
     // }, 1000);
-    console.log(ballsLimit);
-    console.log(reversedOrder.length);
     setBallsLimit((prev) => prev + 25);
   };
 
   return (
-    <div>
+    <div sx={{ paddingY: [2, 3] }}>
       <div sx={tableWrapperStyles}>
         <LiveBatting fullBattingList={batting} recentBall={recentBall} />
         <LiveBowling
@@ -426,6 +425,7 @@ const LiveCommentary = (props: {
                 ball={ball}
                 fullBattingList={batting}
                 recentBall={recentBall}
+                key={ball.id}
               />
             ) : (
               <BallInfo ball={ball} />

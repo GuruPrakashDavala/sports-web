@@ -17,6 +17,18 @@ export enum FixtureStatus {
   InningsBreak = "Innings Break",
   Interrupted = "Int.",
   Finished = "Finished",
+  ThirdInnings = "3rd Innings",
+  FourthInnings = "4th Innings",
+  StumpDayOne = "Stump Day 1",
+  StumpDayTwo = "Stump Day 2",
+  StumpDayThree = "Stump Day 3",
+  StumpDayFour = "Stump Day 4",
+  TeaBreak = "Tea Break",
+  Lunch = "Lunch",
+  Dinner = "Dinner",
+  Postponed = "Postp.",
+  Delayed = "Delayed",
+  Cancelled = "Cancl.",
 }
 
 export type TeamInfo = {

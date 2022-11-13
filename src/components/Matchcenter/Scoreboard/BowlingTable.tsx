@@ -33,6 +33,7 @@ const BowlingTable = (props: InningsTableProps) => {
               borderBottom: "1px solid",
               borderColor: "rgba(12, 12, 12, 0.17)",
             }}
+            key={bowling.id}
           >
             <li
               sx={{

@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 
-import { useBreakpointIndex } from "@theme-ui/match-media";
 import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
@@ -35,7 +34,6 @@ const ArticleMicroCard = (props: NewscardProps) => {
     category,
     styles = {},
   } = props;
-  const bp = useBreakpointIndex();
   const articleVariantImageSize =
     variant === ArticleVariant.SMALL
       ? 48

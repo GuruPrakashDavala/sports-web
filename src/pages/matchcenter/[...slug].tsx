@@ -41,7 +41,8 @@ export const tabStyles: ThemeUICSSObject = {
     width: "100%",
     borderBottom: "1px solid",
     borderColor: colors.gray200,
-    margin: "0 0 20px",
+    // margin: "0 0 20px",
+    margin: 0,
     paddingTop: 1,
   },
   "> ul .react-tabs__tab": {
@@ -51,7 +52,7 @@ export const tabStyles: ThemeUICSSObject = {
     alignItems: "center",
     position: "relative",
     listStyle: "none",
-    padding: 2,
+    paddingY: 2,
     cursor: "pointer",
     // borderBottom: "1px solid #aaa",
     "&:hover": {
@@ -60,7 +61,7 @@ export const tabStyles: ThemeUICSSObject = {
       },
     },
     "> p": {
-      variant: "text.subheading3",
+      variant: "text.subheading4",
       color: "rgba(12, 12, 12, 0.3)",
     },
   },
@@ -86,20 +87,28 @@ export const tabStyles: ThemeUICSSObject = {
 const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   console.log(props);
   const { fixture, recentArticles } = props;
-  const tabLists = [
+  const bp = useBreakpointIndex();
+  const mdTabLists = [
     { id: "0", name: "match info" },
     { id: "1", name: "live commentary" },
     { id: "2", name: "scorecard" },
     { id: "3", name: "trending" },
   ];
 
+  const smTabLists = [
+    { id: "0", name: "info" },
+    { id: "1", name: "commentary" },
+    { id: "2", name: "scorecard" },
+    { id: "3", name: "trending" },
+  ];
+
+  const tabLists = bp > 0 ? mdTabLists : smTabLists;
+
   const isLive =
     fixture.status === FixtureStatus.FirstInnings ||
     fixture.status === FixtureStatus.SecondInnings ||
     fixture.status === FixtureStatus.InningsBreak ||
     fixture.status === FixtureStatus.Interrupted;
-
-  const bp = useBreakpointIndex();
 
   // Util to get the opposite team info (toss lost team - 2nd Innings)
   const getOppositeTeamInfo = (tosswonTeam: TeamT): TeamInfo => {
@@ -381,7 +390,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
         />
       )}
 
-      <SectionWrapper styles={{ paddingX: [2, null, null, 0] }}>
+      <SectionWrapper styles={{ paddingX: [2, null, null, 0], paddingY: [0] }}>
         <div
           sx={{
             ...articleBodyWrapperStyles,
@@ -433,7 +442,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         bowling={fixture.bowling}
                       />
                     ) : (
-                      <>Match not started yet loader...</>
+                      <>{fixture.status}</>
                     )}
                   </TabPanel>
 
@@ -453,7 +462,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         s2FallOfWickets={s2FallOfWickets}
                       />
                     ) : (
-                      <>Match not started yet loader...</>
+                      <>{fixture.status}</>
                     )}
                   </TabPanel>
 

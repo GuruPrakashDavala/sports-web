@@ -128,7 +128,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
             {upcomingFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>
-                  <FixtureCard fixture={fixture} styles={{}} />
+                  <FixtureCard fixture={fixture} styles={{ paddingX: 0 }} />
                 </Fragment>
               );
             })}

@@ -59,7 +59,7 @@ const InningsTable = (props: InningsTableProps) => {
         teamInfo={teamInfo}
         innings={innings}
       />
-      {fixture.batting.map((batting, index: number) => {
+      {fixture.batting.map((batting) => {
         const batsmanName =
           bp > 3 ? batting.batsman.fullname : batting.batsman.lastname;
         const isBatsmanOut = batting.result.is_wicket;
@@ -71,7 +71,7 @@ const InningsTable = (props: InningsTableProps) => {
         const runoutBy = batting.runoutby ? batting.runoutby.lastname : "";
         return batting.scoreboard === innings ? (
           <ul
-            key={index}
+            key={batting.id}
             sx={{
               display: "flex",
               padding: 1,

@@ -25,6 +25,7 @@ type ScoreboardContentProps = {
   extras: Extras;
   didNotBat?: PlayerT[];
   fallOfWickets?: BattingT[];
+  styles?: ThemeUICSSObject;
 };
 
 type ScoreboardProps = {
@@ -55,16 +56,16 @@ const tabTeamImageStyles: ThemeUICSSObject = {
 const ScoreboardContent = (props: ScoreboardContentProps) => {
   const { fixture, team, extras, didNotBat, fallOfWickets, innings } = props;
   return (
-    <Fragment>
+    <div sx={{ paddingY: [2, 3] }}>
       <InningsTable innings={innings} fixture={fixture} teamInfo={team} />
       <InningsAdditionalInfo
         extras={extras}
-        score={getScore(fixture.scoreboards, innings)}
+        score={getScore(fixture.scoreboards, innings, fixture.status)}
         playersDidNotBat={didNotBat}
       />
       <BowlingTable fixture={fixture} innings={innings} />
       <FallofWickets fallOfWickets={fallOfWickets} />
-    </Fragment>
+    </div>
   );
 };
 

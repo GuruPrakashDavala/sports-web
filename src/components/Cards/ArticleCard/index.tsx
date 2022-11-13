@@ -9,6 +9,7 @@ import PlayIcon from "../../Icons/Play";
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 import getArticleFormattedDate from "../../../utils/util";
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 const cardHoverStyles: ThemeUICSSObject = {
   backgroundColor: colors.red150,
@@ -22,28 +23,16 @@ const cardHoverStyles: ThemeUICSSObject = {
 };
 
 // Experimental card hover styles
-const simpleCardHoverStyles: ThemeUICSSObject = {
-  backgroundColor: colors.red150,
-  transition: ".25s ease",
-  willChange: "transform",
-  "&:hover": {
-    //opacity: ".875",
-    transform: "scale(0.985)",
-  },
-};
 
-const containerStyles: ThemeUICSSObject = {
-  display: "flex",
-  flexWrap: "wrap",
-  backgroundColor: colors.red100,
-  cursor: "pointer",
-  transition: "background-color 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
-  textDecoration: "none",
-  willChange: "background-color",
-  paddingX: [null, null, 2],
-  paddingTop: 2,
-  "&:hover": cardHoverStyles,
-};
+// const simpleCardHoverStyles: ThemeUICSSObject = {
+//   backgroundColor: colors.red150,
+//   transition: ".25s ease",
+//   willChange: "transform",
+//   "&:hover": {
+//     //opacity: ".875",
+//     transform: "scale(0.985)",
+//   },
+// };
 
 const cardStyles: ThemeUICSSObject = {
   height: "100%",
@@ -51,14 +40,7 @@ const cardStyles: ThemeUICSSObject = {
   display: "flex",
   flexDirection: "column",
   borderBottom: "1px solid",
-  borderBottomColor: "rgba(255, 255, 255, 0.4)",
-};
-
-const imageContainer: ThemeUICSSObject = {
-  // relative needed for icons and gradient
-  // position: "relative",
-  // height: "100%",
-  // width: "100%",
+  borderBottomColor: colors.white200,
 };
 
 const imageWrapper: ThemeUICSSObject = {
@@ -135,6 +117,21 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
     category,
   } = props;
 
+  const bp = useBreakpointIndex();
+
+  const containerStyles: ThemeUICSSObject = {
+    display: "flex",
+    flexWrap: "wrap",
+    backgroundColor: colors.red100,
+    cursor: "pointer",
+    transition: "background-color 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
+    textDecoration: "none",
+    willChange: "background-color",
+    paddingX: [null, null, 2],
+    paddingTop: 2,
+    "&:hover": bp > 1 ? cardHoverStyles : null,
+  };
+
   const articlePublishedDate = getArticleFormattedDate(date);
 
   const articleVariantImageSize =
@@ -144,7 +141,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
       ? 64
       : 96;
 
-  const cardContainer = {
+  const cardContainer: ThemeUICSSObject = {
     ...containerStyles,
     ...(theme === ColorTheme.GRAY
       ? {
@@ -166,7 +163,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
     ...styles,
   };
 
-  const cardInfoColor = {
+  const cardInfoColor: ThemeUICSSObject = {
     ...(theme === ColorTheme.LIGHT || theme === ColorTheme.GRAY
       ? // light theme colors
         {
@@ -188,7 +185,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
         }),
   };
 
-  const cardBorderColor = {
+  const cardBorderColor: ThemeUICSSObject = {
     ...(theme === ColorTheme.LIGHT || theme === ColorTheme.GRAY
       ? {
           borderBottomColor: colors.gray200,
@@ -202,29 +199,25 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
     <Link href={path}>
       <div sx={cardContainer}>
         <div sx={{ ...cardStyles, ...cardBorderColor }}>
-          <div sx={imageContainer}>
-            <div className="imageWrapper" sx={imageWrapper}>
-              <Image
-                src={imageSrc}
-                layout="responsive"
-                objectFit="cover"
-                alt="image"
-                height={articleVariantImageSize}
-                width={"100%"}
-              />
+          <div className="imageWrapper" sx={imageWrapper}>
+            <Image
+              src={imageSrc}
+              layout="responsive"
+              objectFit="cover"
+              alt="image"
+              height={articleVariantImageSize}
+              width={"100%"}
+            />
 
-              <div sx={imageIconStyles}>
-                <div
-                  sx={{ display: "flex", flexDirection: "row", paddingX: 2 }}
-                >
-                  {type === "Video" ? <PlayIcon /> : <></>}
-                  {/* Here badge should be a enum of categories */}
-                  {badge && badge !== "None" ? (
-                    <Pill label={badge} theme={getPillColor(badge)} />
-                  ) : (
-                    <></>
-                  )}
-                </div>
+            <div sx={imageIconStyles}>
+              <div sx={{ display: "flex", flexDirection: "row", paddingX: 2 }}>
+                {type === "Video" ? <PlayIcon /> : <></>}
+                {/* Here badge should be a enum of categories */}
+                {badge && badge !== "None" ? (
+                  <Pill label={badge} theme={getPillColor(badge)} />
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>

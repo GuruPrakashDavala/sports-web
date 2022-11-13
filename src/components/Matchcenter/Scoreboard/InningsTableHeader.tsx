@@ -38,7 +38,7 @@ const InningsTableHeader = (props: {
         </li>
 
         <li sx={{ variant: "text.subheading3", color: colors.black }}>
-          {getScore(fixture.scoreboards, innings)}
+          {getScore(fixture.scoreboards, innings, fixture.status)}
         </li>
       </ul>
 

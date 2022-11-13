@@ -4,7 +4,10 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
-import { TeamInfo as TeamInfoT } from "../../../types/matchcenter";
+import {
+  FixtureStatus,
+  TeamInfo as TeamInfoT,
+} from "../../../types/matchcenter";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
 import { getScore } from "../../Cards/FixtureCard";
 import CalendarIcon from "../../Icons/CalendarIcon";
@@ -156,13 +159,16 @@ const Header = (props: HeaderProps) => {
               >
                 {s1Team.name}
               </span>
-              <span
-                sx={{
-                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
-                }}
-              >
-                {getScore(fixture.scoreboards, "S1")}
-              </span>
+
+              {fixture.status !== FixtureStatus.NotStarted && (
+                <span
+                  sx={{
+                    variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                  }}
+                >
+                  {getScore(fixture.scoreboards, "S1", fixture.status)}
+                </span>
+              )}
             </div>
 
             <div
@@ -253,13 +259,16 @@ const Header = (props: HeaderProps) => {
               >
                 {s2Team.name}
               </span>
-              <span
-                sx={{
-                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
-                }}
-              >
-                {getScore(fixture.scoreboards, "S2")}
-              </span>
+
+              {fixture.status !== FixtureStatus.NotStarted && (
+                <span
+                  sx={{
+                    variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                  }}
+                >
+                  {getScore(fixture.scoreboards, "S2", fixture.status)}
+                </span>
+              )}
             </div>
 
             <div

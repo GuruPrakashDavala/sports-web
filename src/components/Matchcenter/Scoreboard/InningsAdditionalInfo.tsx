@@ -66,8 +66,8 @@ const InningsAdditionalInfo = (props: {
           }}
         >
           <p sx={{ variant: "text.subheading3" }}>Did not Bat:&nbsp;</p>
-          {playersDidNotBat.map((player, index: number) => (
-            <p key={index}>
+          {playersDidNotBat.map((player, index) => (
+            <p key={player.id}>
               {player.lastname}
               {`${index !== playersDidNotBat.length - 1 ? `,` : ``}`}&nbsp;
             </p>

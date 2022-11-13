@@ -45,7 +45,7 @@ const TeamInfo = (props: TeamInfoProps) => {
             variant: inPlay ? "text.subheading2" : "text.heading3",
           }}
         >
-          {getScore(fixture.scoreboards, innings)}
+          {getScore(fixture.scoreboards, innings, fixture.status)}
         </p>
         {/* <p
           sx={{

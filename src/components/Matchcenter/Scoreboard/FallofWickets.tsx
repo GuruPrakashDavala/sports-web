@@ -38,7 +38,7 @@ const FallofWickets = (props: FallOfWicketsProps) => {
           {fallOfWickets.map((batting, index: number) => {
             return (
               <ul
-                key={index}
+                key={batting.id}
                 sx={{
                   display: "flex",
                   padding: 1,

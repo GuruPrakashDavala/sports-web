@@ -13,13 +13,23 @@ import {
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 
-export const getScore = (scoreboards: [] | ScoreboardT[], innings: string) => {
+export const getScore = (
+  scoreboards: [] | ScoreboardT[],
+  innings: string,
+  fixtureStatus: string
+) => {
   const fullScore = scoreboards
     .filter((item) => item.scoreboard === innings && item.type === "total")
     .map((item) => {
       return `${item.total}-${item.wickets} (${item.overs} ov)`;
     });
-  return fullScore[0] ? fullScore[0] : "Yet to bat";
+
+  return fullScore[0]
+    ? fullScore[0]
+    : fixtureStatus === FixtureStatus.FirstInnings ||
+      fixtureStatus === FixtureStatus.SecondInnings
+    ? "Yet to bat"
+    : fixtureStatus;
 };
 
 // Only returns the team details by seaching through the scoreboards
@@ -195,6 +205,7 @@ const FixtureCard = (props: {
             />
             <p sx={{ marginLeft: 2 }}>{s1TeamName}</p>
           </div>
+
           {/* score for s1 innings */}
           {fixture.status !== FixtureStatus.NotStarted && (
             <div
@@ -204,7 +215,7 @@ const FixtureCard = (props: {
                 alignItems: "center",
               }}
             >
-              <p>{getScore(fixture.scoreboards, "S1")}</p>
+              <p>{getScore(fixture.scoreboards, "S1", fixture.status)}</p>
             </div>
           )}
         </div>
@@ -241,7 +252,7 @@ const FixtureCard = (props: {
                 alignItems: "center",
               }}
             >
-              <p>{getScore(fixture.scoreboards, "S2")}</p>
+              <p>{getScore(fixture.scoreboards, "S2", fixture.status)}</p>
             </div>
           )}
         </div>
