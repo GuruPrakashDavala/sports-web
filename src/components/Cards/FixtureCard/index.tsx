@@ -99,7 +99,7 @@ const FixtureCard = (props: {
     <div
       sx={{
         display: "flex",
-        paddingY: 1,
+        padding: 1,
         height: "100%",
         width: "100%",
         ...styles,

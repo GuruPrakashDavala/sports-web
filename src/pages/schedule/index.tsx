@@ -13,6 +13,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 
 const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   const fixtures = props.fixtures;
+  console.log(props);
   const tabLists = [
     { id: "0", name: "upcoming" },
     { id: "1", name: "recent" },
@@ -24,6 +25,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   const recentFixtures = fixtures
     .filter((fixture) => compareAsc(new Date(fixture.starting_at), now) < 1)
     .reverse();
+
   const upcomingFixtures = fixtures.filter(
     (fixture) => compareAsc(new Date(fixture.starting_at), now) > 0
   );
@@ -153,7 +155,8 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
 export async function getServerSideProps() {
   // Fetch data from external API
   const res = await fetch(
-    `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=956&sort=starting_at`
+    // `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=956&sort=starting_at`
+    `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=782`
   );
   const fixtures = await res.json();
 

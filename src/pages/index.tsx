@@ -232,7 +232,7 @@ export async function getStaticProps() {
       // );
 
       const response = await fetch(
-        `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue,venue.country, tosswon, scoreboards, scoreboards.team, odds, stage, runs, season&filter[starts_between]=${currentDate},2023-12-31&filter[season_id]=956&sort=starting_at`
+        `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue,venue.country, tosswon, scoreboards, scoreboards.team, odds, stage, runs, season&filter[starts_between]=${currentDate},2023-12-31&filter[season_id]=1079,782&sort=starting_at`
       );
 
       // if (!response.ok) {
