@@ -26,7 +26,7 @@ const PlayIcon = (props: IconProps) => {
   const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;
 
   return (
-    <div sx={{ paddingX: [3], ...styles }}>
+    <div sx={{ paddingRight: [2], ...styles }}>
       <FaPlay
         sx={{ color: colors.white, height: getIconSize(variant), zIndex: 1 }}
       />

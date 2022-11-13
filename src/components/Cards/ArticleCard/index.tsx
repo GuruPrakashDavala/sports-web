@@ -214,7 +214,9 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
               />
 
               <div sx={imageIconStyles}>
-                <div sx={{ display: "flex", flexDirection: "row" }}>
+                <div
+                  sx={{ display: "flex", flexDirection: "row", paddingX: 2 }}
+                >
                   {type === "Video" ? <PlayIcon /> : <></>}
                   {/* Here badge should be a enum of categories */}
                   {badge && badge !== "None" ? (
