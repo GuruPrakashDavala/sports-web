@@ -381,7 +381,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
 
   return (
     <Fragment>
-      {bp < 1 && s1Team && s2Team && fixture && (
+      {bp < 2 && s1Team && s2Team && fixture && (
         <Header
           fixture={fixture}
           s1Team={s1Team}
@@ -402,7 +402,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
           <div>
             {s1Team && s2Team && fixture && (
               <Fragment>
-                {bp > 0 && (
+                {bp > 1 && (
                   <Header
                     fixture={fixture}
                     s1Team={s1Team}

@@ -248,7 +248,7 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
       {isWicket ? (
         <Fragment>
           <BallInfoCircle ball={`W`} color={colors.red100} />
-          <span sx={{ paddingY: 1, paddingX: 1 }}>
+          <span sx={{ paddingX: 1 }}>
             <p sx={{ display: "inline-block" }}>
               {ball.ball} - {ball.bowler.fullname} to {ball.batsman.fullname}.{" "}
             </p>
@@ -264,13 +264,8 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
         </Fragment>
       ) : (
         <>
-          {/* {(ball.ball % 1).toFixed(1) === "0.6" &&
-    ball.score.ball &&
-    ball.score.noball_runs === 0
-      ? "last ball - here is the place to show over overview"
-      : ``} */}
           {getBallInfoCircle(ball.score)}{" "}
-          <span sx={{ paddingY: 1, paddingX: 1 }}>
+          <span sx={{ paddingX: 1 }}>
             <p>
               {ball.ball} - {ball.bowler.fullname} to {ball.batsman.fullname}
               {". "}
@@ -428,7 +423,7 @@ const LiveCommentary = (props: {
                 key={ball.id}
               />
             ) : (
-              <BallInfo ball={ball} />
+              <BallInfo ball={ball} key={ball.id} />
             );
           })}
       </InfiniteScroll>

@@ -60,14 +60,14 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
         },
       },
       "> p": {
-        variant: "text.subheading3",
+        variant: "text.subheading4",
         color: "rgba(12, 12, 12, 0.3)",
       },
     },
   };
 
   return (
-    <SectionWrapper styles={{ paddingX: [2, 3, 5, 7], paddingTop: 1 }}>
+    <SectionWrapper styles={{ paddingX: [2, 3, null, 7], paddingTop: 1 }}>
       <Tabs
         defaultIndex={0}
         sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
@@ -124,7 +124,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
         </TabList>
 
         <TabPanel id="upcoming">
-          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [null, 3, 5] }}>
+          <div sx={{ paddingX: [0, 3, 5], paddingTop: [null, 3, 5] }}>
             {upcomingFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>
@@ -136,7 +136,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
         </TabPanel>
 
         <TabPanel id="recent">
-          <div sx={{ paddingX: [0, 3, 5, 7], paddingTop: [null, 3, 5] }}>
+          <div sx={{ paddingX: [0, 3, 5], paddingTop: [null, 3, 5] }}>
             {recentFixtures.map((fixture) => {
               return (
                 <Fragment key={fixture.id}>
