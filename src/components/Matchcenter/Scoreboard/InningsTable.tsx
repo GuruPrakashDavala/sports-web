@@ -78,7 +78,7 @@ const InningsTable = (props: InningsTableProps) => {
               justifyContent: "center",
               alignItems: "center",
               borderBottom: "1px solid",
-              borderColor: "rgba(12, 12, 12, 0.17)",
+              borderColor: colors.gray200,
               gap: 1,
             }}
           >
@@ -89,11 +89,18 @@ const InningsTable = (props: InningsTableProps) => {
                 flexDirection: "column",
               }}
             >
-              <p sx={{ variant: "text.subheading3" }}>{batsmanName}</p>
               <p
                 sx={{
-                  paddingTop: 1,
+                  variant: bp === 0 ? "text.subheading5" : "text.subheading3",
+                }}
+              >
+                {batsmanName}
+              </p>
+              <p
+                sx={{
+                  paddingTop: [null, "5px"],
                   color: colors.gray100,
+                  variant: bp === 0 ? "text.label2" : "text.body4",
                 }}
               >
                 {isBatsmanOut
@@ -106,12 +113,26 @@ const InningsTable = (props: InningsTableProps) => {
                   : `Not out`}
               </p>
             </li>
-            <li sx={{ flexBasis: "15%" }}>
-              {batting.score} {` (${batting.ball})`}
+            <li sx={{ flexBasis: "20%" }}>
+              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
+                {batting.score} {` (${batting.ball})`}
+              </p>
             </li>
-            <li sx={{ flexBasis: "15%" }}> {batting.four_x}</li>
-            <li sx={{ flexBasis: "15%" }}> {batting.six_x}</li>
-            <li sx={{ flexBasis: "15%" }}> {batting.rate}</li>
+            <li sx={{ flexBasis: "13.333%" }}>
+              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
+                {batting.four_x}
+              </p>
+            </li>
+            <li sx={{ flexBasis: "13.333%" }}>
+              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
+                {batting.six_x}
+              </p>
+            </li>
+            <li sx={{ flexBasis: "13.333%" }}>
+              <p sx={{ variant: bp === 0 ? "text.label2" : "text.body4" }}>
+                {batting.rate}
+              </p>
+            </li>
           </ul>
         ) : (
           <></>

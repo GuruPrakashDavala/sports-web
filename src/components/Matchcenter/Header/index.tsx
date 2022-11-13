@@ -299,7 +299,9 @@ const Header = (props: HeaderProps) => {
         {isMatchFinished && (
           <div
             sx={{
-              background: "#010028",
+              // background: "#010028",
+              // background: colors.white100,
+              background: "beige",
               borderRadius: "999px",
               marginBottom: "5px",
               marginTop: [2, 3],
@@ -315,7 +317,9 @@ const Header = (props: HeaderProps) => {
                 variant: bp > 1 ? "text.subheading4" : "text.label2",
               }}
             >
-              <span sx={{ opacity: "0.9" }}>{fixture.note}</span>
+              <span sx={{ opacity: "1", color: colors.black }}>
+                {fixture.note}
+              </span>
             </div>
           </div>
         )}

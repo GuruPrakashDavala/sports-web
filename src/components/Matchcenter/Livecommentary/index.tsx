@@ -387,6 +387,7 @@ const LiveCommentary = (props: {
               padding: 1,
               marginX: [0, 1],
               marginY: [1],
+              marginTop: [1, 3],
               background: colors.mint,
             }}
           >
@@ -397,9 +398,8 @@ const LiveCommentary = (props: {
           <div sx={{ marginY: 2, marginX: [0, 1] }}>
             <p>
               Well that&apos;s a wrap. Check the points table here. Hope you
-              have a good day.Check points table here... Stay connected with us
-              - install the app. See you in the next game.Until then bye. Take
-              care. Team cricfanatic
+              have a good day. Stay connected with us - install the app. See you
+              in the next game. Until then bye. Take care. Team cricfanatic
             </p>
           </div>
         </Fragment>
