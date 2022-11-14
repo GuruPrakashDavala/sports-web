@@ -18,7 +18,7 @@ export const getWicketCatchStumpRunout = (
   catchstump: string,
   bowlerName: string,
   runoutBy: any
-) => {
+): string => {
   const wicketPlayerNames = wicketType.includes("Catch Out")
     ? `c ${catchstump} b ${bowlerName}`
     : wicketType === "Clean Bowled"
