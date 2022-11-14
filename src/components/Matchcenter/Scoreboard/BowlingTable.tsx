@@ -1,6 +1,12 @@
 /** @jsxImportSource theme-ui */
 
-import { Fixture as FixtureT } from "../../../types/sportmonks";
+import { ReactNode } from "react";
+import { useBreakpointIndex } from "@theme-ui/match-media";
+import {
+  Fixture as FixtureT,
+  Bowling as BowlingT,
+  Player as PlayerT,
+} from "../../../types/sportmonks";
 import BowlingTableHeader from "./BowlingTableHeader";
 
 type InningsTableProps = {
@@ -10,6 +16,7 @@ type InningsTableProps = {
 
 const BowlingTable = (props: InningsTableProps) => {
   const { fixture, innings } = props;
+  const bp = useBreakpointIndex();
 
   const isBowlingStatsAvailable = fixture.bowling.filter(
     (bowling) => bowling.scoreboard === innings
@@ -18,6 +25,28 @@ const BowlingTable = (props: InningsTableProps) => {
   if (isBowlingStatsAvailable.length === 0) {
     return null;
   }
+
+  const bowlingTableHeaderMd = [
+    { name: "Bowler", key: "fullname", width: "20%" },
+    { name: "O", key: "overs", width: "11.42%" },
+    { name: "M", key: "medians", width: "11.42%" },
+    { name: "R", key: "runs", width: "11.42%" },
+    { name: "W", key: "wickets", width: "11.42%" },
+    { name: "NB", key: "noball", width: "11.42%" },
+    { name: "WD", key: "wide", width: "11.42%" },
+    { name: "Eco", key: "rate", width: "11.42%" },
+  ];
+
+  const bowlingTableHeaderSm = [
+    { name: "Bowler", key: "lastname", width: "30%" },
+    { name: "O", key: "overs", width: "14%" },
+    { name: "M", key: "medians", width: "14%" },
+    { name: "R", key: "runs", width: "14%" },
+    { name: "W", key: "wickets", width: "14%" },
+    { name: "Eco", key: "rate", width: "14%" },
+  ];
+
+  const tableHeaders = bp > 1 ? bowlingTableHeaderMd : bowlingTableHeaderSm;
 
   return (
     <div sx={{ paddingY: 1 }}>
@@ -35,22 +64,32 @@ const BowlingTable = (props: InningsTableProps) => {
             }}
             key={bowling.id}
           >
-            <li
-              sx={{
-                flexBasis: "20%",
-                variant: "text.subheading3",
-                paddingY: 1,
-              }}
-            >
-              {bowling.bowler.lastname}
-            </li>
-            <li sx={{ flexBasis: "11.42%", paddingY: 1 }}> {bowling.overs}</li>
-            <li sx={{ flexBasis: "11.42%", paddingY: 1 }}>{bowling.medians}</li>
-            <li sx={{ flexBasis: "11.42%", paddingY: 1 }}> {bowling.runs}</li>
-            <li sx={{ flexBasis: "11.42%", paddingY: 1 }}>{bowling.wickets}</li>
-            <li sx={{ flexBasis: "11.42%", paddingY: 1 }}> {bowling.noball}</li>
-            <li sx={{ flexBasis: "11.42%", paddingY: 1 }}> {bowling.wide}</li>
-            <li sx={{ flexBasis: "11.42%", paddingY: 1 }}> {bowling.rate}</li>
+            {tableHeaders.map((heading, index) => {
+              const statKey = heading.key;
+              return index === 0 ? (
+                <li
+                  sx={{
+                    flexBasis: heading.width,
+                    paddingY: [null, 1],
+                    variant: "text.body4",
+                  }}
+                  key={index}
+                >
+                  {bowling.bowler[statKey as keyof PlayerT] as ReactNode}
+                </li>
+              ) : (
+                <li
+                  sx={{
+                    flexBasis: heading.width,
+                    paddingY: [null, 1],
+                    variant: "text.body4",
+                  }}
+                  key={index}
+                >
+                  {bowling[statKey as keyof BowlingT] as ReactNode}
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <></>

@@ -79,7 +79,7 @@ const InningsTable = (props: InningsTableProps) => {
               alignItems: "center",
               borderBottom: "1px solid",
               borderColor: colors.gray200,
-              gap: 1,
+              // gap: 1,
             }}
           >
             <li
@@ -101,6 +101,7 @@ const InningsTable = (props: InningsTableProps) => {
                   paddingTop: [null, "5px"],
                   color: colors.gray100,
                   variant: "text.body4",
+                  width: "85%",
                 }}
               >
                 {isBatsmanOut

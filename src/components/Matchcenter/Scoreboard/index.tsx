@@ -57,7 +57,7 @@ const tabTeamImageStyles: ThemeUICSSObject = {
   marginRight: 1,
 };
 
-const ScoreboardContent = (props: ScoreboardContentProps) => {
+const ScoreboardContent = (props: ScoreboardContentProps): JSX.Element => {
   const { fixture, team, extras, didNotBat, fallOfWickets, innings } = props;
   return (
     <div sx={{ paddingY: [2, 3] }}>

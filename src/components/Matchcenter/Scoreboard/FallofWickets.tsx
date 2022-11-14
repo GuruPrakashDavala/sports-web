@@ -15,7 +15,14 @@ const FallofWickets = (props: FallOfWicketsProps) => {
     <Fragment>
       {fallOfWickets && (
         <Fragment>
-          <p sx={{ variant: "text.subheading3", paddingY: 2, paddingX: 1 }}>
+          <p
+            sx={{
+              variant: "text.subheading3",
+              paddingBottom: 2,
+              paddingTop: 1,
+              paddingX: "5px",
+            }}
+          >
             Fall of wickets
           </p>
 
@@ -48,11 +55,15 @@ const FallofWickets = (props: FallOfWicketsProps) => {
                   borderColor: "rgba(12, 12, 12, 0.17)",
                 }}
               >
-                <li sx={{ flexBasis: "50%" }}>{batting.batsman.lastname}</li>
-                <li sx={{ flexBasis: "25%" }}>
+                <li sx={{ flexBasis: "50%", variant: "text.body4" }}>
+                  {batting.batsman.lastname}
+                </li>
+                <li sx={{ flexBasis: "25%", variant: "text.body4" }}>
                   {batting.fow_score}-{index + 1}
                 </li>
-                <li sx={{ flexBasis: "25%" }}>{batting.fow_balls}</li>
+                <li sx={{ flexBasis: "25%", variant: "text.body4" }}>
+                  {batting.fow_balls}
+                </li>
               </ul>
             );
           })}
