@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import { useBreakpointIndex } from "@theme-ui/match-media";
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
 import { Batting as BattingT } from "../../../types/sportmonks";
@@ -10,6 +11,7 @@ type FallOfWicketsProps = {
 
 const FallofWickets = (props: FallOfWicketsProps) => {
   const { fallOfWickets } = props;
+  const bp = useBreakpointIndex();
 
   return (
     <Fragment>
@@ -55,7 +57,12 @@ const FallofWickets = (props: FallOfWicketsProps) => {
                   borderColor: "rgba(12, 12, 12, 0.17)",
                 }}
               >
-                <li sx={{ flexBasis: "50%", variant: "text.body4" }}>
+                <li
+                  sx={{
+                    flexBasis: "50%",
+                    variant: bp === 0 ? "text.body4" : "text.subheading3",
+                  }}
+                >
                   {batting.batsman.lastname}
                 </li>
                 <li sx={{ flexBasis: "25%", variant: "text.body4" }}>
