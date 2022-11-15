@@ -18,6 +18,7 @@ import {
 } from "../../../types/sportmonks";
 import LiveBatting from "./LiveBatting";
 import LiveBowling from "./LiveBowling";
+import WicketCard from "./WicketCard";
 
 export const PlayerBattingDetails = (props: {
   batsman: PlayerT;
@@ -185,6 +186,11 @@ const WicketBallInfo = (props: {
   const { ball, fullBattingList, recentBall } = props;
   return (
     <Fragment>
+      <WicketCard
+        ball={ball}
+        fullBattingList={fullBattingList}
+        recentBall={recentBall}
+      />
       <BallInfo ball={ball} isWicket={true} />
     </Fragment>
   );

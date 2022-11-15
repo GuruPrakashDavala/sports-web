@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
-import { ColorTheme, ComponentVariant } from "../../../types/modifier";
+import { ComponentVariant } from "../../../types/modifier";
 import getArticleFormattedDate from "../../../utils/util";
 import PlayIcon from "../../Icons/Play";
 import Link from "../../Primitives/Link";
@@ -35,7 +35,6 @@ const ArticleMicroCard = (props: NewscardProps) => {
   const {
     imageSrc,
     variant,
-    theme = ColorTheme.LIGHT,
     slug,
     label,
     date,
@@ -44,6 +43,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
     category,
     styles = {},
   } = props;
+
   const articlePublishedDate = getArticleFormattedDate(date);
 
   const articleVariantImageSize =
@@ -57,7 +57,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
 
   return (
     <Link href={path} styles={{ cursor: "pointer", paddingTop: 2 }}>
-      <div sx={cardWrapperStyles}>
+      <div sx={{ ...cardWrapperStyles, ...styles }}>
         <div sx={imageWrapperStyles}>
           <Image
             src={imageSrc}
