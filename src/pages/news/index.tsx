@@ -1,5 +1,5 @@
 import ArticleGrid from "../../components/Grids/ArticleGrid";
-import { fetchAPI } from "../../lib/strapi";
+import { fetchStrapiAPI } from "../../lib/strapi";
 import { ArticleType } from "../../types/article";
 import { ColorTheme } from "../../types/modifier";
 
@@ -22,7 +22,7 @@ export default NewsPage;
 
 export async function getServerSideProps(context: any) {
   const [articles] = await Promise.all([
-    fetchAPI(`/articles?populate=deep, 2`),
+    fetchStrapiAPI(`/articles?populate=deep, 2`),
   ]);
 
   return {
