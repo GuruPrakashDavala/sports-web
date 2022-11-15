@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import { Fragment } from "react";
 import { ColorTheme } from "../../../types/modifier";
 import { ArticleGrid } from "../../../types/blocks";
 import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
@@ -66,7 +67,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
       {bp === 0 &&
         articles.data.map((block) => {
           return (
-            <div key={block.attributes.slug}>
+            <Fragment key={block.attributes.slug}>
               <ArticleMicroCard
                 label={block.attributes.title}
                 imageSrc={renderImage(block.attributes.coverimage.data)}
@@ -79,7 +80,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
                 theme={theme}
                 styles={{ height: "100%" }}
               />
-            </div>
+            </Fragment>
           );
         })}
     </SectionWrapper>

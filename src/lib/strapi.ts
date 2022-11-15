@@ -21,7 +21,7 @@ export function getStrapiURL(path = "") {
  */
 
 // urlParamsObject are query params
-export async function fetchAPI(
+export async function fetchStrapiAPI(
   path: string,
   urlParamsObject = {},
   options = {}

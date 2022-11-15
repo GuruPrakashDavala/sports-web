@@ -10,11 +10,10 @@ import AuthorInfoBlock from "../../components/News/AuthorInfoBlock";
 import { Fragment } from "theme-ui/jsx-runtime";
 import PublishInfo from "../../components/News/PublishInfo";
 import ArticleGrid from "../../components/Grids/ArticleGrid";
-import { fetchAPI } from "../../lib/strapi";
+import { fetchStrapiAPI } from "../../lib/strapi";
 import { ArticleBlocks, ArticleType } from "../../types/article";
 import Image from "next/image";
 import Carousel, { CarouselItem } from "../../components/Carousel";
-import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
 import { renderImage } from "../../utils/util";
 import ArticleCard from "../../components/Cards/ArticleCard";
@@ -377,8 +376,8 @@ export default ArticlePage;
 export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
-    fetchAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 2`),
-    fetchAPI(`/articles?populate=deep, 2`),
+    fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 2`),
+    fetchStrapiAPI(`/articles?populate=deep, 2`),
   ]);
 
   if (!article.data || article.data.length === 0) {

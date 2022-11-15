@@ -10,18 +10,16 @@ import ProgressBarStyles, { useProgressBar } from "../utils/progressbar";
 function MyApp({ Component, pageProps }: AppProps) {
   useProgressBar();
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <Head>
-          <meta name="keywords" content="homepage, Website name" />
-          <RobotoFontFace />
-          <ProgressBarStyles />
-        </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={theme}>
+      <Head>
+        <meta name="keywords" content="homepage, Website name" />
+        <RobotoFontFace />
+        <ProgressBarStyles />
+      </Head>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </ThemeProvider>
   );
 }
 

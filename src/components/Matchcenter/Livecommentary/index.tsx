@@ -18,7 +18,6 @@ import {
 } from "../../../types/sportmonks";
 import LiveBatting from "./LiveBatting";
 import LiveBowling from "./LiveBowling";
-import SectionWrapper from "../../Wrappers/SectionWrapper";
 
 export const PlayerBattingDetails = (props: {
   batsman: PlayerT;
@@ -62,7 +61,10 @@ export const PlayerBattingDetails = (props: {
                     display: "flex",
                     marginLeft: "5px",
                     padding: 0,
-                    "> svg": { fontSize: "20px", color: colors.black },
+                    "> svg": {
+                      fontSize: ["16px", "20px"],
+                      color: colors.black,
+                    },
                   }}
                 />
               )}
@@ -112,7 +114,7 @@ export const PlayerBowlingDetails = (props: {
   const { bowler, fullBowlersList, currentBowler } = props;
   return (
     <ul sx={rowStyles} key={bowler.id}>
-      <li sx={{ flexBasis: "35%", display: "flex", alignItems: "center" }}>
+      <li sx={{ flexBasis: "40%", display: "flex", alignItems: "center" }}>
         {bowler.lastname}
         {currentBowler && (
           <BallIcon
@@ -120,7 +122,7 @@ export const PlayerBowlingDetails = (props: {
               display: "flex",
               marginLeft: "5px",
               padding: 0,
-              "> svg": { fontSize: "18px", color: colors.black },
+              "> svg": { fontSize: ["14px", "18px"], color: colors.black },
             }}
           />
         )}
@@ -129,10 +131,10 @@ export const PlayerBowlingDetails = (props: {
       {fullBowlersList.map((bowling) => {
         return bowler.id === bowling.bowler.id ? (
           <Fragment key={bowling.bowler.id}>
-            <li sx={{ flexBasis: "16.25%" }}>{bowling.overs}</li>
-            <li sx={{ flexBasis: "16.25%" }}>{bowling.runs}</li>
-            <li sx={{ flexBasis: "16.25%" }}>{bowling.wickets}</li>
-            <li sx={{ flexBasis: "16.25%" }}>{bowling.rate}</li>
+            <li sx={{ flexBasis: "15%" }}>{bowling.overs}</li>
+            <li sx={{ flexBasis: "15%" }}>{bowling.runs}</li>
+            <li sx={{ flexBasis: "15%" }}>{bowling.wickets}</li>
+            <li sx={{ flexBasis: "15%" }}>{bowling.rate}</li>
           </Fragment>
         ) : (
           <></>
@@ -249,13 +251,13 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
         <Fragment>
           <BallInfoCircle ball={`W`} color={colors.red100} />
           <span sx={{ paddingX: 1 }}>
-            <p sx={{ display: "inline-block" }}>
+            <p sx={{ display: "inline" }}>
               {ball.ball} - {ball.bowler.fullname} to {ball.batsman.fullname}.{" "}
             </p>
             <p
               sx={{
                 variant: "text.subheading3",
-                display: "inline-block",
+                display: "inline",
               }}
             >
               That&apos;s a wicket. {getWicketCommentary(ball, ball.score.name)}

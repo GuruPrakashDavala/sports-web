@@ -11,10 +11,8 @@ import Scoreboard from "../../components/Matchcenter/Scoreboard";
 import Header from "../../components/Matchcenter/Header";
 import { articleBodyWrapperStyles } from "../news/[slug]";
 import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
-import ArticleCard, {
-  ArticleVariant,
-} from "../../components/Cards/ArticleCard";
-import { fetchAPI } from "../../lib/strapi";
+import { ArticleVariant } from "../../components/Cards/ArticleCard";
+import { fetchStrapiAPI } from "../../lib/strapi";
 import { ColorTheme } from "../../types/modifier";
 import ArticleMicroCard from "../../components/Cards/ArticleMicroCard";
 import { renderImage } from "../../utils/util";
@@ -519,7 +517,7 @@ export async function getServerSideProps(
 
     const [fixture, recentArticles] = await Promise.all([
       fetch(fixtureURI).then((res) => res.json()),
-      fetchAPI(`/articles?populate=deep,2`),
+      fetchStrapiAPI(`/articles?populate=deep,2`),
     ]);
 
     return {

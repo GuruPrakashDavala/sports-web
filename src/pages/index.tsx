@@ -11,7 +11,7 @@ import ContentGrid from "../components/Grids/ContentGrid";
 import SectionHeading from "../components/SectionHeading";
 import TwitterTweetEmbed from "../components/SocialEmbeds/TwitterTweetEmbed";
 import SectionWrapper from "../components/Wrappers/SectionWrapper";
-import { fetchAPI } from "../lib/strapi";
+import { fetchStrapiAPI } from "../lib/strapi";
 import { ColorTheme } from "../types/modifier";
 import { ImageType } from "../types/article";
 import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
@@ -223,7 +223,7 @@ export async function getStaticProps() {
   // now.setDate(now.getDate() - 1);
   const currentDate = format(now, "yyyy-MM-d");
   const [homeRes, fixtures] = await Promise.all([
-    fetchAPI("/home", {
+    fetchStrapiAPI("/home", {
       populate: "deep, 4",
     }),
     (async () => {

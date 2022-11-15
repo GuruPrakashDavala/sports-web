@@ -1,8 +1,8 @@
 import { ArticleType } from "../types/article";
-import { fetchAPI } from "./strapi";
+import { fetchStrapiAPI } from "./strapi";
 
 export const getArticles = async (): Promise<ArticleType[]> => {
-  const articles = await fetchAPI("/articles", {
+  const articles = await fetchStrapiAPI("/articles", {
     populate: "deep",
   });
   return articles.data;

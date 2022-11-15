@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { fetchAPI } from "../../../lib/strapi";
+import { fetchStrapiAPI } from "../../../lib/strapi";
 import { getArticles } from "../../../lib/strapi-utils";
 import { ColorTheme, ComponentVariant } from "../../../types/modifier";
 import { ContentGrid } from "../../../types/blocks";

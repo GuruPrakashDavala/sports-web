@@ -52,7 +52,7 @@ const imageWrapper: ThemeUICSSObject = {
   display: "block",
 };
 
-const imageIconStyles: ThemeUICSSObject = {
+export const imageIconStyles: ThemeUICSSObject = {
   position: "absolute",
   background: "linear-gradient(rgba(12, 12, 12, 0), rgba(12, 12, 12, 0.6))",
   width: "100%",
@@ -94,7 +94,7 @@ export type NewscardProps = {
   category?: CategoryType;
 };
 
-const getPillColor = (pillText: string) => {
+export const getPillColor = (pillText: string) => {
   switch (pillText) {
     case "TV":
       return ColorTheme.DARK;
