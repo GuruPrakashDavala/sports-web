@@ -65,7 +65,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
             objectFit="cover"
             alt="image"
             height={articleVariantImageSize}
-            width={"170"}
+            width={"120"}
           />
 
           <div sx={{ ...imageIconStyles, height: "35px" }}>
