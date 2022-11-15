@@ -2,15 +2,15 @@
 import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
-import { ColorThemeAll, ComponentVariant } from "../../../types/modifier";
+import { ComponentVariant } from "../../../types/modifier";
 import SnackNews from "./snacknews";
 import RightArrowIcon from "../../Icons/RightArrow";
-import { MultiInfoComponent } from "../../../types/blocks";
+import { SnackQuoteComponent } from "../../../types/blocks";
 import Link from "../../Primitives/Link";
 import { renderImage } from "../../../utils/util";
 
-type MultiInfoCardProps = {
-  block: MultiInfoComponent;
+type SnackQuoteProps = {
+  block: SnackQuoteComponent;
   styles?: ThemeUICSSObject;
   variant?: ComponentVariant;
 };
@@ -92,7 +92,7 @@ const getQuoteStyles = (variant: ComponentVariant): ThemeUICSSObject => {
   }
 };
 
-const MultiInfoCard = (props: MultiInfoCardProps) => {
+const SnackQuote = (props: SnackQuoteProps) => {
   const { block, styles = {}, variant = ComponentVariant.LARGE } = props;
   const { title_article, description_article } = block;
 
@@ -139,4 +139,4 @@ const MultiInfoCard = (props: MultiInfoCardProps) => {
   );
 };
 
-export default MultiInfoCard;
+export default SnackQuote;

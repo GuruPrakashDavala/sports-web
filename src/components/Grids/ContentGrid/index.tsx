@@ -5,7 +5,7 @@ import { getArticles } from "../../../lib/strapi-utils";
 import { ColorTheme, ComponentVariant } from "../../../types/modifier";
 import { ContentGrid } from "../../../types/blocks";
 import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
-import MultiInfoCard from "../../Cards/MultiInfoCard";
+import SnackQuote from "../../Cards/SnackQuote";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { renderImage } from "../../../utils/util";
 import SectionHeading from "../../SectionHeading";
@@ -33,9 +33,9 @@ const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
           styles={{ height: "100%" }}
         />
       );
-    case "multiinfocomponent": {
+    case "snackquote": {
       return (
-        <MultiInfoCard
+        <SnackQuote
           block={block}
           variant={ComponentVariant.SMALL}
           styles={{ height: "100%" }}

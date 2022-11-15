@@ -27,6 +27,7 @@ const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
 };
 
 const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
+  console.log(props);
   const fixtures = props.fixtures;
   const tabLists = [
     { id: "0", name: "live" },
@@ -157,13 +158,16 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
 };
 
 export async function getServerSideProps() {
-  const res = await fetch(
-    `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=782`
-  );
-  const fixtures = await res.json();
-
-  // Pass data to the page via props
-  return { props: { fixtures: fixtures.data } };
+  try {
+    const res = await fetch(
+      `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=782`
+    );
+    const fixtures = await res.json();
+    return { props: { fixtures: fixtures.data } };
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
 export default Schedule;

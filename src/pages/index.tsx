@@ -19,7 +19,7 @@ import Quote from "../components/Quote";
 import PromoBlock from "../components/PromoBlock";
 import PromoBlockFlex from "../components/PromoBlock/PromoBlock";
 import BasicArticleCard from "../components/BasicArticleCard";
-import MultiInfoCard from "../components/Cards/MultiInfoCard";
+import SnackQuote from "../components/Cards/SnackQuote";
 import FixtureCard from "../components/Cards/FixtureCard";
 import { arrayBuffer } from "stream/consumers";
 import { differenceInCalendarDays, format } from "date-fns";
@@ -48,8 +48,6 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
       );
     case "quote":
       return <Quote quote={block.quote} pre={block.pre} post={block.post} />;
-    // case "multiinfocomponent":
-    //   return <MultiInfoCard block={block} />;
     default:
       return <></>;
   }

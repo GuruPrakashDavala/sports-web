@@ -3,7 +3,7 @@ import { ArticleType, CategoryType, ImageType, Video } from "./article";
 export enum BlockType {
   ARTICLE = "article",
   NEWSCARD = "newscard",
-  MULTIINFOCARD = "multiinfocard",
+  SNACKQUOTE = "snackquote",
 }
 
 type ArticleBlock = {
@@ -14,14 +14,14 @@ type ArticleBlock = {
   type: "article";
 };
 
-export type MultiInfoComponent = {
+export type SnackQuoteComponent = {
   id: number;
   title_article: { data: ArticleType };
   description_article: { data: ArticleType };
-  type: "multiinfocomponent";
+  type: "snackquote";
 };
 
-export type ContentGrid = ArticleBlock | MultiInfoComponent;
+export type ContentGrid = ArticleBlock | SnackQuoteComponent;
 
 export type ArticleCarousel = {
   articles: { data: ArticleType[] };

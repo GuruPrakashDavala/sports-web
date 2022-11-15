@@ -17,9 +17,9 @@ import Carousel, { CarouselItem } from "../../components/Carousel";
 import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
 import { renderImage } from "../../utils/util";
 import ArticleCard from "../../components/Cards/ArticleCard";
-import MultiInfoCard from "../../components/Cards/MultiInfoCard";
 import { ColorTheme, ComponentVariant } from "../../types/modifier";
 import { markdownToHtml } from "../../lib/posts";
+import SnackQuote from "../../components/Cards/SnackQuote";
 
 export const formattedTextStyles: ThemeUICSSObject = {
   // px: 2,
@@ -265,8 +265,8 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
           )}
         </div>
       );
-    case "multiinfocomponent":
-      return <MultiInfoCard block={block} variant={ComponentVariant.SMALL} />;
+    case "snackquote":
+      return <SnackQuote block={block} variant={ComponentVariant.SMALL} />;
     default:
       return <></>;
   }

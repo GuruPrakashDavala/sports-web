@@ -7,7 +7,7 @@ import {
   ImagePageBlock,
   ArticlePageBlock,
   Quote,
-  MultiInfoComponent,
+  SnackQuoteComponent,
 } from "./blocks";
 
 type WriterType = {
@@ -143,4 +143,4 @@ export type ArticleBlocks =
   | ImagePageBlock
   | ArticlePageBlock
   | Quote
-  | MultiInfoComponent;
+  | SnackQuoteComponent;
