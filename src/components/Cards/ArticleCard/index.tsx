@@ -210,13 +210,19 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
             />
 
             <div sx={imageIconStyles}>
-              <div sx={{ display: "flex", flexDirection: "row", paddingX: 2 }}>
-                {type === "Video" ? <PlayIcon /> : <></>}
+              <div
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  paddingX: 2,
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                {type === "Video" && <PlayIcon />}
                 {/* Here badge should be a enum of categories */}
-                {badge && badge !== "None" ? (
+                {badge && badge !== "None" && (
                   <Pill label={badge} theme={getPillColor(badge)} />
-                ) : (
-                  <></>
                 )}
               </div>
             </div>

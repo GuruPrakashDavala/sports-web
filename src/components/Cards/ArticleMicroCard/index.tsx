@@ -69,16 +69,21 @@ const ArticleMicroCard = (props: NewscardProps) => {
           />
 
           <div sx={{ ...imageIconStyles, height: "35px" }}>
-            <div sx={{ display: "flex", flexDirection: "row", paddingX: 1 }}>
-              {type === "Video" ? (
+            <div
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                paddingX: 1,
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            >
+              {type === "Video" && (
                 <PlayIcon variant={ComponentVariant.SMALL} />
-              ) : (
-                <></>
               )}
-              {badge && badge !== "None" ? (
+
+              {badge && badge !== "None" && (
                 <Pill label={badge} theme={getPillColor(badge)} />
-              ) : (
-                <></>
               )}
             </div>
           </div>
