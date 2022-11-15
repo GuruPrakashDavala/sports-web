@@ -86,16 +86,19 @@ const NewsHeader = ({
           </h1>
         </div>
       ) : (
-        <h2 sx={{ paddingX: 4, paddingY: 4 }}>
-          <span
-            sx={{
-              display: "inline-block",
-              marginRight: "0.5rem",
-              variant: "text.subheading2",
-            }}
-          >
-            {category}
-          </span>
+        <h2 sx={{ paddingX: 3, paddingY: 4 }}>
+          {category && (
+            <span
+              sx={{
+                display: "inline-block",
+                marginRight: "0.5rem",
+                variant: "text.subheading2",
+              }}
+            >
+              {category}
+            </span>
+          )}
+
           <span sx={{ variant: "text.heading1" }}>{title}</span>
         </h2>
       )}

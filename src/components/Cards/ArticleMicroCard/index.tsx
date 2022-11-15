@@ -85,19 +85,11 @@ const ArticleMicroCard = (props: NewscardProps) => {
         </div>
 
         <div sx={{ flexBasis: "50%" }}>
-          {/* <span
-            sx={{
-              display: "inline-block",
-              variant: "text.label2",
-            }}
-          >
-            {}
-          </span> */}
           <p
             sx={{
               variant: "text.label2",
               color: colors.gray100,
-              paddingBottom: 1,
+              paddingBottom: "5px",
             }}
           >
             {articlePublishedDate}

@@ -67,7 +67,7 @@ export const formattedTextStyles: ThemeUICSSObject = {
 };
 
 const articleContainerStyles: ThemeUICSSObject = {
-  paddingX: [4, null, null, 7],
+  paddingX: [3, null, null, 7],
   paddingY: [null, null, 5],
 };
 
