@@ -14,7 +14,6 @@ type ArticleCarouselProps = {
 };
 
 const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
-  console.log(props)
   const { block, theme = ColorTheme.LIGHT, styles = {} } = props;
   const carouselItems: CarouselItem[] = block.articles.data.map(
     (article, index) => {
@@ -30,7 +29,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
             category={article.attributes.category}
             slug={article.attributes.slug}
             theme={theme}
-            styles={{ height: "100%" }}
+            styles={{ height: "100%", ...styles }}
           />
         ),
         slideStyles: {},
@@ -39,7 +38,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   );
 
   return (
-    <SectionWrapper theme={theme} styles={styles}>
+    <SectionWrapper theme={theme}>
       <SectionHeading
         title={block.title}
         theme={ColorTheme.LIGHT}

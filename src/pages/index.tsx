@@ -34,6 +34,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
         <ArticeCarousel
           block={block}
           theme={index % 2 === 0 ? ColorTheme.GRAY : ColorTheme.LIGHT}
+          styles={{ padding: [1, 2] }}
         />
       );
     }

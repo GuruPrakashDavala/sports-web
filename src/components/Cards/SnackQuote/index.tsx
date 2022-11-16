@@ -4,7 +4,7 @@ import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ComponentVariant } from "../../../types/modifier";
 import SnackNews from "./snacknews";
-import RightArrowIcon from "../../Icons/RightArrow";
+import ForwardArrow from "../../Icons/ForwardArrow";
 import { SnackQuoteComponent } from "../../../types/blocks";
 import Link from "../../Primitives/Link";
 import { renderImage } from "../../../utils/util";
@@ -44,6 +44,10 @@ const quoteStyles = {
 };
 
 const quoteAnchorStyles = {
+  display: "flex",
+  justifyContent: "flex-start",
+  alignItems: "center",
+  width: "fit-content",
   textDecoration: "none",
   cursor: "pointer",
   color: colors.white,
@@ -117,7 +121,7 @@ const SnackQuote = (props: SnackQuoteProps) => {
             <Fragment>
               {title_article.data.attributes.title}
               <span sx={iconContainerStyles}>
-                <RightArrowIcon variant={variant} styles={{ marginLeft: -1 }} />
+                <ForwardArrow variant={variant} styles={{}} />
               </span>
             </Fragment>
           </Link>
