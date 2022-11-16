@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { ColorTheme } from "../../types/modifier";
 import { ArticleCarousel } from "../../types/blocks";
 import ArticleCard, { ArticleVariant } from "../Cards/ArticleCard";
@@ -15,10 +16,10 @@ type ArticleCarouselProps = {
 
 const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   const { block, theme = ColorTheme.LIGHT, styles = {} } = props;
-  const carouselItems: CarouselItem[] = block.articles.data.map(
-    (article, index) => {
-      return {
-        content: (
+  const carouselItems: CarouselItem[] = block.articles.data.map((article) => {
+    return {
+      content: (
+        <Fragment key={article.id}>
           <ArticleCard
             label={article.attributes.title}
             imageSrc={renderImage(article.attributes.coverimage.data)}
@@ -31,11 +32,11 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
             theme={theme}
             styles={{ height: "100%", ...styles }}
           />
-        ),
-        slideStyles: {},
-      };
-    }
-  );
+        </Fragment>
+      ),
+      slideStyles: {},
+    };
+  });
 
   return (
     <SectionWrapper theme={theme}>

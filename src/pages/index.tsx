@@ -23,6 +23,7 @@ import SnackQuote from "../components/Cards/SnackQuote";
 import FixtureCard from "../components/Cards/FixtureCard";
 import { arrayBuffer } from "stream/consumers";
 import { differenceInCalendarDays, format } from "date-fns";
+import { Fixture as FixtureT } from "../types/sportmonks";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
@@ -72,13 +73,10 @@ export type HomePageProps = {
   id: number;
 };
 
-const Home: NextPage<{ homeRes: HomePageProps; fixtures: any }> = ({
+const Home: NextPage<{ homeRes: HomePageProps; fixtures: FixtureT[] }> = ({
   homeRes,
   fixtures,
 }): JSX.Element => {
-  console.log(homeRes);
-  console.log(fixtures);
-
   // Expected format - 2022-10-12
   // Year-Month-Date
   const now = new Date();
@@ -111,11 +109,9 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: any }> = ({
       </Head>
 
       {homeRes.attributes.contentGrid &&
-      homeRes.attributes.contentGrid.length > 0 ? (
-        <ContentGrid blocks={homeRes.attributes.contentGrid} />
-      ) : (
-        <Fragment />
-      )}
+        homeRes.attributes.contentGrid.length > 0 && (
+          <ContentGrid blocks={homeRes.attributes.contentGrid} />
+        )}
 
       <SectionWrapper>
         <SectionHeading
@@ -129,25 +125,28 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: any }> = ({
           }}
         />
         <Carousel
-          swiperId={`1`}
-          items={fixtures.map((fixtureItem: any) => {
-            return { content: <FixtureCard fixture={fixtureItem} /> };
+          swiperId={`fixturecarousel`}
+          items={fixtures.map((fixtureItem) => {
+            return {
+              content: (
+                <Fragment key={fixtureItem.id}>
+                  <FixtureCard fixture={fixtureItem} />
+                </Fragment>
+              ),
+            };
           })}
         />
       </SectionWrapper>
 
       {homeRes.attributes.pageblocks &&
-      homeRes.attributes.pageblocks.length > 0 ? (
+        homeRes.attributes.pageblocks.length > 0 &&
         homeRes.attributes.pageblocks.map((block, index) => {
           return (
             <div key={index}>
               <BlockPicker block={block} index={index} />
             </div>
           );
-        })
-      ) : (
-        <Fragment />
-      )}
+        })}
 
       {/* WIP */}
 
