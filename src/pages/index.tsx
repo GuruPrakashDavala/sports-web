@@ -16,10 +16,6 @@ import { ColorTheme } from "../types/modifier";
 import { ImageType } from "../types/article";
 import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 import Quote from "../components/Quote";
-import PromoBlock from "../components/PromoBlock";
-import PromoBlockFlex from "../components/PromoBlock/PromoBlock";
-import BasicArticleCard from "../components/BasicArticleCard";
-import SnackQuote from "../components/Cards/SnackQuote";
 import FixtureCard from "../components/Cards/FixtureCard";
 import { arrayBuffer } from "stream/consumers";
 import { differenceInCalendarDays, format } from "date-fns";
@@ -28,7 +24,6 @@ import { Fixture as FixtureT } from "../types/sportmonks";
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
 const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
-  console.log(block.type);
   switch (block.type) {
     case "articlecarousel": {
       return (

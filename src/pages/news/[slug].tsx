@@ -376,7 +376,7 @@ export default ArticlePage;
 export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
-    fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 2`),
+    fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 4`),
     fetchStrapiAPI(`/articles?populate=deep, 2`),
   ]);
 
