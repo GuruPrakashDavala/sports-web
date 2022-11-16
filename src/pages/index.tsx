@@ -103,11 +103,6 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: FixtureT[] }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {homeRes.attributes.contentGrid &&
-        homeRes.attributes.contentGrid.length > 0 && (
-          <ContentGrid blocks={homeRes.attributes.contentGrid} />
-        )}
-
       <SectionWrapper>
         <SectionHeading
           title={`Match schedule & results`}
@@ -132,6 +127,11 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: FixtureT[] }> = ({
           })}
         />
       </SectionWrapper>
+
+      {homeRes.attributes.contentGrid &&
+        homeRes.attributes.contentGrid.length > 0 && (
+          <ContentGrid blocks={homeRes.attributes.contentGrid} />
+        )}
 
       {homeRes.attributes.pageblocks &&
         homeRes.attributes.pageblocks.length > 0 &&
