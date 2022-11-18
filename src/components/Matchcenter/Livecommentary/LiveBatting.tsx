@@ -3,11 +3,7 @@
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { ThemeUICSSObject } from "theme-ui";
 import { PlayerBattingDetails, rowHeaderStyles, rowWrapperStyles } from ".";
-import {
-  Ball as BallT,
-  Batting as BattingT,
-  Player as PlayerT,
-} from "../../../types/sportmonks";
+import { Ball as BallT, Batting as BattingT } from "../../../types/sportmonks";
 
 type LiveBattingProps = {
   fullBattingList: BattingT[];

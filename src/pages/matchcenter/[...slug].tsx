@@ -7,6 +7,7 @@ import { colors } from "../../styles/theme";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
 import LiveCommentary from "../../components/Matchcenter/Livecommentary";
+import Abandoned from "../../components/Matchcenter/Util/Adandoned";
 import Scoreboard from "../../components/Matchcenter/Scoreboard";
 import Header from "../../components/Matchcenter/Header";
 import { articleBodyWrapperStyles } from "../news/[slug]";
@@ -26,6 +27,7 @@ import {
 import { ArticleType } from "../../types/article";
 import { Extras, FixtureStatus, TeamInfo } from "../../types/matchcenter";
 import { getPlayersDidNotBat, getTeamLineup } from "../../utils/matchcenter";
+import Matchinfo from "../../components/Matchcenter/MatchInfo/Matchinfo";
 
 type MatchCenterProps = {
   fixture: FixtureT;
@@ -35,6 +37,9 @@ type MatchCenterProps = {
 export const tabStyles: ThemeUICSSObject = {
   "> .react-tabs__tab-list": {
     display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: [null, 2, 3],
     flexWrap: "wrap",
     width: "100%",
     borderBottom: "1px solid",
@@ -44,7 +49,7 @@ export const tabStyles: ThemeUICSSObject = {
     paddingTop: 1,
   },
   "> ul .react-tabs__tab": {
-    flexGrow: 1,
+    flexGrow: [1, 0],
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -90,14 +95,13 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
     { id: "0", name: "match info" },
     { id: "1", name: "live commentary" },
     { id: "2", name: "scorecard" },
-    { id: "3", name: "trending" },
+    // { id: "3", name: "trending" },
   ];
 
   const smTabLists = [
-    { id: "0", name: "info" },
+    { id: "0", name: "match info" },
     { id: "1", name: "commentary" },
     { id: "2", name: "scorecard" },
-    { id: "3", name: "trending" },
   ];
 
   const tabLists = bp > 0 ? mdTabLists : smTabLists;
@@ -424,7 +428,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                   </TabList>
 
                   <TabPanel id="matchinfo">
-                    This section contains the match info
+                    <Matchinfo />
                   </TabPanel>
 
                   <TabPanel id="livecommentary">
@@ -440,7 +444,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         bowling={fixture.bowling}
                       />
                     ) : (
-                      <>{fixture.status}</>
+                      <Abandoned note={fixture.note} />
                     )}
                   </TabPanel>
 
@@ -460,13 +464,13 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         s2FallOfWickets={s2FallOfWickets}
                       />
                     ) : (
-                      <>{fixture.status}</>
+                      <Abandoned note={fixture.note} />
                     )}
                   </TabPanel>
 
-                  <TabPanel id="trending">
+                  {/* <TabPanel id="trending">
                     This section contains trending socials
-                  </TabPanel>
+                  </TabPanel> */}
                 </Tabs>
               </Fragment>
             )}
