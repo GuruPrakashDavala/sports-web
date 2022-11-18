@@ -46,7 +46,7 @@ export const tabStyles: ThemeUICSSObject = {
     borderColor: colors.gray200,
     // margin: "0 0 20px",
     margin: 0,
-    paddingTop: [null, 1],
+    paddingTop: ["5px", 1],
   },
   "> ul .react-tabs__tab": {
     flexGrow: [1, 0],

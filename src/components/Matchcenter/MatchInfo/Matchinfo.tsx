@@ -46,7 +46,7 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
     <div sx={{ paddingY: 3 }}>
       {tosswon && elected && (
         <p
-          sx={{ paddingBottom: 1 }}
+          sx={{ paddingBottom: 1, color: colors.green }}
         >{`${tosswon.name} elected to ${elected} first`}</p>
       )}
       <div sx={rowWrapperStyles}>
