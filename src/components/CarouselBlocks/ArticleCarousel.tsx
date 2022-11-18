@@ -45,9 +45,9 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
         theme={ColorTheme.LIGHT}
         styles={{ px: [0, 1] }}
         link={{
-          href: `https://`,
+          href: `/news`,
           external: false,
-          label: `View all`,
+          label: `View all news`,
         }}
       />
       <Carousel
