@@ -27,9 +27,9 @@ export const renderImage = (image: ImageType) => {
     ? image.attributes.formats.large.url
     : image.attributes.formats.medium
     ? image.attributes.formats.medium.url
-    : image.attributes.formats.small.url;
-
-  // return `${imageHost}${imageSrc}`;
+    : image.attributes.formats.small
+    ? image.attributes.formats.small.url
+    : image.attributes.url;
   return imageSrc;
 };
 

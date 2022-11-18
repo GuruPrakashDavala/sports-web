@@ -127,14 +127,20 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
         (image, index) => {
           return {
             content: (
-              <div key={index} sx={{ px: [1], cursor: "pointer" }}>
+              <div
+                key={index}
+                sx={{
+                  px: ["5px", 1],
+                  cursor: "pointer",
+                }}
+              >
                 <Image
                   src={renderImage(image)}
                   layout="responsive"
                   objectFit="cover"
                   alt="image"
-                  height={"100%"}
-                  width={"100%"}
+                  height={40}
+                  width={80}
                 />
               </div>
             ),
@@ -152,6 +158,9 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
           }}
           key={block.id}
         >
+          <p sx={{ padding: 1, variant: "text.label1", color: colors.gray100 }}>
+            Image slider: Swipe left to see more images
+          </p>
           <Carousel swiperId="1" items={carouselItems} styles={{ gap: [1] }} />
         </div>
       );
@@ -377,7 +386,9 @@ export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
     fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 4`),
-    fetchStrapiAPI(`/articles?populate=deep, 2`),
+    fetchStrapiAPI(
+      `/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=updatedAt:desc`
+    ),
   ]);
 
   if (!article.data || article.data.length === 0) {

@@ -3,9 +3,8 @@
 import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
-import { ColorTheme, ComponentVariant } from "../../types/modifier";
+import { ColorTheme } from "../../types/modifier";
 import RightArrowIcon from "../Icons/RightArrow";
-import Button, { ButtonVariants } from "../Primitives/Button";
 import Link from "../Primitives/Link";
 import Pill from "../Primitives/Pill";
 

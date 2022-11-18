@@ -26,6 +26,16 @@ const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
   );
 };
 
+export const selectBtnStyles: ThemeUICSSObject = {
+  padding: 1,
+  paddingRight: 3,
+  marginBottom: 1,
+  border: "none",
+  background: colors.gray300,
+  width: "50%",
+  "> option": { background: colors.white },
+};
+
 const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   console.log(props);
   const fixtures = props.fixtures;
@@ -107,34 +117,12 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
           </div>
 
           <div sx={{ display: "flex", gap: 2 }}>
-            <select
-              name="season"
-              sx={{
-                padding: 1,
-                paddingRight: 3,
-                marginBottom: 1,
-                border: "none",
-                background: colors.gray300,
-                width: "50%",
-                "> option": { background: colors.white, padding: 1 },
-              }}
-            >
+            <select name="season" sx={selectBtnStyles}>
               <option value="2020">2020-21</option>
               <option value="2021">2021-22</option>
             </select>
 
-            <select
-              name="league"
-              sx={{
-                padding: 1,
-                paddingRight: 3,
-                marginBottom: 1,
-                border: "none",
-                background: colors.gray300,
-                width: "50%",
-                "> option": { background: colors.white, padding: 1 },
-              }}
-            >
+            <select name="league" sx={selectBtnStyles}>
               <option value="ipl">IPL</option>
               <option value="wct20">WCT20</option>
             </select>
