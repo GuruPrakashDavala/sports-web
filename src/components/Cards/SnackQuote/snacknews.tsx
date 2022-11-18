@@ -121,7 +121,7 @@ const SnackNews = (props: SnackNewsType) => {
               src={imageSrc}
               layout="responsive"
               objectFit="cover"
-              alt="image"
+              alt={slug}
               height={articleVariantImageSize}
               width={"100%"}
             />

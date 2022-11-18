@@ -139,7 +139,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
                   layout="responsive"
                   objectFit="cover"
                   alt="image"
-                  height={40}
+                  height={50}
                   width={80}
                 />
               </div>
