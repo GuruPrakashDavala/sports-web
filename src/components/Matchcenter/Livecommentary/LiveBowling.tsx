@@ -10,7 +10,7 @@ const LiveBowling = (props: {
 }) => {
   const { recentBall, fullBowlersList, previousBowler } = props;
   return (
-    <div sx={{ ...rowWrapperStyles, marginTop: 4 }}>
+    <div sx={{ ...rowWrapperStyles, marginTop: [2, 3, 4] }}>
       <ul sx={rowHeaderStyles}>
         <li sx={{ flexBasis: "40%" }}>
           <p>Bowler</p>

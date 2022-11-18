@@ -1,7 +1,9 @@
 /** @jsxImportSource theme-ui */
 
+import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
+import { Fixture as FixtureT } from "../../../types/sportmonks";
 
 const rowWrapperStyles: ThemeUICSSObject = {
   display: "flex",
@@ -26,9 +28,27 @@ const rowHeaderStyles: ThemeUICSSObject = {
   },
 };
 
-const Matchinfo = () => {
+const Matchinfo = (props: { fixture: FixtureT }) => {
+  const {
+    localteam,
+    visitorteam,
+    starting_at,
+    stage,
+    secondumpire,
+    firstumpire,
+    venue,
+    round,
+    tosswon,
+    elected,
+  } = props.fixture;
+  const matchStartsAt = new Date(starting_at);
   return (
     <div sx={{ paddingY: 3 }}>
+      {tosswon && elected && (
+        <p
+          sx={{ paddingBottom: 1 }}
+        >{`${tosswon.name} elected to ${elected} first`}</p>
+      )}
       <div sx={rowWrapperStyles}>
         <ul sx={rowHeaderStyles}>
           <li sx={{ flexBasis: ["100%"] }}>Match info</li>
@@ -37,29 +57,38 @@ const Matchinfo = () => {
         <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
           <li sx={{ flexBasis: "30%" }}>Match</li>
           <li sx={{ flexBasis: "70%" }}>
-            NZ vs IND, 1st T20I, India tour of New Zealand, 2022
+            {localteam.code} vs {visitorteam.code}, {round}, {stage.name},{" "}
+            {format(matchStartsAt, "yyyy")}
           </li>
         </ul>
 
         <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
           <li sx={{ flexBasis: "30%" }}>Date</li>
-          <li sx={{ flexBasis: "70%" }}>Friday, November 18, 2022</li>
+          <li sx={{ flexBasis: "70%" }}>
+            {format(matchStartsAt, "cccc, LLLL d, yyyy")}
+          </li>
         </ul>
 
         <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
           <li sx={{ flexBasis: "30%" }}>Time</li>
-          <li sx={{ flexBasis: "70%" }}>Time6:30 AM</li>
+          <li sx={{ flexBasis: "70%" }}> {format(matchStartsAt, "p OOOO")}</li>
         </ul>
 
         <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
           <li sx={{ flexBasis: "30%" }}>Venue</li>
-          <li sx={{ flexBasis: "70%" }}>Sky Stadium, Wellington</li>
+          <li sx={{ flexBasis: "70%" }}>
+            {venue.name}, {venue.city}
+          </li>
         </ul>
 
-        <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
-          <li sx={{ flexBasis: "30%" }}>Umpires</li>
-          <li sx={{ flexBasis: "70%" }}>Chris Brown, Wayne Knights</li>
-        </ul>
+        {firstumpire && secondumpire && (
+          <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
+            <li sx={{ flexBasis: "30%" }}>Umpires</li>
+            <li sx={{ flexBasis: "70%" }}>
+              {firstumpire.fullname}, {secondumpire.fullname}
+            </li>
+          </ul>
+        )}
       </div>
     </div>
   );

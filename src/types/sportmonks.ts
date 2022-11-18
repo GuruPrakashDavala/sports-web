@@ -47,6 +47,8 @@ export type Fixture = {
   venue: any;
   odds: Array<any>;
   stage: Stage;
+  firstumpire?: Official;
+  secondumpire?: Official;
 };
 
 type League = {
@@ -241,4 +243,16 @@ type Runs = {
   pp3: null;
   updated_at: string | Date;
   team: null | Team;
+};
+
+type Official = {
+  country_id: number;
+  dateofbirth: string;
+  firstname: string;
+  fullname: string;
+  gender: string;
+  id: number;
+  lastname: string;
+  resource: string;
+  updated_at: string;
 };

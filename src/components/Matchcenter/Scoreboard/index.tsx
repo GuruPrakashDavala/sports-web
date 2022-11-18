@@ -45,8 +45,6 @@ const tabItemStyles: ThemeUICSSObject = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  // height: "100%",
-  // width: "100%",
   position: "relative",
 };
 
@@ -60,7 +58,7 @@ const tabTeamImageStyles: ThemeUICSSObject = {
 const ScoreboardContent = (props: ScoreboardContentProps): JSX.Element => {
   const { fixture, team, extras, didNotBat, fallOfWickets, innings } = props;
   return (
-    <div sx={{ paddingY: [2, 3] }}>
+    <div sx={{ paddingY: [1, 2, 3] }}>
       <InningsTable innings={innings} fixture={fixture} teamInfo={team} />
       <InningsAdditionalInfo
         extras={extras}
