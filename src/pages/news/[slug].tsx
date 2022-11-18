@@ -20,6 +20,7 @@ import ArticleCard from "../../components/Cards/ArticleCard";
 import { ColorTheme, ComponentVariant } from "../../types/modifier";
 import { markdownToHtml } from "../../lib/posts";
 import SnackQuote from "../../components/Cards/SnackQuote";
+import ImageCollectionIcon from "../../components/Icons/ImageCollectionIcon";
 
 export const formattedTextStyles: ThemeUICSSObject = {
   // px: 2,
@@ -158,9 +159,22 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
           }}
           key={block.id}
         >
-          <p sx={{ padding: 1, variant: "text.label1", color: colors.gray100 }}>
-            Image slider: Swipe left to see more images
-          </p>
+          <div
+            sx={{ display: "flex", flexDirection: "row", alingItems: "center" }}
+          >
+            <ImageCollectionIcon />
+            <p
+              sx={{
+                paddingX: "5px",
+                paddingY: 1,
+                variant: "text.label1",
+                color: colors.gray100,
+              }}
+            >
+              Image slider: Swipe left to see more images
+            </p>
+          </div>
+
           <Carousel swiperId="1" items={carouselItems} styles={{ gap: [1] }} />
         </div>
       );
@@ -202,6 +216,9 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
             py: [2, null, 4, 5],
             // width: ["calc(100% + 30px)", null, null, "calc(200% + 120px)"],
             // marginLeft: ["-15px", null, null, "calc(-50% - 60px)"],
+            // display: "block",
+            // position: "relative",
+            // width: "100%",
           }}
           key={index}
         >
@@ -215,8 +232,14 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
             width={"100%"}
           />
           {block.source && (
-            <p sx={{ paddingTop: [1], variant: "text.label1" }}>
-              {block.source}
+            <p
+              sx={{
+                paddingTop: [1],
+                variant: "text.label2",
+                color: colors.gray100,
+              }}
+            >
+              Source: {block.source}
             </p>
           )}
         </div>

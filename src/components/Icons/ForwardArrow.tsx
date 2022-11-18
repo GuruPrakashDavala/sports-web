@@ -3,7 +3,6 @@
 import { FaArrowCircleRight } from "react-icons/fa";
 import { ComponentVariant } from "../../types/modifier";
 import { getIconSize, IconProps } from "./Play";
-import { IoIosArrowForward } from "react-icons/io";
 
 const RightArrowIcon = (props: IconProps) => {
   const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;

@@ -22,6 +22,11 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
           title={title}
           theme={ColorTheme.LIGHT}
           styles={{ px: [0, 1] }}
+          link={{
+            href: `/news`,
+            external: false,
+            label: `View all news`,
+          }}
         />
       )}
       {bp > 0 && (
@@ -40,7 +45,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
                 sx={{
                   flexBasis:
                     index < 2
-                      ? ["100%", null, "calc(100% / 2)"]
+                      ? ["100%", null, "calc(100% / 3)"]
                       : ["100%", null, "calc(100% / 2)", "calc(100% / 3)"],
                   marginBottom: [null, null, 2],
                 }}

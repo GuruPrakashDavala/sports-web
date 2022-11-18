@@ -9,16 +9,28 @@ import ArticleMicroCard from "../../components/Cards/ArticleMicroCard";
 import SectionHeading from "../../components/SectionHeading";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { fetchStrapiAPI } from "../../lib/strapi";
-import { ArticleType } from "../../types/article";
+import { ArticleType, CategoryType } from "../../types/article";
 import { ColorTheme } from "../../types/modifier";
 import { renderImage } from "../../utils/util";
 import { selectBtnStyles } from "../schedule";
 
-const NewsPage = (props: { articles: ArticleType[] }) => {
-  console.log(props.articles);
+type ArticleCategories = {
+  attributes: {
+    name: string;
+  };
+};
+
+const NewsPage = (props: {
+  articles: ArticleType[];
+  categories: ArticleCategories[];
+}) => {
+  console.log(props);
   const [articles, setArticles] = useState(props.articles);
   const bp = useBreakpointIndex();
-  const categories = ["All", "Mens", "Womens", "Breaking"];
+  // const categories = ["All", "Mens", "Womens", "Breaking"];
+  const categories = props.categories.map((category) => {
+    return category.attributes.name;
+  });
 
   const categoryChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCategory = event.target.value;
@@ -61,6 +73,7 @@ const NewsPage = (props: { articles: ArticleType[] }) => {
           sx={{ ...selectBtnStyles, width: "fit-content" }}
           onChange={categoryChanged}
         >
+          <option value="All">All</option>
           {categories.map((category) => (
             <option value={category} key={category}>
               {category}
@@ -133,12 +146,13 @@ const NewsPage = (props: { articles: ArticleType[] }) => {
 export default NewsPage;
 
 export async function getStaticProps(context: any) {
-  const [articles] = await Promise.all([
+  const [articles, categories] = await Promise.all([
     fetchStrapiAPI(`/articles?populate=deep, 2`),
+    fetchStrapiAPI(`/categories?fields[0]=name`),
   ]);
 
   return {
-    props: { articles: articles.data },
+    props: { articles: articles.data, categories: categories.data },
     revalidate: 60 * 30,
   };
 }
