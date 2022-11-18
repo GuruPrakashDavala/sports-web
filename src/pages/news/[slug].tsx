@@ -382,7 +382,7 @@ export default ArticlePage;
 //   };
 // }
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
     fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 4`),
@@ -400,6 +400,5 @@ export async function getStaticProps(context: any) {
 
   return {
     props: { data: article.data[0], recentArticles: recentArticles.data },
-    revalidate: 60 * 20,
   };
 }
