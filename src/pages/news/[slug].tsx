@@ -127,7 +127,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
         (image, index) => {
           return {
             content: (
-              <div key={index} sx={{ px: [null, null, 1], cursor: "pointer" }}>
+              <div key={index} sx={{ px: [1], cursor: "pointer" }}>
                 <Image
                   src={renderImage(image)}
                   layout="responsive"
