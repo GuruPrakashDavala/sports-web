@@ -11,6 +11,7 @@ import { tabStyles } from "../matchcenter/[...slug]";
 import { compareAsc } from "date-fns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useRouter } from "next/router";
+import { fetchStrapiAPI } from "../../lib/strapi";
 
 const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
   const { fixtures } = props;
@@ -38,10 +39,18 @@ export const selectBtnStyles: ThemeUICSSObject = {
   "> option": { background: colors.white },
 };
 
-const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
-  const fixtures = props.fixtures;
-  console.log(fixtures);
+type CMSFixtures = {
+  id: number;
+  seriesId: string;
+  seriesName: string;
+};
 
+const Schedule = (props: {
+  fixtures: FixtureT[];
+  series: [] | CMSFixtures[];
+  seriesIds: any;
+}): JSX.Element => {
+  console.log(props);
   const [selectedStage, setSelectedStage] = useState<string>("All");
   const [todayFixtures, setTodayFixtures] = useState<FixtureT[] | undefined>(
     undefined
@@ -175,15 +184,21 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
           </div>
 
           <select
-            name="league"
+            name="series"
             sx={selectBtnStyles}
             onChange={stageChanged}
             value={selectedStage}
           >
             <option value="All">All</option>
-            {stages.map((stage) => (
+            {/* {stages.map((stage) => (
               <option value={stage} key={stage}>
                 {stage}
+              </option>
+            ))} */}
+
+            {props.series.map((series) => (
+              <option value={series.seriesId} key={series.seriesId}>
+                {series.seriesName}
               </option>
             ))}
           </select>
@@ -207,11 +222,26 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
 
 export async function getServerSideProps(context: any) {
   try {
-    const res = await fetch(
-      `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=782`
+    const fixturesDefinedInCMS = await fetchStrapiAPI(
+      `/fixture-schedules?populate=deep,2`
     );
+
+    const seriesIds = fixturesDefinedInCMS.data.attributes.series
+      .map((series: any) => series.seriesId)
+      .toString();
+
+    const res = await fetch(
+      `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[stage_id]=${seriesIds}`
+    );
+
     const fixtures = await res.json();
-    return { props: { fixtures: fixtures.data } };
+    return {
+      props: {
+        fixtures: fixtures.data,
+        series: fixturesDefinedInCMS.data.attributes.series,
+        seriesIds,
+      },
+    };
   } catch (err) {
     console.log(err);
     return null;
