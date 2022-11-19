@@ -223,7 +223,7 @@ const Schedule = (props: {
 export async function getServerSideProps(context: any) {
   try {
     const fixturesDefinedInCMS = await fetchStrapiAPI(
-      `/fixture-schedules?populate=deep,2`
+      `/fixture-schedule?populate=deep,2`
     );
 
     const seriesIds = fixturesDefinedInCMS.data.attributes.series
