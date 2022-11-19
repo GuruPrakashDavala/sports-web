@@ -1,6 +1,8 @@
 /** @jsxImportSource theme-ui */
 
+import { useEffect } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
+import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import ArticleCard, {
   ArticleVariant,
@@ -9,7 +11,7 @@ import ArticleMicroCard from "../../components/Cards/ArticleMicroCard";
 import SectionHeading from "../../components/SectionHeading";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { fetchStrapiAPI } from "../../lib/strapi";
-import { ArticleType, CategoryType } from "../../types/article";
+import { ArticleType } from "../../types/article";
 import { ColorTheme } from "../../types/modifier";
 import { renderImage } from "../../utils/util";
 import { selectBtnStyles } from "../schedule";
@@ -24,35 +26,40 @@ const NewsPage = (props: {
   articles: ArticleType[];
   categories: ArticleCategories[];
 }) => {
-  console.log(props);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [articles, setArticles] = useState(props.articles);
   const bp = useBreakpointIndex();
-  // const categories = ["All", "Mens", "Womens", "Breaking"];
+  const router = useRouter();
   const categories = props.categories.map((category) => {
     return category.attributes.name;
   });
 
-  const categoryChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCategory = event.target.value;
+  useEffect(() => {
+    router.query.category
+      ? setSelectedCategory(router.query.category as string)
+      : setSelectedCategory("All");
+
     const articles =
-      selectedCategory === "All"
+      !selectedCategory || selectedCategory === "All"
         ? props.articles
         : props.articles.filter((article) => {
             if (article.attributes.category?.data) {
               return (
-                article.attributes.category.data.attributes.name ===
-                event.target.value
+                article.attributes.category.data.attributes.name.toLowerCase() ===
+                selectedCategory.toLowerCase()
               );
             }
           });
-
     setArticles(articles);
-    console.log(event.target.value);
-    console.log(articles);
+  }, [router.query.category, selectedCategory]);
+
+  const categoryChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    router.push({ query: { category: event.target.value } });
   };
 
   return (
-    <SectionWrapper>
+    <SectionWrapper styles={{ paddingY: 2 }}>
       <div
         sx={{
           display: "flex",
@@ -72,6 +79,7 @@ const NewsPage = (props: {
           name="league"
           sx={{ ...selectBtnStyles, width: "fit-content" }}
           onChange={categoryChanged}
+          value={selectedCategory}
         >
           <option value="All">All</option>
           {categories.map((category) => (
@@ -146,13 +154,21 @@ const NewsPage = (props: {
 export default NewsPage;
 
 export async function getStaticProps(context: any) {
-  const [articles, categories] = await Promise.all([
-    fetchStrapiAPI(`/articles?populate=deep, 2`),
-    fetchStrapiAPI(`/categories?fields[0]=name`),
-  ]);
+  try {
+    const [articles, categories] = await Promise.all([
+      fetchStrapiAPI(`/articles?populate=deep, 2`),
+      fetchStrapiAPI(`/categories?fields[0]=name`),
+    ]);
 
-  return {
-    props: { articles: articles.data, categories: categories.data },
-    revalidate: 60 * 30,
-  };
+    return {
+      props: {
+        articles: articles.data,
+        categories: categories.data,
+      },
+      revalidate: 60 * 30,
+    };
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
 }

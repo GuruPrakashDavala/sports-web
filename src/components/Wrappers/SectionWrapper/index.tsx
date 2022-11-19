@@ -17,8 +17,7 @@ const SectionWrapper = (props: SectionWrapperProps): JSX.Element => {
     <div
       sx={{
         paddingX: [2, null, 5, 6],
-        paddingTop: [2, null, 5, 6],
-        paddingBottom: [2, null, 6, 7],
+        paddingY: [2, null, 5, 6],
         background:
           theme === ColorTheme.GRAY
             ? colors.gray300

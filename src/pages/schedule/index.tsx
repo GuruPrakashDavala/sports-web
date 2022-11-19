@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import FixtureCard from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { Fixture as FixtureT } from "../../types/sportmonks";
@@ -10,6 +10,7 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { tabStyles } from "../matchcenter/[...slug]";
 import { compareAsc } from "date-fns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
+import { useRouter } from "next/router";
 
 const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
   const { fixtures } = props;
@@ -32,13 +33,28 @@ export const selectBtnStyles: ThemeUICSSObject = {
   marginBottom: 1,
   border: "none",
   background: colors.gray300,
-  width: "50%",
+  // width: "50%",
+  width: [null, "fit-content"],
   "> option": { background: colors.white },
 };
 
 const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
-  console.log(props);
   const fixtures = props.fixtures;
+  console.log(fixtures);
+
+  const [selectedStage, setSelectedStage] = useState<string>("All");
+  const [todayFixtures, setTodayFixtures] = useState<FixtureT[] | undefined>(
+    undefined
+  );
+  const [recentFixtures, setRecentFixtures] = useState<FixtureT[] | undefined>(
+    undefined
+  );
+  const [upcomingFixtures, setUpcomingFixtures] = useState<
+    FixtureT[] | undefined
+  >(undefined);
+
+  const stages = [2558, 3470];
+
   const tabLists = [
     { id: "0", name: "live" },
     { id: "1", name: "upcoming" },
@@ -46,19 +62,61 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   ];
 
   const now = new Date();
-  const todayFixtures = fixtures.filter(
-    (fixture) => compareAsc(new Date(fixture.starting_at), now) === 0
-  );
-
-  const recentFixtures = fixtures
-    .filter((fixture) => compareAsc(new Date(fixture.starting_at), now) < 1)
-    .reverse();
-
-  const upcomingFixtures = fixtures.filter(
-    (fixture) => compareAsc(new Date(fixture.starting_at), now) > 0
-  );
 
   const bp = useBreakpointIndex();
+  const router = useRouter();
+  const [tabIndex, setTabIndex] = useState<number>(0);
+
+  useEffect(() => {
+    router.query.series
+      ? setSelectedStage(router.query.series as string)
+      : setSelectedStage("All");
+
+    const fixtures =
+      selectedStage === "All"
+        ? props.fixtures
+        : props.fixtures.filter(
+            (fixture) => fixture.stage.id === Number(selectedStage)
+          );
+
+    const todayFixtures = fixtures.filter(
+      (fixture) => compareAsc(new Date(fixture.starting_at), now) === 0
+    );
+
+    const recentFixtures = fixtures
+      .filter((fixture) => compareAsc(new Date(fixture.starting_at), now) < 1)
+      .reverse();
+
+    const upcomingFixtures = fixtures.filter(
+      (fixture) => compareAsc(new Date(fixture.starting_at), now) > 0
+    );
+    setTodayFixtures(todayFixtures);
+    setRecentFixtures(recentFixtures);
+    setUpcomingFixtures(upcomingFixtures);
+  }, [router.query.series, selectedStage]);
+
+  const stageChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    router.push({
+      query: { series: event.target.value },
+    });
+  };
+
+  // useEffect(() => {
+  //   console.log(router);
+  //   const queryPath = router.query.slug;
+  //   switch (queryPath) {
+  //     case "live":
+  //       setTabIndex(0);
+  //     case "upcoming":
+  //       setTabIndex(1);
+  //     case "recent":
+  //       console.log("recent case");
+  //       setTabIndex(2);
+  //     default:
+  //       setTabIndex(0);
+  //   }
+  // }, [router.query.slug, tabIndex]);
 
   const fixtureTabStyles: ThemeUICSSObject = {
     "> .react-tabs__tab-list": {
@@ -97,7 +155,7 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
   return (
     <SectionWrapper styles={{ paddingX: [2, 3, null, 7], paddingTop: 1 }}>
       <Tabs
-        defaultIndex={0}
+        defaultIndex={tabIndex}
         sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
       >
         <TabList>
@@ -116,36 +174,38 @@ const Schedule = (props: { fixtures: FixtureT[] }): JSX.Element => {
             ))}
           </div>
 
-          <div sx={{ display: "flex", gap: 2 }}>
-            <select name="season" sx={selectBtnStyles}>
-              <option value="2020">2020-21</option>
-              <option value="2021">2021-22</option>
-            </select>
-
-            <select name="league" sx={selectBtnStyles}>
-              <option value="ipl">IPL</option>
-              <option value="wct20">WCT20</option>
-            </select>
-          </div>
+          <select
+            name="league"
+            sx={selectBtnStyles}
+            onChange={stageChanged}
+            value={selectedStage}
+          >
+            <option value="All">All</option>
+            {stages.map((stage) => (
+              <option value={stage} key={stage}>
+                {stage}
+              </option>
+            ))}
+          </select>
         </TabList>
 
         <TabPanel id="todayfixtures">
-          <TabPanelContent fixtures={todayFixtures} />
+          {todayFixtures && <TabPanelContent fixtures={todayFixtures} />}
         </TabPanel>
 
         <TabPanel id="upcomingfixtures">
-          <TabPanelContent fixtures={upcomingFixtures} />
+          {upcomingFixtures && <TabPanelContent fixtures={upcomingFixtures} />}
         </TabPanel>
 
         <TabPanel id="recentfixtures">
-          <TabPanelContent fixtures={recentFixtures} />
+          {recentFixtures && <TabPanelContent fixtures={recentFixtures} />}
         </TabPanel>
       </Tabs>
     </SectionWrapper>
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
   try {
     const res = await fetch(
       `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[season_id]=782`

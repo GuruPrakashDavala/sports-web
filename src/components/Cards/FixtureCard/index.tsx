@@ -151,6 +151,10 @@ const FixtureCard = (props: {
             </div>
 
             <p sx={{ variant: "text.label3", color: colors.gray100 }}>
+              {fixture.stage.name}
+            </p>
+
+            <p sx={{ variant: "text.label3", color: colors.gray100 }}>
               {format(new Date(fixture.starting_at), "iii d MMM - p OOOO")}
             </p>
 

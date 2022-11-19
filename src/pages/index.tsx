@@ -3,13 +3,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Fragment } from "react";
-import ArticleCard, { ArticleVariant } from "../components/Cards/ArticleCard";
-import Carousel, { CarouselItem, CarouselProps } from "../components/Carousel";
+import Carousel from "../components/Carousel";
 import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
 import ArticleGrid from "../components/Grids/ArticleGrid";
 import ContentGrid from "../components/Grids/ContentGrid";
 import SectionHeading from "../components/SectionHeading";
-import TwitterTweetEmbed from "../components/SocialEmbeds/TwitterTweetEmbed";
 import SectionWrapper from "../components/Wrappers/SectionWrapper";
 import { fetchStrapiAPI } from "../lib/strapi";
 import { ColorTheme } from "../types/modifier";
@@ -17,8 +15,7 @@ import { ImageType } from "../types/article";
 import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 import Quote from "../components/Quote";
 import FixtureCard from "../components/Cards/FixtureCard";
-import { arrayBuffer } from "stream/consumers";
-import { differenceInCalendarDays, format } from "date-fns";
+import { format } from "date-fns";
 import { Fixture as FixtureT } from "../types/sportmonks";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
@@ -72,29 +69,8 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: FixtureT[] }> = ({
   homeRes,
   fixtures,
 }): JSX.Element => {
-  // Expected format - 2022-10-12
-  // Year-Month-Date
   const now = new Date();
-  const currentDate = format(now, "yyyy-MM-d");
 
-  // WIP: fixtures date sorting
-
-  // const date1 = new Date("2022-10-05T08:10:00.000000Z");
-  // const date2 = new Date("2022-10-07T08:10:00.000000Z");
-  // const differenceInCalendarD = differenceInCalendarDays(date1, date2);
-  // console.log(date1);
-  // console.log(date2);
-  // console.log(differenceInCalendarD);
-  // if ("geolocation" in navigator) {
-  //   console.log("geolocation available");
-  //   /* geolocation is available */
-  //   // navigator.geolocation.getCurrentPosition((position) => {
-  //   //   console.log(position.coords.latitude, position.coords.longitude);
-  //   // });
-  // } else {
-  //   console.log("geolocation not available");
-  //   /* geolocation IS NOT available */
-  // }
   return (
     <section>
       <Head>
