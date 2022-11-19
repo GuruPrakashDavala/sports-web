@@ -140,7 +140,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
                   layout="responsive"
                   objectFit="cover"
                   alt="image"
-                  height={50}
+                  height={60}
                   width={80}
                 />
               </div>
@@ -167,7 +167,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
               sx={{
                 paddingX: "5px",
                 paddingY: 1,
-                variant: "text.label1",
+                variant: "text.label2",
                 color: colors.gray100,
               }}
             >
