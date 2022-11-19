@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 
-import type { NextPage } from "next";
 import Head from "next/head";
 import { Fragment } from "react";
 import Carousel from "../components/Carousel";
@@ -65,10 +64,14 @@ export type HomePageProps = {
   id: number;
 };
 
-const Home: NextPage<{ homepage: HomePageProps; fixtures: FixtureT[] }> = ({
-  homepage,
-  fixtures,
+const Home = (props: {
+  homepage: HomePageProps;
+  fixtures: FixtureT[];
+  seriesIds: string;
 }): JSX.Element => {
+  console.log(props);
+  const { homepage, fixtures } = props;
+
   return (
     <section>
       <Head>
@@ -129,7 +132,7 @@ export async function getStaticProps() {
     fetchStrapiAPI("/home", {
       populate: "deep, 4",
     }),
-    fetchStrapiAPI("/fixture-schedule", {
+    fetchStrapiAPI("/fixtures-list", {
       populate: "deep, 2",
     }),
   ]);
@@ -148,6 +151,7 @@ export async function getStaticProps() {
     props: {
       homepage: homepage.data,
       fixtures: fixtures.data.splice(0, 6),
+      seriesIds,
     },
     revalidate: 60 * 10,
   };

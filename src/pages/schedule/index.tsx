@@ -72,15 +72,19 @@ type CMSFixtures = {
 const Schedule = (props: {
   fixtures: FixtureT[];
   series: [] | CMSFixtures[];
-  seriesIds: any;
+  seriesIds: string;
 }): JSX.Element => {
+  console.log(props);
   const [selectedStage, setSelectedStage] = useState<string>("All");
+
   const [todayFixtures, setTodayFixtures] = useState<FixtureT[] | undefined>(
     undefined
   );
+
   const [recentFixtures, setRecentFixtures] = useState<FixtureT[] | undefined>(
     undefined
   );
+
   const [upcomingFixtures, setUpcomingFixtures] = useState<
     FixtureT[] | undefined
   >(undefined);
@@ -253,7 +257,7 @@ const Schedule = (props: {
 export async function getServerSideProps(context: any) {
   try {
     const fixturesDefinedInCMS = await fetchStrapiAPI(
-      `/fixture-schedule?populate=deep,2`
+      `/fixtures-list?populate=deep,2`
     );
 
     const seriesIds = fixturesDefinedInCMS.data.attributes.series
