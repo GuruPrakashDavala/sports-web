@@ -13,8 +13,11 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
 
-const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
-  const { fixtures } = props;
+const FixturesContent = (props: {
+  fixtures: FixtureT[];
+  selectedStage: string;
+}): JSX.Element => {
+  const { fixtures, selectedStage } = props;
   const bp = useBreakpointIndex();
   if (fixtures.length === 0) {
     return <></>;
@@ -35,7 +38,7 @@ const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
             variant: bp > 1 ? "text.subheading2" : "text.subheading3",
           }}
         >
-          {fixtures[0].stage.name}
+          {selectedStage} series
         </p>
       </div>
       {fixtures.map((fixture) => {
@@ -71,7 +74,6 @@ const Schedule = (props: {
   series: [] | CMSFixtures[];
   seriesIds: any;
 }): JSX.Element => {
-  console.log(props);
   const [selectedStage, setSelectedStage] = useState<string>("All");
   const [todayFixtures, setTodayFixtures] = useState<FixtureT[] | undefined>(
     undefined
@@ -82,8 +84,6 @@ const Schedule = (props: {
   const [upcomingFixtures, setUpcomingFixtures] = useState<
     FixtureT[] | undefined
   >(undefined);
-
-  const stages = [2558, 3470];
 
   const tabLists = [
     { id: "0", name: "live" },
@@ -183,7 +183,7 @@ const Schedule = (props: {
   };
 
   return (
-    <SectionWrapper styles={{ paddingX: [2, 3, null, 7], paddingTop: 1 }}>
+    <SectionWrapper styles={{ paddingX: [2, 3, 5, null, 7], paddingY: 1 }}>
       <Tabs
         defaultIndex={tabIndex}
         sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
@@ -211,12 +211,6 @@ const Schedule = (props: {
             value={selectedStage}
           >
             <option value="All">All</option>
-            {/* {stages.map((stage) => (
-              <option value={stage} key={stage}>
-                {stage}
-              </option>
-            ))} */}
-
             {props.series.map((series) => (
               <option value={series.seriesId} key={series.seriesId}>
                 {series.seriesName}
@@ -226,15 +220,30 @@ const Schedule = (props: {
         </TabList>
 
         <TabPanel id="todayfixtures">
-          {todayFixtures && <TabPanelContent fixtures={todayFixtures} />}
+          {todayFixtures && (
+            <FixturesContent
+              fixtures={todayFixtures}
+              selectedStage={selectedStage}
+            />
+          )}
         </TabPanel>
 
         <TabPanel id="upcomingfixtures">
-          {upcomingFixtures && <TabPanelContent fixtures={upcomingFixtures} />}
+          {upcomingFixtures && (
+            <FixturesContent
+              fixtures={upcomingFixtures}
+              selectedStage={selectedStage}
+            />
+          )}
         </TabPanel>
 
         <TabPanel id="recentfixtures">
-          {recentFixtures && <TabPanelContent fixtures={recentFixtures} />}
+          {recentFixtures && (
+            <FixturesContent
+              fixtures={recentFixtures}
+              selectedStage={selectedStage}
+            />
+          )}
         </TabPanel>
       </Tabs>
     </SectionWrapper>

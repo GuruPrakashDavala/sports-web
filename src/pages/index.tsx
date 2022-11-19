@@ -15,7 +15,7 @@ import { ImageType } from "../types/article";
 import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 import Quote from "../components/Quote";
 import FixtureCard from "../components/Cards/FixtureCard";
-import { format } from "date-fns";
+import { add, format } from "date-fns";
 import { Fixture as FixtureT } from "../types/sportmonks";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
@@ -65,12 +65,10 @@ export type HomePageProps = {
   id: number;
 };
 
-const Home: NextPage<{ homeRes: HomePageProps; fixtures: FixtureT[] }> = ({
-  homeRes,
+const Home: NextPage<{ homepage: HomePageProps; fixtures: FixtureT[] }> = ({
+  homepage,
   fixtures,
 }): JSX.Element => {
-  const now = new Date();
-
   return (
     <section>
       <Head>
@@ -79,9 +77,9 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: FixtureT[] }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {homeRes.attributes.contentGrid &&
-        homeRes.attributes.contentGrid.length > 0 && (
-          <ContentGrid blocks={homeRes.attributes.contentGrid} />
+      {homepage.attributes.contentGrid &&
+        homepage.attributes.contentGrid.length > 0 && (
+          <ContentGrid blocks={homepage.attributes.contentGrid} />
         )}
 
       <SectionWrapper>
@@ -109,118 +107,49 @@ const Home: NextPage<{ homeRes: HomePageProps; fixtures: FixtureT[] }> = ({
         />
       </SectionWrapper>
 
-      {homeRes.attributes.pageblocks &&
-        homeRes.attributes.pageblocks.length > 0 &&
-        homeRes.attributes.pageblocks.map((block, index) => {
+      {homepage.attributes.pageblocks &&
+        homepage.attributes.pageblocks.length > 0 &&
+        homepage.attributes.pageblocks.map((block, index) => {
           return (
             <div key={index}>
               <BlockPicker block={block} index={index} />
             </div>
           );
         })}
-
-      {/* WIP */}
-
-      {/* <PromoBlock /> */}
-      {/* <PromoBlockFlex /> */}
-
-      {/* <div
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "row",
-          margin: 0,
-          padding: 0,
-        }}
-      >
-        <div
-          sx={{
-            flexBasis: ["100%", null, "calc(100% / 3)"],
-            marginBottom: [null, null, 2],
-          }}
-        >
-          <BasicArticleCard />
-        </div>
-        <div
-          sx={{
-            flexBasis: ["100%", null, "calc(100% / 3)"],
-            marginBottom: [null, null, 2],
-          }}
-        >
-          <BasicArticleCard />
-        </div>
-        <div
-          sx={{
-            flexBasis: ["100%", null, "calc(100% / 3)"],
-            marginBottom: [null, null, 2],
-          }}
-        >
-          <BasicArticleCard />
-        </div>
-        <div
-          sx={{
-            flexBasis: ["100%", null, "calc(100% / 3)"],
-            marginBottom: [null, null, 2],
-          }}
-        >
-          <BasicArticleCard />
-        </div>
-        <div
-          sx={{
-            flexBasis: ["100%", null, "calc(100% / 3)"],
-            marginBottom: [null, null, 2],
-          }}
-        >
-          <BasicArticleCard />
-        </div>
-        <div
-          sx={{
-            flexBasis: ["100%", null, "calc(100% / 3)"],
-            marginBottom: [null, null, 2],
-          }}
-        >
-          <BasicArticleCard />
-        </div>
-      </div> */}
     </section>
   );
 };
 
 export async function getStaticProps() {
-  // Run API calls in parallel
   const now = new Date();
-  // now.setDate(now.getDate() - 1);
   const currentDate = format(now, "yyyy-MM-d");
-  const [homeRes, fixtures] = await Promise.all([
+  const sixMonthsFromNow = format(add(now, { months: 6 }), "yyyy-MM-d");
+
+  const [homepage, fixturesDefinedInCMS] = await Promise.all([
     fetchStrapiAPI("/home", {
       populate: "deep, 4",
     }),
-    (async () => {
-      // const response = await fetch(
-      //   `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team&filter[season_id]=932`
-      // );
-
-      const response = await fetch(
-        `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue,venue.country, tosswon, scoreboards, scoreboards.team, odds, stage, runs, season&filter[starts_between]=${currentDate},2023-12-31&filter[season_id]=1079,782&sort=starting_at`
-      );
-
-      // if (!response.ok) {
-      //   console.error(response.statusText);
-      //   throw new Error(`An error occured please try again`);
-      // }
-      // console.log("fixtures data");
-      // console.log(response.json());
-      const fixtures = await response.json();
-      return fixtures.data.splice(0, 6);
-    })(),
+    fetchStrapiAPI("/fixture-schedule", {
+      populate: "deep, 2",
+    }),
   ]);
+
+  const seriesIds = fixturesDefinedInCMS.data.attributes.series
+    .map((series: any) => series.seriesId)
+    .toString();
+
+  const response = await fetch(
+    `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue,venue.country, tosswon, scoreboards, scoreboards.team, odds, stage, runs, season&filter[starts_between]=${currentDate},${sixMonthsFromNow}&filter[stage_id]=${seriesIds}&sort=starting_at`
+  );
+
+  const fixtures = await response.json();
 
   return {
     props: {
-      homeRes: homeRes.data,
-      fixtures: fixtures,
+      homepage: homepage.data,
+      fixtures: fixtures.data.splice(0, 6),
     },
-    revalidate: 1,
+    revalidate: 60 * 10,
   };
 }
 
