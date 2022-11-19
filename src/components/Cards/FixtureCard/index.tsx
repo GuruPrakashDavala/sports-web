@@ -150,9 +150,9 @@ const FixtureCard = (props: {
               {fixture.round}
             </div>
 
-            <p sx={{ variant: "text.label3", color: colors.gray100 }}>
+            {/* <p sx={{ variant: "text.label3", color: colors.gray100 }}>
               {fixture.stage.name}
-            </p>
+            </p> */}
 
             <p sx={{ variant: "text.label3", color: colors.gray100 }}>
               {format(new Date(fixture.starting_at), "iii d MMM - p OOOO")}

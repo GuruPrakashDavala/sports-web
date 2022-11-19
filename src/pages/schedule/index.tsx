@@ -15,8 +15,29 @@ import { fetchStrapiAPI } from "../../lib/strapi";
 
 const TabPanelContent = (props: { fixtures: FixtureT[] }): JSX.Element => {
   const { fixtures } = props;
+  const bp = useBreakpointIndex();
+  if (fixtures.length === 0) {
+    return <></>;
+  }
   return (
     <div sx={{ paddingX: [0, 3, 5], paddingTop: [null, 3, 5] }}>
+      <div
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          paddingBottom: 2,
+          paddingTop: [2, null, 0],
+        }}
+      >
+        <p
+          sx={{
+            color: colors.gray200,
+            variant: bp > 1 ? "text.subheading2" : "text.subheading3",
+          }}
+        >
+          {fixtures[0].stage.name}
+        </p>
+      </div>
       {fixtures.map((fixture) => {
         return (
           <Fragment key={fixture.id}>
