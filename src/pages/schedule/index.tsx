@@ -28,8 +28,8 @@ const FixturesContent = (props: {
         sx={{
           display: "flex",
           alignItems: "center",
-          paddingBottom: 2,
-          paddingTop: [2, null, 0],
+          paddingBottom: [1, 2],
+          paddingTop: [1, null, 0],
         }}
       >
         <p

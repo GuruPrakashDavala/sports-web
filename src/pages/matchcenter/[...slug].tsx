@@ -393,7 +393,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
       )}
 
       <SectionWrapper
-        styles={{ paddingX: [2, null, null, 0], paddingY: [2, 3, 5] }}
+        styles={{ paddingX: [2, null, null, 0], paddingY: [null, null, 3, 5] }}
       >
         <div
           sx={{
