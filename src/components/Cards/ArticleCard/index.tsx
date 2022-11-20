@@ -98,6 +98,8 @@ export const getPillColor = (pillText: string) => {
   switch (pillText) {
     case "TV":
       return ColorTheme.DARK;
+    case "Live":
+      return ColorTheme.DARK;
     default:
       return ColorTheme.LIGHT;
   }

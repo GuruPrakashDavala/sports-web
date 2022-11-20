@@ -20,6 +20,7 @@ const FixturesContent = (props: {
 }): JSX.Element => {
   const bp = useBreakpointIndex();
   const { fixtures, selectedStage, series } = props;
+
   const seriesName = series.find(
     (series) => series.seriesId === selectedStage
   )?.seriesName;
@@ -64,7 +65,7 @@ const FixturesContent = (props: {
 export const selectBtnStyles: ThemeUICSSObject = {
   padding: 1,
   paddingRight: 3,
-  marginBottom: 1,
+  marginBottom: [null, "5px"],
   border: "none",
   background: colors.gray300,
   width: [null, "fit-content"],

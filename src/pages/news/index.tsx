@@ -77,7 +77,7 @@ const NewsPage = (props: {
 
         <select
           name="league"
-          sx={{ ...selectBtnStyles, width: "fit-content" }}
+          sx={{ ...selectBtnStyles, marginBottom: 0, width: "fit-content" }}
           onChange={categoryChanged}
           value={selectedCategory}
         >
