@@ -9,10 +9,12 @@ import {
   FixtureStatus,
   TeamInfo as TeamInfoT,
 } from "../../../types/matchcenter";
+import { ColorTheme } from "../../../types/modifier";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
 import { getScore } from "../../Cards/FixtureCard";
 import CalendarIcon from "../../Icons/CalendarIcon";
 import StadiumIcon from "../../Icons/Stadium";
+import Pill from "../../Primitives/Pill";
 
 type HeaderProps = {
   fixture: FixtureT;
@@ -23,7 +25,11 @@ type HeaderProps = {
 
 const Header = (props: HeaderProps) => {
   const { fixture, s1Team, s2Team, isLive } = props;
-  const isMatchFinished = fixture.status === "Finished";
+  const showFixtureNote =
+    fixture.status === FixtureStatus.Finished ||
+    fixture.status === FixtureStatus.SecondInnings ||
+    fixture.status === FixtureStatus.InningsBreak;
+
   const bp = useBreakpointIndex();
   const firstInningsInPlay = fixture.status === "1st Innings";
   const secondInningsInPlay = fixture.status === "2nd Innings";
@@ -201,7 +207,7 @@ const Header = (props: HeaderProps) => {
               marginLeft: [2, 3],
             }}
           >
-            {!isMatchFinished && (
+            {fixture.status !== FixtureStatus.Finished && (
               <Fragment>
                 <div
                   sx={{
@@ -212,25 +218,34 @@ const Header = (props: HeaderProps) => {
                 >
                   <div sx={{ variant: "text.label2" }}>{fixture.status}</div>
                 </div>
-                <div
-                  sx={{
-                    background: "#010028", // design system colour
-                    borderRadius: "999px",
-                    marginY: "5px",
-                    paddingX: [1, 3],
-                  }}
-                >
+
+                {isLive ? (
+                  <Pill
+                    label={`Live`}
+                    theme={ColorTheme.DARK}
+                    styles={{ marginY: 1 }}
+                  />
+                ) : (
                   <div
                     sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      paddingY: "5px",
-                      variant: bp > 1 ? "text.subheading2" : "text.label1",
+                      background: "#010028", // design system colour
+                      borderRadius: "999px",
+                      marginY: "5px",
+                      paddingX: [1, 3],
                     }}
                   >
-                    <span>{format(matchStartingDate, "kk:mm")}</span>
+                    <div
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        paddingY: "5px",
+                        variant: bp > 1 ? "text.subheading2" : "text.label1",
+                      }}
+                    >
+                      <span>{format(matchStartingDate, "kk:mm")}</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </Fragment>
             )}
           </div>
@@ -296,15 +311,13 @@ const Header = (props: HeaderProps) => {
           </div>
         </div>
 
-        {isMatchFinished && (
+        {showFixtureNote && (
           <div
             sx={{
-              // background: "#010028",
-              // background: colors.white100,
               background: "beige",
               borderRadius: "999px",
               marginBottom: "5px",
-              marginTop: [2, 3],
+              marginTop: [null, 1],
               paddingX: [1, 3],
             }}
           >
@@ -314,7 +327,7 @@ const Header = (props: HeaderProps) => {
                 alignItems: "center",
                 paddingY: 1,
                 paddingX: "5px",
-                variant: bp > 1 ? "text.subheading4" : "text.label2",
+                variant: bp > 1 ? "text.subheading5" : "text.label2",
               }}
             >
               <span sx={{ opacity: "1", color: colors.black }}>

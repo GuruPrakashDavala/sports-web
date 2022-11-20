@@ -35,6 +35,8 @@ export const getWicketCatchStumpRunout = (
       : `run out`
     : wicketType === "Stump Out"
     ? `st ${catchstump} b ${bowlerName}`
+    : wicketType.includes("Hit Wicket")
+    ? `${wicketType} b ${bowlerName}`
     : ``; // some other out here
   return wicketPlayerNames;
 };

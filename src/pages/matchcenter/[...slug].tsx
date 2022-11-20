@@ -39,7 +39,7 @@ export const tabStyles: ThemeUICSSObject = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    gap: [null, 2, 3],
+    gap: [null, 3, 4],
     flexWrap: "wrap",
     width: "100%",
     borderBottom: "1px solid",
