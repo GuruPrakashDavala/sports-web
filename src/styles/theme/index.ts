@@ -23,6 +23,10 @@ export const colors = {
   mint: "#007E6B",
   extramint: "#00A88D",
   green: "#00634D",
+  experimental: {
+    blue100: "#001d3d",
+    blue150: "#003049",
+  },
 };
 
 export const fonts = {

@@ -35,7 +35,7 @@ const Navbar = () => {
             alignItems: "center",
             justifyContent: "center",
             height: "100px",
-            background: colors.red200,
+            background: colors.experimental.blue150,
             color: colors.white,
             cursor: "pointer",
             flexDirection: "column",

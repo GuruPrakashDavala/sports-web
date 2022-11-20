@@ -22,7 +22,7 @@ const SectionWrapper = (props: SectionWrapperProps): JSX.Element => {
           theme === ColorTheme.GRAY
             ? colors.gray300
             : theme === ColorTheme.DARK
-            ? colors.red100
+            ? colors.experimental.blue100
             : colors.white,
         ...styles,
       }}

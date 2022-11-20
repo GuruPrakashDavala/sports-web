@@ -26,7 +26,7 @@ const Pill = ({
         py: "5px",
         px: 2,
         // mx: 2,
-        backgroundColor: theme === ColorTheme.LIGHT ? "black" : "red200",
+        backgroundColor: theme === ColorTheme.LIGHT ? "black" : "beige",
         borderRadius: 20,
         ":focus-visible": {
           outline: "2px solid",
@@ -36,7 +36,7 @@ const Pill = ({
         ...styles,
       }}
     >
-      <span sx={{ variant: "text.subheading4", color: "white" }}>{label}</span>
+      <span sx={{ variant: "text.subheading4" }}>{label}</span>
     </div>
   );
 };

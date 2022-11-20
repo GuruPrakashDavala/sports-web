@@ -36,7 +36,7 @@ const FixturesContent = (props: {
           display: "flex",
           alignItems: "center",
           paddingBottom: [1, 2],
-          paddingTop: [1, null, 0],
+          paddingTop: [3, null, 0],
         }}
       >
         <p
@@ -65,7 +65,7 @@ const FixturesContent = (props: {
 export const selectBtnStyles: ThemeUICSSObject = {
   padding: 1,
   paddingRight: 3,
-  marginBottom: [null, "5px"],
+  marginBottom: [null, 1],
   border: "none",
   background: colors.gray300,
   width: [null, "fit-content"],

@@ -25,7 +25,7 @@ const containerStyles = {
   transition: "background-color 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
   willChange: "background-color",
   "&:hover": {
-    backgroundColor: colors.red150,
+    backgroundColor: colors.experimental.blue150,
     transition:
       "background-color 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
     willChange: "transform",
@@ -110,7 +110,7 @@ const SnackQuote = (props: SnackQuoteProps) => {
           height: "100%",
           width: "100%",
           paddingY: 3,
-          background: colors.red200,
+          background: colors.experimental.blue150,
         }}
       >
         <q sx={getQuoteStyles(variant)}>

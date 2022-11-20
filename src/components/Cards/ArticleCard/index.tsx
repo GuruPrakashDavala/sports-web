@@ -12,7 +12,7 @@ import getArticleFormattedDate from "../../../utils/util";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 
 const cardHoverStyles: ThemeUICSSObject = {
-  backgroundColor: colors.red150,
+  backgroundColor: colors.experimental.blue150,
   transition:
     "background-color 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
   "> div .info": {
@@ -21,18 +21,6 @@ const cardHoverStyles: ThemeUICSSObject = {
     willChange: "transform",
   },
 };
-
-// Experimental card hover styles
-
-// const simpleCardHoverStyles: ThemeUICSSObject = {
-//   backgroundColor: colors.red150,
-//   transition: ".25s ease",
-//   willChange: "transform",
-//   "&:hover": {
-//     //opacity: ".875",
-//     transform: "scale(0.985)",
-//   },
-// };
 
 const cardStyles: ThemeUICSSObject = {
   height: "100%",
@@ -124,7 +112,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
   const containerStyles: ThemeUICSSObject = {
     display: "flex",
     flexWrap: "wrap",
-    backgroundColor: colors.red100,
+    backgroundColor: colors.experimental.blue100,
     cursor: "pointer",
     transition: "background-color 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
     textDecoration: "none",
