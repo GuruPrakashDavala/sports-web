@@ -8,7 +8,7 @@ import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { tabStyles } from "../matchcenter/[...slug]";
-import { compareAsc } from "date-fns";
+import { compareAsc, isToday, set, add, sub } from "date-fns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
@@ -90,18 +90,36 @@ const Schedule = (props: {
   >(undefined);
 
   const tabLists = [
-    { id: "0", name: "live" },
+    { id: "0", name: "today" },
     { id: "1", name: "upcoming" },
     { id: "2", name: "recent" },
   ];
-
-  const now = new Date();
 
   const bp = useBreakpointIndex();
   const router = useRouter();
   const [tabIndex, setTabIndex] = useState<number>(0);
 
   useEffect(() => {
+    const now = new Date();
+    const dateFromTomorrow = add(
+      set(now, {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        milliseconds: 0,
+      }),
+      { days: 1 }
+    );
+
+    const dateFromYesterday = sub(
+      set(now, {
+        hours: 23,
+        minutes: 59,
+        seconds: 55,
+      }),
+      { days: 1 }
+    );
+
     router.query.series
       ? setSelectedStage(router.query.series as string)
       : setSelectedStage("All");
@@ -113,17 +131,22 @@ const Schedule = (props: {
             (fixture) => fixture.stage.id === Number(selectedStage)
           );
 
-    const todayFixtures = fixtures.filter(
-      (fixture) => compareAsc(new Date(fixture.starting_at), now) === 0
+    const todayFixtures = fixtures.filter((fixture) =>
+      isToday(new Date(fixture.starting_at))
     );
 
     const recentFixtures = fixtures
-      .filter((fixture) => compareAsc(new Date(fixture.starting_at), now) < 1)
+      .filter(
+        (fixture) =>
+          compareAsc(new Date(fixture.starting_at), dateFromYesterday) < 0
+      )
       .reverse();
 
     const upcomingFixtures = fixtures.filter(
-      (fixture) => compareAsc(new Date(fixture.starting_at), now) > 0
+      (fixture) =>
+        compareAsc(new Date(fixture.starting_at), dateFromTomorrow) > 0
     );
+
     setTodayFixtures(todayFixtures);
     setRecentFixtures(recentFixtures);
     setUpcomingFixtures(upcomingFixtures);
