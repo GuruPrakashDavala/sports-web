@@ -16,12 +16,18 @@ import { fetchStrapiAPI } from "../../lib/strapi";
 const FixturesContent = (props: {
   fixtures: FixtureT[];
   selectedStage: string;
+  series: [] | CMSFixtures[];
 }): JSX.Element => {
-  const { fixtures, selectedStage } = props;
   const bp = useBreakpointIndex();
+  const { fixtures, selectedStage, series } = props;
+  const seriesName = series.find(
+    (series) => series.seriesId === selectedStage
+  )?.seriesName;
+
   if (fixtures.length === 0) {
     return <></>;
   }
+
   return (
     <div sx={{ paddingX: [0, 3, 5], paddingTop: [null, 3, 5] }}>
       <div
@@ -38,9 +44,12 @@ const FixturesContent = (props: {
             variant: bp > 1 ? "text.subheading2" : "text.subheading3",
           }}
         >
-          {selectedStage} series
+          {selectedStage === "All"
+            ? `${selectedStage} series`
+            : `${seriesName}`}
         </p>
       </div>
+
       {fixtures.map((fixture) => {
         return (
           <Fragment key={fixture.id}>
@@ -58,7 +67,6 @@ export const selectBtnStyles: ThemeUICSSObject = {
   marginBottom: 1,
   border: "none",
   background: colors.gray300,
-  // width: "50%",
   width: [null, "fit-content"],
   "> option": { background: colors.white },
 };
@@ -251,6 +259,7 @@ const Schedule = (props: {
             <FixturesContent
               fixtures={todayFixtures}
               selectedStage={selectedStage}
+              series={props.series}
             />
           )}
         </TabPanel>
@@ -260,6 +269,7 @@ const Schedule = (props: {
             <FixturesContent
               fixtures={upcomingFixtures}
               selectedStage={selectedStage}
+              series={props.series}
             />
           )}
         </TabPanel>
@@ -269,6 +279,7 @@ const Schedule = (props: {
             <FixturesContent
               fixtures={recentFixtures}
               selectedStage={selectedStage}
+              series={props.series}
             />
           )}
         </TabPanel>

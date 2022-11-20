@@ -341,8 +341,9 @@ const LiveCommentary = (props: {
   note: string;
   batting: BattingT[];
   bowling: BowlingT[];
+  manofmatch?: null | PlayerT;
 }): JSX.Element => {
-  const { balls, status, note, batting, bowling } = props;
+  const { balls, status, note, batting, bowling, manofmatch } = props;
   const reversedOrder = [...balls].reverse();
   const [ballsLimit, setBallsLimit] = useState<number>(25);
   const [ballsInList, setBallsInList] = useState<BallT[]>(
@@ -390,12 +391,32 @@ const LiveCommentary = (props: {
 
       {status === FixtureStatus.Finished && (
         <Fragment>
+          {manofmatch && (
+            <div
+              sx={{
+                backgroundColor: colors.gray300,
+                color: colors.black,
+                marginX: [0, 1],
+                padding: 1,
+                mt: [1, 3],
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
+            >
+              <p sx={{ variant: "text.subheading3" }}>
+                Man of the match:&nbsp;
+              </p>
+              <p sx={{ variant: "text.heading4" }}>{manofmatch.fullname}</p>
+            </div>
+          )}
+
           <div
             sx={{
               padding: 1,
               marginX: [0, 1],
               marginY: [1],
-              marginTop: [1, 3],
+              marginTop: [1],
               background: colors.mint,
             }}
           >

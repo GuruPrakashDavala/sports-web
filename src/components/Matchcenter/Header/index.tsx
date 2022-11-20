@@ -207,47 +207,45 @@ const Header = (props: HeaderProps) => {
               marginLeft: [2, 3],
             }}
           >
-            {fixture.status !== FixtureStatus.Finished && (
-              <Fragment>
+            <Fragment>
+              <div
+                sx={{
+                  display: "flex",
+                  textAlign: "center",
+                  position: "relative",
+                }}
+              >
+                <div sx={{ variant: "text.label2" }}>{fixture.status}</div>
+              </div>
+
+              {isLive ? (
+                <Pill
+                  label={`Live`}
+                  theme={ColorTheme.DARK}
+                  styles={{ marginY: 1 }}
+                />
+              ) : (
                 <div
                   sx={{
-                    display: "flex",
-                    textAlign: "center",
-                    position: "relative",
+                    background: "#010028", // design system colour
+                    borderRadius: "999px",
+                    marginY: "5px",
+                    paddingX: [1, 3],
                   }}
                 >
-                  <div sx={{ variant: "text.label2" }}>{fixture.status}</div>
-                </div>
-
-                {isLive ? (
-                  <Pill
-                    label={`Live`}
-                    theme={ColorTheme.DARK}
-                    styles={{ marginY: 1 }}
-                  />
-                ) : (
                   <div
                     sx={{
-                      background: "#010028", // design system colour
-                      borderRadius: "999px",
-                      marginY: "5px",
-                      paddingX: [1, 3],
+                      display: "flex",
+                      alignItems: "center",
+                      paddingY: "5px",
+                      variant: bp > 1 ? "text.subheading2" : "text.label1",
                     }}
                   >
-                    <div
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        paddingY: "5px",
-                        variant: bp > 1 ? "text.subheading2" : "text.label1",
-                      }}
-                    >
-                      <span>{format(matchStartingDate, "kk:mm")}</span>
-                    </div>
+                    <span>{format(matchStartingDate, "kk:mm")}</span>
                   </div>
-                )}
-              </Fragment>
-            )}
+                </div>
+              )}
+            </Fragment>
           </div>
 
           <div

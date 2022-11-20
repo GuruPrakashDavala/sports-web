@@ -44,7 +44,6 @@ export const tabStyles: ThemeUICSSObject = {
     width: "100%",
     borderBottom: "1px solid",
     borderColor: colors.gray200,
-    // margin: "0 0 20px",
     margin: 0,
     paddingTop: ["5px", 1],
   },
@@ -57,7 +56,6 @@ export const tabStyles: ThemeUICSSObject = {
     listStyle: "none",
     paddingY: 2,
     cursor: "pointer",
-    // borderBottom: "1px solid #aaa",
     "&:hover": {
       "> p": {
         color: colors.black,
@@ -214,11 +212,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
     undefined | BattingT[]
   >(undefined);
 
-  // main tab index
-  const [tabIndex, setTabIndex] = useState(1);
-
   // UseEffect calls
-
   // First useEffect to fetch both S1 and S2 team details
   useEffect(() => {
     /* 
@@ -363,24 +357,6 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
     }
   }, [fixture.batting, s1Team, s2Team]);
 
-  // const router = useRouter();
-
-  // Timer to test/trigger state updates - testing purpose
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     console.log("timer initiated");
-  //     // setTabIndex(1);
-  //   }, 10000);
-  //   return () => clearTimeout(timer);
-  // }, []);
-
-  // useEffect(() => {
-  //   router.push(
-  //     `/matchcenter/${fixture.id}/${fixture.localteam.code}vs${fixture.visitorteam.code}/live-commentary`
-  //   );
-  // }, []);
-
   return (
     <Fragment>
       {bp < 2 && s1Team && s2Team && fixture && (
@@ -415,12 +391,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                   />
                 )}
 
-                <Tabs
-                  // selectedIndex={tabIndex}
-                  // onSelect={(index) => setTabIndex(index)}
-                  defaultIndex={1}
-                  sx={{ ...tabStyles }}
-                >
+                <Tabs defaultIndex={1} sx={{ ...tabStyles }}>
                   <TabList>
                     {tabLists.map((tab) => (
                       <Tab tabIndex={tab.id} key={tab.id}>
@@ -444,16 +415,19 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         note={fixture.note}
                         batting={fixture.batting}
                         bowling={fixture.bowling}
+                        manofmatch={fixture.manofmatch}
                       />
                     ) : (
-                      <Abandoned note={fixture.note} />
+                      <Abandoned
+                        note={fixture.note}
+                        status={fixture.status}
+                        startsAt={fixture.starting_at}
+                      />
                     )}
                   </TabPanel>
 
                   <TabPanel id="scoreboard">
-                    {/* Scorecard tab panel */}
                     {s1Team && s2Team && fixture.scoreboards.length > 0 ? (
-                      // Should apply mobile responsive custom styles
                       <Scoreboard
                         fixture={fixture}
                         s1Team={s1Team}
@@ -466,13 +440,13 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         s2FallOfWickets={s2FallOfWickets}
                       />
                     ) : (
-                      <Abandoned note={fixture.note} />
+                      <Abandoned
+                        note={fixture.note}
+                        status={fixture.status}
+                        startsAt={fixture.starting_at}
+                      />
                     )}
                   </TabPanel>
-
-                  {/* <TabPanel id="trending">
-                    This section contains trending socials
-                  </TabPanel> */}
                 </Tabs>
               </Fragment>
             )}

@@ -164,7 +164,6 @@ const FixtureCard = (props: {
                 theme={ColorTheme.DARK}
                 styles={{ marginY: 1 }}
               />
-              // <LivePulse styles={{ height: "10px", width: "10px" }} />
             )}
           </div>
 
@@ -262,7 +261,7 @@ const FixtureCard = (props: {
         </div>
 
         {fixture.note.length > 0 ? (
-          <p sx={{ variant: "text.label3", paddingY: 1, color: colors.red300 }}>
+          <p sx={{ variant: "text.label3", paddingY: 1, color: colors.green }}>
             {/* Innings break note should be handled appropriately */}
             {fixture.status === "Innings Break" ? fixture.note : fixture.note}
           </p>
@@ -271,7 +270,7 @@ const FixtureCard = (props: {
             sx={{ variant: "text.label3", paddingY: 1, color: colors.red300 }}
           >{`${fixture.tosswon?.name} elected to ${fixture.elected} first`}</p>
         ) : (
-          <p sx={{ variant: "text.label3", paddingY: 1, color: colors.black }}>
+          <p sx={{ variant: "text.label3", paddingY: 1 }}>
             {"Match starts at "}
             {format(new Date(fixture.starting_at), "iii d MMM - p")}
           </p>
