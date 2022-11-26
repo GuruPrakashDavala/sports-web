@@ -1,6 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import { ThemeUICSSObject } from "theme-ui";
+import { colors } from "../../../styles/theme";
 import { ColorThemeAll, ColorTheme } from "../../../types/modifier";
 
 export type PillProps = {
@@ -26,7 +27,7 @@ const Pill = ({
         py: "5px",
         px: 2,
         // mx: 2,
-        backgroundColor: theme === ColorTheme.LIGHT ? "black" : "beige",
+        backgroundColor: theme === ColorTheme.LIGHT ? "black" : colors.red200,
         borderRadius: 20,
         ":focus-visible": {
           outline: "2px solid",
@@ -36,7 +37,9 @@ const Pill = ({
         ...styles,
       }}
     >
-      <span sx={{ variant: "text.subheading4" }}>{label}</span>
+      <span sx={{ variant: "text.subheading4", color: colors.white }}>
+        {label}
+      </span>
     </div>
   );
 };

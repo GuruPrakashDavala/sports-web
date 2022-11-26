@@ -1,71 +1,25 @@
 /** @jsxImportSource theme-ui */
 
-import { alpha } from "@theme-ui/color";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
 import SocialIcons from "../../components/News/SocialIcons";
 import NewsHeader from "../../components/News/Header";
 import AuthorInfoBlock from "../../components/News/AuthorInfoBlock";
-import { Fragment } from "theme-ui/jsx-runtime";
+import { Fragment } from "react";
 import PublishInfo from "../../components/News/PublishInfo";
 import ArticleGrid from "../../components/Grids/ArticleGrid";
 import { fetchStrapiAPI } from "../../lib/strapi";
 import { ArticleBlocks, ArticleType } from "../../types/article";
-import Image from "next/image";
-import Carousel, { CarouselItem } from "../../components/Carousel";
 import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
 import { renderImage } from "../../utils/util";
 import ArticleCard from "../../components/Cards/ArticleCard";
 import { ColorTheme, ComponentVariant } from "../../types/modifier";
-import { markdownToHtml } from "../../lib/posts";
 import SnackQuote from "../../components/Cards/SnackQuote";
-import ImageCollectionIcon from "../../components/Icons/ImageCollectionIcon";
-
-export const formattedTextStyles: ThemeUICSSObject = {
-  // px: 2,
-  p: {
-    variant: "text.body2",
-    fontSize: [2, null, null, 3],
-    // color: colors.gray100,
-    lineHeight: "spaceous",
-    ":not(:last-child)": { mb: 4 },
-  },
-  h2: {
-    variant: "text.heading2",
-    fontSize: [5, null, null, 6],
-    color: colors.black,
-    mb: 2,
-    ":not(:first-of-type)": { mt: 4 },
-  },
-  "ul, ol": {
-    pl: 3,
-    variant: "text.body2",
-    fontSize: [2, null, null, 3],
-    color: colors.gray100,
-    lineHeight: "spaceous",
-    ":not(:last-child)": { mb: 4 },
-  },
-  ul: { listStyle: "disc" },
-  ol: { listStyle: "decimal" },
-  a: {
-    color: colors.red100,
-    textDecoration: "underline",
-    textDecorationColor: alpha(colors.red300, 0.17),
-    textDecorationThickness: "2px",
-    textUnderlineOffset: "1px",
-  },
-  "a:hover": { color: colors.red200, textDecorationColor: colors.red100 },
-  // Styles for CTAs inlined in the formatted text that should be rendered as a button.
-  // "a.cta": completeButtonStyles(ButtonVariants.PRIMARY, ColorThemeFrontend.BLACK),
-
-  // custom styles
-  img: {
-    paddingY: 1,
-    height: "100%",
-    width: "100%",
-  },
-};
+import ImageCarousel from "../../components/CarouselBlocks/ImageCarousel";
+import ArticleImage from "../../components/ArticlePrimitives/Image";
+import ArticleQuote from "../../components/ArticlePrimitives/Quote";
+import RichText from "../../components/ArticlePrimitives/RichText/Index";
 
 const articleContainerStyles: ThemeUICSSObject = {
   paddingX: [3, null, null, 7],
@@ -106,16 +60,11 @@ type BlockPickerProps = {
   index?: number;
 };
 
-// const addHost = (str: string, host: string) => {
-//   return str.replaceAll('src="/uploads', `src=\"${host}/uploads`);
-// };
-
 const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
     case "tweetembed":
       return (
         <div sx={{ px: [2], py: [4] }} key={index}>
-          {/* <p sx={{ variant: "text.heading1" }}> {block.title}</p> */}
           <TwitterTweetEmbed tweetId={block.tweet_id} />
         </div>
       );
@@ -124,74 +73,12 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
         <div key={index}>New section - Video Carousel Block placeholder</div>
       );
     case "imagecarousel": {
-      const carouselItems: CarouselItem[] = block.imagecarousel.data.map(
-        (image, index) => {
-          return {
-            content: (
-              <div
-                key={index}
-                sx={{
-                  px: ["5px", 1],
-                  cursor: "pointer",
-                }}
-              >
-                <Image
-                  src={renderImage(image)}
-                  layout="responsive"
-                  objectFit="cover"
-                  alt="image"
-                  height={60}
-                  width={80}
-                />
-              </div>
-            ),
-            slideStyles: {},
-          };
-        }
-      );
-
       return (
-        <div
-          sx={{
-            py: [2, null, 4, 5],
-            width: ["calc(100% + 30px)", null, null, "calc(200% + 120px)"],
-            marginLeft: ["-15px", null, null, "calc(-50% - 60px)"],
-          }}
-          key={block.id}
-        >
-          <div
-            sx={{ display: "flex", flexDirection: "row", alingItems: "center" }}
-          >
-            <ImageCollectionIcon />
-            <p
-              sx={{
-                paddingX: "5px",
-                paddingY: 1,
-                variant: "text.label2",
-                color: colors.gray100,
-              }}
-            >
-              Image slider: Swipe left to see more images
-            </p>
-          </div>
-
-          <Carousel swiperId="1" items={carouselItems} styles={{ gap: [1] }} />
-        </div>
+        <ImageCarousel images={block.imagecarousel.data} index={block.id} />
       );
     }
     case "richtext":
-      const { body } = markdownToHtml(block.richtext);
-      // const html = addHost(body.html, imageHost);
-      const html = body.html;
-      return (
-        <div
-          sx={{ ...formattedTextStyles }}
-          dangerouslySetInnerHTML={{
-            __html: html,
-          }}
-          key={index}
-        ></div>
-      );
+      return <RichText richText={block.richtext} index={block.id} />;
     case "article":
       return (
         <div sx={{ paddingY: [3, null, null, 4] }} key={index}>
@@ -211,91 +98,20 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
       );
     case "image":
       return (
-        <div
-          sx={{
-            py: [2, null, 4, 5],
-            // width: ["calc(100% + 30px)", null, null, "calc(200% + 120px)"],
-            // marginLeft: ["-15px", null, null, "calc(-50% - 60px)"],
-            // display: "block",
-            // position: "relative",
-            // width: "100%",
-          }}
-          key={index}
-        >
-          <img
-            src={renderImage(block.image.data)}
-            // layout="responsive"
-            // objectFit="cover"
-            sx={{ objectFit: "contain" }}
-            alt="image"
-            height={"100%"}
-            width={"100%"}
-          />
-          {block.source && (
-            <p
-              sx={{
-                paddingTop: [1],
-                variant: "text.label2",
-                color: colors.gray100,
-              }}
-            >
-              Source: {block.source}
-            </p>
-          )}
-        </div>
+        <ArticleImage
+          image={block.image.data}
+          source={block.source}
+          index={block.id}
+        />
       );
     case "quote":
       return (
-        <div
-          sx={{
-            padding: [3],
-            marginTop: [3],
-            background: colors.gray300,
-            // background: "linear-gradient(45deg, #f3fff9, #abcae43d)",
-            borderRadius: [4],
-            // border: "1px solid",
-            // borderColor: colors.gray200,
-            display: "flex",
-            flexDirection: "column",
-          }}
-          key={index}
-        >
-          {block.pre && (
-            <span
-              sx={{
-                display: "inline-block",
-                color: colors.black,
-                variant: "text.subheading5",
-              }}
-            >
-              {block.pre}
-            </span>
-          )}
-          <q
-            sx={{
-              display: "flex",
-              variant: "text.quote2",
-              fontStyle: "italic",
-              paddingY: [3],
-              justifyContent: "center",
-            }}
-          >
-            {block.quote}
-          </q>
-
-          {block.post && (
-            <span
-              sx={{
-                color: colors.black,
-                variant: "text.subheading4",
-                display: "flex",
-                justifyContent: "end",
-              }}
-            >
-              &mdash; {block.post}
-            </span>
-          )}
-        </div>
+        <ArticleQuote
+          pre={block.pre}
+          post={block.post}
+          index={block.id}
+          quote={block.quote}
+        />
       );
     case "snackquote":
       return <SnackQuote block={block} variant={ComponentVariant.SMALL} />;

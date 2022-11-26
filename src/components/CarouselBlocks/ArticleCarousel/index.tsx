@@ -1,12 +1,12 @@
 import { Fragment } from "react";
-import { ColorTheme } from "../../types/modifier";
-import { ArticleCarousel } from "../../types/blocks";
-import ArticleCard, { ArticleVariant } from "../Cards/ArticleCard";
-import Carousel, { CarouselItem } from "../Carousel";
-import SectionHeading from "../SectionHeading";
-import SectionWrapper from "../Wrappers/SectionWrapper";
+import { ColorTheme } from "../../../types/modifier";
+import { ArticleCarousel } from "../../../types/blocks";
+import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
+import Carousel, { CarouselItem } from "../../Carousel";
+import SectionHeading from "../../SectionHeading";
+import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { ThemeUICSSObject } from "theme-ui";
-import { renderImage } from "../../utils/util";
+import { renderImage } from "../../../utils/util";
 
 type ArticleCarouselProps = {
   block: ArticleCarousel;

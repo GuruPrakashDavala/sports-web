@@ -53,8 +53,7 @@ const FixtureCard = (props: {
   fixture: FixtureT;
   styles?: ThemeUICSSObject;
 }): JSX.Element => {
-  const fixture = props.fixture;
-  const styles = props.styles;
+  const { fixture, styles = {} } = props;
   const bp = useBreakpointIndex();
 
   const s1TeamDetails =
