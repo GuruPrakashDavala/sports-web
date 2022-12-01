@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
 import { useFixtureSchedule } from "../../utils/queries";
 import { isMatchLive } from "../../utils/matchcenter";
+import { fixturesRestAPI } from "../../utils/util";
 
 const FixturesContent = (props: {
   fixtures: FixtureT[];
@@ -317,7 +318,7 @@ export async function getServerSideProps(context: any) {
       .toString();
 
     const res = await fetch(
-      `http://localhost:3000/api/fixtures/schedule?seriesIds=${seriesIds}`
+      `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
     );
 
     const fixtures = await res.json();

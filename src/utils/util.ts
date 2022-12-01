@@ -1,8 +1,8 @@
 import { differenceInHours, format } from "date-fns";
 import { ImageType } from "../types/article";
 
-// required only in localhost
-// export const imageHost = `http://localhost:1337`;
+export const fixturesRestAPI =
+  process.env.NEXT_PUBLIC_REST_API ?? `http://localhost:3000/api`;
 
 const getArticleFormattedDate = (articleDate: string | Date) => {
   const now = new Date();

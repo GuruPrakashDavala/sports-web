@@ -17,6 +17,7 @@ import FixtureCard from "../components/Cards/FixtureCard";
 import { Fixture as FixtureT } from "../types/sportmonks";
 import { isMatchLive } from "../utils/matchcenter";
 import { useCurrentFixtures, useHomepage } from "../utils/queries";
+import { fixturesRestAPI } from "../utils/util";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
@@ -82,8 +83,6 @@ const Home = (props: {
   } = useCurrentFixtures(seriesIds, refetchInterval);
 
   const { data: homepageRes, isLoading: isHomepageLoading } = useHomepage();
-
-  console.log(homepageRes);
 
   const homepage =
     !isHomepageLoading && homepageRes ? homepageRes.data : props.homepage;
@@ -164,7 +163,7 @@ export async function getStaticProps() {
     .toString();
 
   const response = await fetch(
-    `http://localhost:3000/api/fixtures/current-fixtures?seriesIds=${seriesIds}`
+    `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`
   );
 
   const fixtures = await response.json();

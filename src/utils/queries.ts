@@ -5,6 +5,7 @@ import { fetchStrapiAPI } from "../lib/strapi";
 import { ArticleType } from "../types/article";
 import { fixtureBallFields, fixtureBaseFields } from "./matchcenter";
 import { HomePageProps } from "../pages";
+import { fixturesRestAPI } from "./util";
 
 export const recentArticlesStrapiAPI =
   "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=updatedAt:desc";
@@ -29,14 +30,14 @@ const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   const fixtureId = queryKey[1];
   const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
   return axios.get<FixtureAPIResponse>(
-    `http://localhost:3000/api/fixtures/single-fixture?fixtureId=${fixtureId}&fields=${fields}`
+    `${fixturesRestAPI}/fixtures/single-fixture?fixtureId=${fixtureId}&fields=${fields}`
   );
 };
 
 const getCurrentFixtures = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
   return axios.get<FixturesAPIResponse>(
-    `http://localhost:3000/api/fixtures/current-fixtures?seriesIds=${seriesIds}`
+    `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`
   );
 };
 

@@ -36,6 +36,7 @@ import Matchinfo from "../../components/Matchcenter/MatchInfo/Matchinfo";
 import { differenceInMinutes } from "date-fns";
 import { useFixtureDetails } from "../../utils/queries";
 import RelatedArticles from "../../components/Matchcenter/RelatedArticles";
+import { fixturesRestAPI } from "../../utils/util";
 
 type MatchCenterProps = {
   fixture: FixtureT;
@@ -501,7 +502,7 @@ export async function getServerSideProps(
     }
 
     const fixtureId = slug[0];
-    const fixtureURI = `http://localhost:3000/api/fixtures/single-fixture?fixtureId=${fixtureId}&fields=${fields}`;
+    const fixtureURI = `${fixturesRestAPI}/fixtures/single-fixture?fixtureId=${fixtureId}&fields=${fields}`;
 
     const [fixture, recentArticles] = await Promise.all([
       fetch(fixtureURI).then((res) => res.json()),
