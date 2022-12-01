@@ -148,7 +148,7 @@ const Home = (props: {
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const [homepage, fixturesDefinedInCMS] = await Promise.all([
     fetchStrapiAPI("/home", {
       populate: "deep, 4",

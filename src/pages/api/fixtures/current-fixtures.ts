@@ -115,5 +115,8 @@ export default async function handler(
     });
   } catch (err) {
     console.log(err);
+    res.json({
+      error: err,
+    });
   }
 }
