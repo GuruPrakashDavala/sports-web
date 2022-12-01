@@ -44,7 +44,7 @@ const getCurrentFixtures = async ({ queryKey }: { queryKey: any }) => {
 const getFixtureSchedule = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
   return axios.get<FixturesAPIResponse>(
-    `http://localhost:3000/api/fixtures/schedule?seriesIds=${seriesIds}`
+    `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
   );
 };
 
