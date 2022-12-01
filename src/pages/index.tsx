@@ -148,7 +148,7 @@ const Home = (props: {
   );
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const [homepage, fixturesDefinedInCMS] = await Promise.all([
     fetchStrapiAPI("/home", {
       populate: "deep, 4",
@@ -174,7 +174,7 @@ export async function getStaticProps() {
       fixtures: fixtures.data,
       seriesIds,
     },
-    revalidate: 60 * 5,
+    // revalidate: 60 * 5,
   };
 }
 
