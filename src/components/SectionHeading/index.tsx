@@ -17,7 +17,7 @@ type Link = {
 type SectionHeadingProps = {
   title?: string;
   theme: ColorTheme;
-  link?: Link | null;
+  link?: Link;
   styles?: ThemeUICSSObject;
 };
 

@@ -2,6 +2,7 @@
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { Fragment } from "react";
+import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { TeamInfo } from "../../../types/matchcenter";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
@@ -41,6 +42,15 @@ export const getWicketCatchStumpRunout = (
   return wicketPlayerNames;
 };
 
+const battingInningsTableRowStyles: ThemeUICSSObject = {
+  display: "flex",
+  padding: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  borderBottom: "1px solid",
+  borderColor: colors.gray200,
+};
+
 const InningsTable = (props: InningsTableProps) => {
   const { fixture, teamInfo, innings } = props;
 
@@ -51,7 +61,7 @@ const InningsTable = (props: InningsTableProps) => {
   const bp = useBreakpointIndex();
 
   if (isScoreboardAvailable.length === 0) {
-    return <>Batting innings not available</>;
+    return <Fragment>Batting innings not available</Fragment>;
   }
 
   return (
@@ -71,19 +81,9 @@ const InningsTable = (props: InningsTableProps) => {
           ? batting.catchstump.lastname
           : "";
         const runoutBy = batting.runoutby ? batting.runoutby.lastname : "";
+
         return batting.scoreboard === innings ? (
-          <ul
-            key={batting.id}
-            sx={{
-              display: "flex",
-              padding: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              borderBottom: "1px solid",
-              borderColor: colors.gray200,
-              // gap: 1,
-            }}
-          >
+          <ul key={batting.id} sx={battingInningsTableRowStyles}>
             <li
               sx={{
                 flexBasis: "40%",
@@ -116,23 +116,27 @@ const InningsTable = (props: InningsTableProps) => {
                   : `Not out`}
               </p>
             </li>
+
             <li sx={{ flexBasis: "20%" }}>
               <p sx={{ variant: "text.body4" }}>
                 {batting.score} {` (${batting.ball})`}
               </p>
             </li>
+
             <li sx={{ flexBasis: "13.333%" }}>
               <p sx={{ variant: "text.body4" }}> {batting.four_x}</p>
             </li>
+
             <li sx={{ flexBasis: "13.333%" }}>
               <p sx={{ variant: "text.body4" }}>{batting.six_x}</p>
             </li>
+
             <li sx={{ flexBasis: "13.333%" }}>
               <p sx={{ variant: "text.body4" }}>{batting.rate}</p>{" "}
             </li>
           </ul>
         ) : (
-          <></>
+          <Fragment key={batting.id}></Fragment>
         );
       })}
     </Fragment>

@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useMemo } from "react";
 import FixtureCard from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { Fixture as FixtureT } from "../../types/sportmonks";
@@ -12,6 +12,8 @@ import { compareAsc, isToday, set, add, sub } from "date-fns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
+import { useFixtureSchedule } from "../../utils/queries";
+import { isMatchLive } from "../../utils/matchcenter";
 
 const FixturesContent = (props: {
   fixtures: FixtureT[];
@@ -66,10 +68,44 @@ export const selectBtnStyles: ThemeUICSSObject = {
   padding: 1,
   paddingRight: 3,
   marginBottom: [null, 1],
-  border: "none",
+  border: "1px solid #003049",
   background: colors.gray300,
   width: [null, "fit-content"],
   "> option": { background: colors.white },
+};
+
+const fixtureTabStyles: ThemeUICSSObject = {
+  "> .react-tabs__tab-list": {
+    justifyContent: "space-between",
+    display: "flex",
+    flexDirection: ["column", "row"],
+    flexWrap: "wrap",
+    width: "100%",
+    borderBottom: [null, "1px solid"],
+    borderColor: [null, colors.gray200],
+    margin: 0,
+    paddingTop: 1,
+    gap: [2, 0],
+  },
+
+  "> ul .react-tabs__tab": {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    listStyle: "none",
+    padding: 2,
+    cursor: "pointer",
+    "&:hover": {
+      "> p": {
+        color: colors.black,
+      },
+    },
+    "> p": {
+      variant: "text.subheading4",
+      color: "rgba(12, 12, 12, 0.3)",
+    },
+  },
 };
 
 type CMSFixtures = {
@@ -83,7 +119,15 @@ const Schedule = (props: {
   series: [] | CMSFixtures[];
   seriesIds: string;
 }): JSX.Element => {
-  console.log(props);
+  const [refetchInterval, setRefetchInterval] = useState<number>(0);
+  const { data: fixtureSchedule, isLoading } = useFixtureSchedule(
+    props.seriesIds,
+    refetchInterval
+  );
+
+  const fixtures =
+    !isLoading && fixtureSchedule ? fixtureSchedule.data.data : props.fixtures;
+
   const [selectedStage, setSelectedStage] = useState<string>("All");
 
   const [todayFixtures, setTodayFixtures] = useState<FixtureT[] | undefined>(
@@ -108,58 +152,65 @@ const Schedule = (props: {
   const router = useRouter();
   const [tabIndex, setTabIndex] = useState<number>(0);
 
+  const now = new Date();
+  const dateFromTomorrow = add(
+    set(now, {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    }),
+    { days: 1 }
+  );
+
+  const dateFromYesterday = sub(
+    set(now, {
+      hours: 23,
+      minutes: 59,
+      seconds: 55,
+    }),
+    { days: 1 }
+  );
+
+  useMemo(() => {
+    const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
+    isLive.length > 0
+      ? setRefetchInterval(20000) // 2 mins polling
+      : setRefetchInterval(1000 * 300); // 5 mins polling;
+  }, [fixtureSchedule]);
+
   useEffect(() => {
-    const now = new Date();
-    const dateFromTomorrow = add(
-      set(now, {
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0,
-      }),
-      { days: 1 }
-    );
-
-    const dateFromYesterday = sub(
-      set(now, {
-        hours: 23,
-        minutes: 59,
-        seconds: 55,
-      }),
-      { days: 1 }
-    );
-
     router.query.series
       ? setSelectedStage(router.query.series as string)
       : setSelectedStage("All");
 
-    const fixtures =
+    const fixtureSchedule =
       selectedStage === "All"
-        ? props.fixtures
-        : props.fixtures.filter(
+        ? fixtures
+        : fixtures.filter(
             (fixture) => fixture.stage.id === Number(selectedStage)
           );
 
-    const todayFixtures = fixtures.filter((fixture) =>
+    const todayFixtures = fixtureSchedule.filter((fixture) =>
       isToday(new Date(fixture.starting_at))
     );
 
-    const recentFixtures = fixtures
+    const pastFixtures = fixtureSchedule
       .filter(
         (fixture) =>
           compareAsc(new Date(fixture.starting_at), dateFromYesterday) < 0
       )
       .reverse();
 
-    const upcomingFixtures = fixtures.filter(
+    const upcomingFixtures = fixtureSchedule.filter(
       (fixture) =>
         compareAsc(new Date(fixture.starting_at), dateFromTomorrow) > 0
     );
 
     setTodayFixtures(todayFixtures);
-    setRecentFixtures(recentFixtures);
+    setRecentFixtures(pastFixtures);
     setUpcomingFixtures(upcomingFixtures);
-  }, [router.query.series, selectedStage]);
+  }, [router.query.series, selectedStage, fixtureSchedule]);
 
   const stageChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     event.preventDefault();
@@ -183,40 +234,6 @@ const Schedule = (props: {
   //       setTabIndex(0);
   //   }
   // }, [router.query.slug, tabIndex]);
-
-  const fixtureTabStyles: ThemeUICSSObject = {
-    "> .react-tabs__tab-list": {
-      justifyContent: "space-between",
-      display: "flex",
-      flexDirection: ["column", "row"],
-      flexWrap: "wrap",
-      width: "100%",
-      borderBottom: [null, "1px solid"],
-      borderColor: [null, colors.gray200],
-      margin: 0,
-      paddingTop: 1,
-      gap: [2, 0],
-    },
-
-    "> ul .react-tabs__tab": {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      position: "relative",
-      listStyle: "none",
-      padding: 2,
-      cursor: "pointer",
-      "&:hover": {
-        "> p": {
-          color: colors.black,
-        },
-      },
-      "> p": {
-        variant: "text.subheading4",
-        color: "rgba(12, 12, 12, 0.3)",
-      },
-    },
-  };
 
   return (
     <SectionWrapper styles={{ paddingX: [2, 3, 5, null, 7], paddingY: 1 }}>
@@ -246,7 +263,7 @@ const Schedule = (props: {
             onChange={stageChanged}
             value={selectedStage}
           >
-            <option value="All">All</option>
+            <option value="All">All series</option>
             {props.series.map((series) => (
               <option value={series.seriesId} key={series.seriesId}>
                 {series.seriesName}
@@ -300,10 +317,11 @@ export async function getServerSideProps(context: any) {
       .toString();
 
     const res = await fetch(
-      `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs, runs.team&filter[stage_id]=${seriesIds}`
+      `http://localhost:3000/api/fixtures/schedule?seriesIds=${seriesIds}`
     );
 
     const fixtures = await res.json();
+
     return {
       props: {
         fixtures: fixtures.data,

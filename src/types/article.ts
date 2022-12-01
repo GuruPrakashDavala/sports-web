@@ -38,7 +38,7 @@ type BadgeType = {
 export type CategoryType = {
   data: null | {
     attributes: {
-      articles: { data: ArticleType[] };
+      articles?: { data: ArticleType[] };
       createdAt: string;
       name: string;
       slug: string;

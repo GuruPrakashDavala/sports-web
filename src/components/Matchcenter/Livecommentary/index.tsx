@@ -107,15 +107,28 @@ export const PlayerBattingDetails = (props: {
   );
 };
 
+/** 
+   PlayerBowlingDetails props note:
+   bowler - player resource type
+   fullBowlerList - all bowlers bowled in both innings of the game
+   currentBowler - boolean (used for icon display) 
+   */
+
 export const PlayerBowlingDetails = (props: {
   bowler: PlayerT;
   fullBowlersList: BowlingT[];
   currentBowler?: boolean;
 }): JSX.Element => {
   const { bowler, fullBowlersList, currentBowler } = props;
+  const bowlerStats = fullBowlersList.filter(
+    (bowling) => bowler.id === bowling.bowler.id
+  )?.[0];
   return (
-    <ul sx={rowStyles} key={bowler.id}>
-      <li sx={{ flexBasis: "40%", display: "flex", alignItems: "center" }}>
+    <ul sx={rowStyles}>
+      <li
+        sx={{ flexBasis: "40%", display: "flex", alignItems: "center" }}
+        key={bowler.firstname}
+      >
         {bowler.lastname}
         {currentBowler && (
           <BallIcon
@@ -129,18 +142,14 @@ export const PlayerBowlingDetails = (props: {
         )}
       </li>
 
-      {fullBowlersList.map((bowling) => {
-        return bowler.id === bowling.bowler.id ? (
-          <Fragment key={bowling.bowler.id}>
-            <li sx={{ flexBasis: "15%" }}>{bowling.overs}</li>
-            <li sx={{ flexBasis: "15%" }}>{bowling.runs}</li>
-            <li sx={{ flexBasis: "15%" }}>{bowling.wickets}</li>
-            <li sx={{ flexBasis: "15%" }}>{bowling.rate}</li>
-          </Fragment>
-        ) : (
-          <></>
-        );
-      })}
+      {bowlerStats && (
+        <Fragment>
+          <li sx={{ flexBasis: "15%" }}>{bowlerStats.overs}</li>
+          <li sx={{ flexBasis: "15%" }}>{bowlerStats.runs}</li>
+          <li sx={{ flexBasis: "15%" }}>{bowlerStats.wickets}</li>
+          <li sx={{ flexBasis: "15%" }}>{bowlerStats.rate}</li>
+        </Fragment>
+      )}
     </ul>
   );
 };
@@ -154,16 +163,16 @@ const getWicketCommentary = (ball: BallT, wicketType: string): string => {
   const type = getWicketType(wicketType);
   switch (type) {
     case "Catch Out": {
-      return `Caught by ${ball.catchstump.fullname}. ${ball.batsmanout.fullname} out.`;
+      return `Caught by ${ball.catchstump.fullname}. ${ball.batsmanout.fullname} out!`;
     }
     case "Clean Bowled": {
-      return `Clean Bowled. ${ball.batsmanout.fullname} out.`;
+      return `Clean Bowled. ${ball.batsmanout.fullname} out!`;
     }
     case "LBW OUT": {
-      return `LBW. ${ball.batsmanout.fullname} out.`;
+      return `LBW. ${ball.batsmanout.fullname} out!`;
     }
     case "Stump Out": {
-      return `Stumped. ${ball.batsmanout.fullname} out.`;
+      return `Stumped. ${ball.batsmanout.fullname} out!`;
     }
     case "Run Out": {
       const runoutBy = ball.runoutby
@@ -171,11 +180,31 @@ const getWicketCommentary = (ball: BallT, wicketType: string): string => {
         : ball.catchstump
         ? `${ball.catchstump.fullname}`
         : ``;
-      return `Runout by ${runoutBy}. ${ball.batsmanout.fullname} out.`;
+      return `Runout by ${runoutBy}. ${ball.batsmanout.fullname} out!`;
     }
     default:
       return ``;
   }
+};
+
+const getNormalCommentary = (ball: BallT): JSX.Element => {
+  return (
+    <Fragment>
+      <p sx={{ display: "inline" }}>
+        {`${ball.ball} - ${ball.bowler.fullname} to ${ball.batsman.fullname}.`}
+        &nbsp;
+      </p>
+
+      <p
+        sx={{
+          display: "inline",
+          variant: ball.score.six || ball.score.four ? "text.subheading3" : "",
+        }}
+      >
+        {ball.score.name}.
+      </p>
+    </Fragment>
+  );
 };
 
 const WicketBallInfo = (props: {
@@ -240,19 +269,18 @@ const rowStyles: ThemeUICSSObject = {
 
 const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
   const { ball, isWicket = false } = props;
+  const ballInfoContainerStyles: ThemeUICSSObject = {
+    display: "flex",
+    alignItems: "center",
+    padding: [1, 2],
+    marginY: 1,
+    marginX: [0, 1],
+    background: colors.gray300,
+    borderRadius: "10px",
+  };
+
   return (
-    <div
-      key={ball.id}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        padding: 1,
-        marginY: 1,
-        marginX: [0, 1],
-        background: colors.gray300,
-        borderRadius: "10px",
-      }}
-    >
+    <div key={ball.id} sx={ballInfoContainerStyles}>
       {isWicket ? (
         <Fragment>
           <BallInfoCircle ball={`W`} color={colors.red100} />
@@ -260,27 +288,25 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
             <p sx={{ display: "inline" }}>
               {ball.ball} - {ball.bowler.fullname} to {ball.batsman.fullname}.{" "}
             </p>
+
             <p
               sx={{
-                variant: "text.subheading3",
                 display: "inline",
               }}
             >
-              That&apos;s a wicket. {getWicketCommentary(ball, ball.score.name)}
+              That&apos;s a wicket. &nbsp;
+            </p>
+
+            <p sx={{ display: "inline", variant: "text.subheading3" }}>
+              {getWicketCommentary(ball, ball.score.name)}
             </p>
           </span>
         </Fragment>
       ) : (
-        <>
-          {getBallInfoCircle(ball.score)}{" "}
-          <span sx={{ paddingX: 1 }}>
-            <p>
-              {ball.ball} - {ball.bowler.fullname} to {ball.batsman.fullname}
-              {". "}
-              {ball.score.name}.
-            </p>
-          </span>
-        </>
+        <Fragment>
+          {getBallInfoCircle(ball.score)}
+          <span sx={{ paddingX: 1 }}>{getNormalCommentary(ball)}</span>
+        </Fragment>
       )}
     </div>
   );
@@ -372,9 +398,6 @@ const LiveCommentary = (props: {
   }, [ballsLimit]);
 
   const getMoreBalls = () => {
-    // setTimeout(() => {
-    //   setBallsLimit((prev) => prev + 25);
-    // }, 1000);
     setBallsLimit((prev) => prev + 25);
   };
 

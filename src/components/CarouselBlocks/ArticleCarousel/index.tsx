@@ -16,6 +16,19 @@ type ArticleCarouselProps = {
 
 const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   const { block, theme = ColorTheme.LIGHT, styles = {} } = props;
+
+  const categorySlug = block.category.data?.attributes.slug;
+  const categoryName = block.category.data?.attributes.name;
+
+  const categoryLink =
+    categorySlug && categoryName
+      ? {
+          href: `/news?category=${categorySlug}`,
+          external: false,
+          label: categoryName,
+        }
+      : undefined;
+
   const carouselItems: CarouselItem[] = block.articles.data.map((article) => {
     return {
       content: (
@@ -44,11 +57,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
         title={block.title}
         theme={ColorTheme.LIGHT}
         styles={{ px: [0, 1] }}
-        link={{
-          href: `/news`,
-          external: false,
-          label: `View all news`,
-        }}
+        link={categoryLink}
       />
       <Carousel
         swiperId={block.id.toString()}

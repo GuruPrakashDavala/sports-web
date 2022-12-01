@@ -6,7 +6,7 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
 import { tabStyles } from "../../../pages/matchcenter/[...slug]";
 import { colors } from "../../../styles/theme";
-import { Extras, TeamInfo } from "../../../types/matchcenter";
+import { Extras, FixtureStatus, TeamInfo } from "../../../types/matchcenter";
 import {
   Batting as BattingT,
   Fixture as FixtureT,
@@ -88,11 +88,10 @@ const Scoreboard = (props: ScoreboardProps) => {
 
   const scoreboardTabStyles: ThemeUICSSObject = {
     ...tabStyles,
-    // "> .react-tabs__tab-list": { paddingY: 0 },
   };
 
   useEffect(() => {
-    if (fixture.status === "2nd Innings") {
+    if (fixture.status === FixtureStatus.SecondInnings) {
       setTabIndex(1);
     }
   }, [fixture, s1Team, s2Team]);
@@ -114,7 +113,6 @@ const Scoreboard = (props: ScoreboardProps) => {
 
         <Tab>
           <div sx={tabItemStyles}>
-            {/* <img src={s2Team.image} sx={tabTeamImageStyles} /> */}
             <Image src={s2Team.image} width={24} height={24} />
             <p sx={{ marginLeft: 1 }}>{s2Team.name}</p>
             {fixture.status === "2nd Innings" && <LivePulse />}

@@ -68,12 +68,13 @@ const ArticleMicroCard = (props: NewscardProps) => {
             width={"120"}
           />
 
-          <div sx={{ ...imageIconStyles, height: "35px" }}>
+          {/* <div sx={{ ...imageIconStyles, height: "35px" }}>
             <div
               sx={{
                 display: "flex",
                 flexDirection: "row",
                 paddingX: 1,
+                paddingY: 1,
                 justifyContent: "flex-start",
                 alignItems: "center",
               }}
@@ -86,7 +87,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
                 <Pill label={badge} theme={getPillColor(badge)} />
               )}
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div sx={{ flexBasis: "50%" }}>

@@ -20,6 +20,7 @@ import ImageCarousel from "../../components/CarouselBlocks/ImageCarousel";
 import ArticleImage from "../../components/ArticlePrimitives/Image";
 import ArticleQuote from "../../components/ArticlePrimitives/Quote";
 import RichText from "../../components/ArticlePrimitives/RichText/Index";
+import { recentArticlesStrapiAPI } from "../../utils/queries";
 
 const articleContainerStyles: ThemeUICSSObject = {
   paddingX: [3, null, null, 7],
@@ -225,9 +226,7 @@ export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
     fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 4`),
-    fetchStrapiAPI(
-      `/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=updatedAt:desc`
-    ),
+    fetchStrapiAPI(recentArticlesStrapiAPI),
   ]);
 
   if (!article.data || article.data.length === 0) {

@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import Head from "next/head";
-import { Fragment } from "react";
+import { Fragment, useState, useMemo } from "react";
 import Carousel from "../components/Carousel";
 import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
 import ArticleGrid from "../components/Grids/ArticleGrid";
@@ -14,14 +14,15 @@ import { ImageType } from "../types/article";
 import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 import Quote from "../components/Quote";
 import FixtureCard from "../components/Cards/FixtureCard";
-import { add, format } from "date-fns";
 import { Fixture as FixtureT } from "../types/sportmonks";
+import { isMatchLive } from "../utils/matchcenter";
+import { useCurrentFixtures, useHomepage } from "../utils/queries";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
 const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
-    case "articlecarousel": {
+    case "articlecarousel":
       return (
         <ArticeCarousel
           block={block}
@@ -29,7 +30,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
           styles={{ padding: [1, 2] }}
         />
       );
-    }
+
     case "videocarousel":
       return <h1>VideoCarouselPlaceholder</h1>;
     case "articlegrid":
@@ -69,8 +70,33 @@ const Home = (props: {
   fixtures: FixtureT[];
   seriesIds: string;
 }): JSX.Element => {
-  console.log(props);
-  const { homepage, fixtures } = props;
+  const { seriesIds } = props;
+  const [refetchInterval, setRefetchInterval] = useState<number>(0);
+  const {
+    data: currentFixtures,
+    isLoading,
+    isError,
+    error,
+    isFetching,
+    status,
+  } = useCurrentFixtures(seriesIds, refetchInterval);
+
+  const { data: homepageRes, isLoading: isHomepageLoading } = useHomepage();
+
+  console.log(homepageRes);
+
+  const homepage =
+    !isHomepageLoading && homepageRes ? homepageRes.data : props.homepage;
+
+  const fixtures =
+    !isLoading && currentFixtures ? currentFixtures.data.data : props.fixtures;
+
+  useMemo(() => {
+    const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
+    isLive.length > 0
+      ? setRefetchInterval(20000) // 2 mins polling
+      : setRefetchInterval(1000 * 300); // 5 mins polling;
+  }, [currentFixtures]);
 
   return (
     <section>
@@ -124,10 +150,6 @@ const Home = (props: {
 };
 
 export async function getStaticProps() {
-  const now = new Date();
-  const currentDate = format(now, "yyyy-MM-d");
-  const sixMonthsFromNow = format(add(now, { months: 6 }), "yyyy-MM-d");
-
   const [homepage, fixturesDefinedInCMS] = await Promise.all([
     fetchStrapiAPI("/home", {
       populate: "deep, 4",
@@ -142,7 +164,7 @@ export async function getStaticProps() {
     .toString();
 
   const response = await fetch(
-    `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue,venue.country, tosswon, scoreboards, scoreboards.team, odds, stage, runs, season&filter[starts_between]=${currentDate},${sixMonthsFromNow}&filter[stage_id]=${seriesIds}&sort=starting_at`
+    `http://localhost:3000/api/fixtures/current-fixtures?seriesIds=${seriesIds}`
   );
 
   const fixtures = await response.json();
@@ -150,10 +172,10 @@ export async function getStaticProps() {
   return {
     props: {
       homepage: homepage.data,
-      fixtures: fixtures.data.splice(0, 6),
+      fixtures: fixtures.data,
       seriesIds,
     },
-    revalidate: 60 * 10,
+    revalidate: 60 * 5,
   };
 }
 

@@ -19,6 +19,7 @@ import { selectBtnStyles } from "../schedule";
 type ArticleCategories = {
   attributes: {
     name: string;
+    slug: string;
   };
 };
 
@@ -30,9 +31,6 @@ const NewsPage = (props: {
   const [articles, setArticles] = useState(props.articles);
   const bp = useBreakpointIndex();
   const router = useRouter();
-  const categories = props.categories.map((category) => {
-    return category.attributes.name;
-  });
 
   useEffect(() => {
     router.query.category
@@ -45,7 +43,7 @@ const NewsPage = (props: {
         : props.articles.filter((article) => {
             if (article.attributes.category?.data) {
               return (
-                article.attributes.category.data.attributes.name.toLowerCase() ===
+                article.attributes.category.data.attributes.slug.toLowerCase() ===
                 selectedCategory.toLowerCase()
               );
             }
@@ -82,9 +80,12 @@ const NewsPage = (props: {
           value={selectedCategory}
         >
           <option value="All">All</option>
-          {categories.map((category) => (
-            <option value={category} key={category}>
-              {category}
+          {props.categories.map((category) => (
+            <option
+              value={category.attributes.slug}
+              key={category.attributes.slug}
+            >
+              {category.attributes.name}
             </option>
           ))}
         </select>
@@ -157,7 +158,7 @@ export async function getStaticProps(context: any) {
   try {
     const [articles, categories] = await Promise.all([
       fetchStrapiAPI(`/articles?populate=deep, 2`),
-      fetchStrapiAPI(`/categories?fields[0]=name`),
+      fetchStrapiAPI(`/categories?fields[0]=name,slug`),
     ]);
 
     return {

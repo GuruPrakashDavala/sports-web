@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { ReactNode } from "react";
+import { ReactNode, Fragment } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import {
   Fixture as FixtureT,
@@ -92,7 +92,7 @@ const BowlingTable = (props: InningsTableProps) => {
             })}
           </ul>
         ) : (
-          <></>
+          <Fragment key={bowling.id}></Fragment>
         );
       })}
     </div>

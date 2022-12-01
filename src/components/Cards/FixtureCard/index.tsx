@@ -10,6 +10,7 @@ import {
   Fixture as FixtureT,
   Scoreboard as ScoreboardT,
 } from "../../../types/sportmonks";
+import { isMatchLive } from "../../../utils/matchcenter";
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 
@@ -32,7 +33,7 @@ export const getScore = (
     : fixtureStatus;
 };
 
-// Only returns the team details by seaching through the scoreboards
+// Only returns the team details by searching through the scoreboards
 export const getTeamDetails = (scoreboards: ScoreboardT[], innings: string) => {
   const scoreboard = scoreboards.find((item) =>
     item.scoreboard === innings ? item : null
@@ -96,12 +97,7 @@ const FixtureCard = (props: {
   const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.code;
   const s2TeamImage = s2TeamDetails.image;
 
-  const isLive =
-    fixture.status === FixtureStatus.FirstInnings ||
-    fixture.status === FixtureStatus.SecondInnings ||
-    fixture.status === FixtureStatus.InningsBreak ||
-    fixture.status === FixtureStatus.Interrupted;
-
+  const isLive = isMatchLive(fixture.status);
   const showMatchcenterCta = true;
 
   return (

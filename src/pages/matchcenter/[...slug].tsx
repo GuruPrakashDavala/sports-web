@@ -2,7 +2,7 @@
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useMemo } from "react";
 import { colors } from "../../styles/theme";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
@@ -12,11 +12,7 @@ import Scoreboard from "../../components/Matchcenter/Scoreboard";
 import Header from "../../components/Matchcenter/Header";
 import { articleBodyWrapperStyles } from "../news/[slug]";
 import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
-import { ArticleVariant } from "../../components/Cards/ArticleCard";
 import { fetchStrapiAPI } from "../../lib/strapi";
-import { ColorTheme } from "../../types/modifier";
-import ArticleMicroCard from "../../components/Cards/ArticleMicroCard";
-import { renderImage } from "../../utils/util";
 import {
   Batting as BattingT,
   Fixture as FixtureT,
@@ -26,12 +22,25 @@ import {
 } from "../../types/sportmonks";
 import { ArticleType } from "../../types/article";
 import { Extras, FixtureStatus, TeamInfo } from "../../types/matchcenter";
-import { getPlayersDidNotBat, getTeamLineup } from "../../utils/matchcenter";
+import {
+  getPlayersDidNotBat,
+  getTeamLineup,
+  now,
+  smTabLists,
+  mdTabLists,
+  isMatchLive,
+  isMatchFinished,
+  fixtureBaseFields,
+} from "../../utils/matchcenter";
 import Matchinfo from "../../components/Matchcenter/MatchInfo/Matchinfo";
+import { differenceInMinutes } from "date-fns";
+import { useFixtureDetails } from "../../utils/queries";
+import RelatedArticles from "../../components/Matchcenter/RelatedArticles";
 
 type MatchCenterProps = {
   fixture: FixtureT;
   recentArticles: ArticleType[];
+  fixtureId: string;
 };
 
 export const tabStyles: ThemeUICSSObject = {
@@ -87,28 +96,20 @@ export const tabStyles: ThemeUICSSObject = {
 
 const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   console.log(props);
-  const { fixture, recentArticles } = props;
   const bp = useBreakpointIndex();
-  const mdTabLists = [
-    { id: "0", name: "match info" },
-    { id: "1", name: "live commentary" },
-    { id: "2", name: "scorecard" },
-    // { id: "3", name: "trending" },
-  ];
+  const [refetchInterval, setRefetchInterval] = useState<number>(0);
 
-  const smTabLists = [
-    { id: "0", name: "match info" },
-    { id: "1", name: "commentary" },
-    { id: "2", name: "scorecard" },
-  ];
+  const { isLoading: isFixtureLoading, data: fixtureResponse } =
+    useFixtureDetails(props.fixtureId, refetchInterval);
+
+  const fixture =
+    !isFixtureLoading && fixtureResponse
+      ? fixtureResponse.data.data
+      : props.fixture;
 
   const tabLists = bp > 0 ? mdTabLists : smTabLists;
-
-  const isLive =
-    fixture.status === FixtureStatus.FirstInnings ||
-    fixture.status === FixtureStatus.SecondInnings ||
-    fixture.status === FixtureStatus.InningsBreak ||
-    fixture.status === FixtureStatus.Interrupted;
+  const isLive = isMatchLive(fixture.status);
+  const isFinished = isMatchFinished(fixture.status);
 
   // Util to get the opposite team info (toss lost team - 2nd Innings)
   const getOppositeTeamInfo = (tosswonTeam: TeamT): TeamInfo => {
@@ -211,6 +212,27 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   const [s2FallOfWickets, setS2FallOfWickets] = useState<
     undefined | BattingT[]
   >(undefined);
+
+  // API polling memo
+  useMemo(() => {
+    const differenceInMins = differenceInMinutes(
+      new Date(fixture.starting_at),
+      now
+    );
+
+    const doesGameStartsInLessThanSixtyMins =
+      differenceInMins > 0 && differenceInMins < 60;
+
+    if (isLive) {
+      setRefetchInterval(20000); // 2 mins polling
+    } else {
+      isFinished
+        ? setRefetchInterval(0)
+        : doesGameStartsInLessThanSixtyMins
+        ? setRefetchInterval(1000 * 300) // 5 mins polling
+        : setRefetchInterval(0);
+    }
+  }, [fixtureResponse]);
 
   // UseEffect calls
   // First useEffect to fetch both S1 and S2 team details
@@ -391,12 +413,14 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                   />
                 )}
 
-                <Tabs defaultIndex={1} sx={{ ...tabStyles }}>
+                <Tabs defaultIndex={2} sx={{ ...tabStyles }}>
                   <TabList>
                     {tabLists.map((tab) => (
-                      <Tab tabIndex={tab.id} key={tab.id}>
-                        <p>{tab.name}</p>
-                      </Tab>
+                      <Fragment key={tab.id}>
+                        <Tab tabIndex={tab.id} key={tab.id}>
+                          <p>{tab.name}</p>
+                        </Tab>
+                      </Fragment>
                     ))}
                   </TabList>
 
@@ -406,6 +430,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
 
                   <TabPanel id="livecommentary">
                     {fixture.status !== FixtureStatus.NotStarted &&
+                    !isFixtureLoading &&
                     fixture.balls.length > 0 &&
                     s1Team &&
                     s2Team ? (
@@ -455,25 +480,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
           {bp > 2 && (
             <div sx={{ paddingX: [0, 3], paddingTop: 5 }}>
               <AdBlock variant={AdBlockVariant.SQUARE} />
-              {recentArticles.length > 0 &&
-                recentArticles.map((block) => {
-                  return (
-                    <div sx={{ paddingX: 2 }} key={block.attributes.slug}>
-                      <ArticleMicroCard
-                        label={block.attributes.title}
-                        imageSrc={renderImage(block.attributes.coverimage.data)}
-                        variant={ArticleVariant.MEDIUM}
-                        date={block.attributes.createdAt}
-                        badge={block.attributes.badge?.data?.attributes.name}
-                        type={block.attributes.type}
-                        category={block.attributes.category}
-                        slug={block.attributes.slug}
-                        theme={ColorTheme.GRAY}
-                        styles={{ height: "100%" }}
-                      />
-                    </div>
-                  );
-                })}
+              <RelatedArticles recentArticles={props.recentArticles} />
             </div>
           )}
         </div>
@@ -487,13 +494,14 @@ export async function getServerSideProps(
 ): Promise<MatchCenterProps | {}> {
   try {
     const slug = context.params.slug;
+    const fields = fixtureBaseFields.toString();
 
     if (slug.length === 0) {
       return {};
     }
 
     const fixtureId = slug[0];
-    const fixtureURI = `https://cricket.sportmonks.com/api/v2.0/fixtures/${fixtureId}?api_token=arQupbeQwcFvjafCxxqydm2XgMRbqRhWjUNJaINkNSG8n75Np9wNPG7aQu2f&include=visitorteam, localteam, league, venue, scoreboards, manofmatch, batting, batting.batsman, batting.batsmanout, batting.result, batting.bowler, batting.catchstump, batting.runoutby, odds.bookmaker, odds, odds.market, bowling, bowling.bowler, scoreboards.team,balls, balls.batsmanout, balls.batsmanone,balls.batsmantwo,balls.catchstump,balls.score,balls.runoutby, lineup, tosswon, runs,stage, runs.team, firstumpire, secondumpire`;
+    const fixtureURI = `http://localhost:3000/api/fixtures/single-fixture?fixtureId=${fixtureId}&fields=${fields}`;
 
     const [fixture, recentArticles] = await Promise.all([
       fetch(fixtureURI).then((res) => res.json()),
@@ -501,7 +509,11 @@ export async function getServerSideProps(
     ]);
 
     return {
-      props: { fixture: fixture.data, recentArticles: recentArticles.data },
+      props: {
+        fixture: fixture.data,
+        recentArticles: recentArticles.data,
+        fixtureId,
+      },
     };
   } catch (err) {
     console.log(err);

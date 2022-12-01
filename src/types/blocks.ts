@@ -25,6 +25,7 @@ export type ContentGrid = ArticleBlock | SnackQuoteComponent;
 
 export type ArticleCarousel = {
   articles: { data: ArticleType[] };
+  category: CategoryType;
   id: number;
   title: string;
   type: "articlecarousel";

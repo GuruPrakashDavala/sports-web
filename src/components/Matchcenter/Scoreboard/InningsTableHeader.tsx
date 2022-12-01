@@ -5,6 +5,12 @@ import { getScore } from "../../Cards/FixtureCard";
 import { Fragment } from "react";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
 import { TeamInfo } from "../../../types/matchcenter";
+import { ThemeUICSSObject } from "theme-ui";
+
+const battingTableHeaderListItemStyles: ThemeUICSSObject = {
+  variant: "text.subheading3",
+  color: "rgba(12, 12, 12, 0.3)",
+};
 
 const InningsTableHeader = (props: {
   fixture: FixtureT;
@@ -53,44 +59,43 @@ const InningsTableHeader = (props: {
         <li
           sx={{
             flexBasis: "40%",
-            variant: "text.subheading3",
-            color: "rgba(12, 12, 12, 0.3)",
+            ...battingTableHeaderListItemStyles,
           }}
         >
           Batters
         </li>
+
         <li
           sx={{
             flexBasis: "20%",
-            variant: "text.subheading3",
-            color: "rgba(12, 12, 12, 0.3)",
+            ...battingTableHeaderListItemStyles,
           }}
         >
           R (B)
         </li>
+
         <li
           sx={{
             flexBasis: "13.333%",
-            variant: "text.subheading3",
-            color: "rgba(12, 12, 12, 0.3)",
+            ...battingTableHeaderListItemStyles,
           }}
         >
           4s
         </li>
+
         <li
           sx={{
             flexBasis: "13.333%",
-            variant: "text.subheading3",
-            color: "rgba(12, 12, 12, 0.3)",
+            ...battingTableHeaderListItemStyles,
           }}
         >
           6s
         </li>
+
         <li
           sx={{
             flexBasis: "13.333%",
-            variant: "text.subheading3",
-            color: "rgba(12, 12, 12, 0.3)",
+            ...battingTableHeaderListItemStyles,
           }}
         >
           SR

@@ -1,9 +1,11 @@
 /** @jsxImportSource theme-ui */
 
+import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
+import RelatedArticles from "../RelatedArticles";
 
 const rowWrapperStyles: ThemeUICSSObject = {
   display: "flex",
@@ -42,6 +44,8 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
     elected,
   } = props.fixture;
   const matchStartsAt = new Date(starting_at);
+  const bp = useBreakpointIndex();
+
   return (
     <div sx={{ paddingY: 3 }}>
       {tosswon && elected && (
@@ -49,6 +53,7 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
           sx={{ paddingBottom: 1, color: colors.green }}
         >{`${tosswon.name} elected to ${elected} first`}</p>
       )}
+
       <div sx={rowWrapperStyles}>
         <ul sx={rowHeaderStyles}>
           <li sx={{ flexBasis: ["100%"] }}>Match info</li>
@@ -90,6 +95,8 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
           </ul>
         )}
       </div>
+
+      {/* {bp && bp < 2 ? <RelatedArticles styles={{ paddingX: 0 }} /> : <></>} */}
     </div>
   );
 };
