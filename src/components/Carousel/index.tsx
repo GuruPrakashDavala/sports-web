@@ -40,12 +40,13 @@ export type CarouselProps = {
 
 const Carousel = (props: CarouselProps): JSX.Element => {
   const { swiperId, items, swiperOptions, styles = {}, onInit } = props;
-  // if (!items) return null;
   const bp = useBreakpointIndex({ defaultIndex: 0 });
   const smallBp = bp < 2;
   const {
     theme: { space },
   } = useThemeUI();
+
+  // if (!items) return <></>;
 
   const [carouselAtEnd, setCarouselAtEnd] = useState(false);
   const [carouselAtBeginning, setCarouselAtBeginning] = useState(false);
@@ -107,8 +108,9 @@ const Carousel = (props: CarouselProps): JSX.Element => {
 
       if (onInit) {
         onInit(swiper);
-        swiperRef.current = swiper;
       }
+
+      swiperRef.current = swiper;
     } else {
       swiperRef.current.update();
     }

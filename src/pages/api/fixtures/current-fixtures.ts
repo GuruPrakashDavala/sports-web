@@ -99,7 +99,7 @@ export default async function handler(
       url: `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=${APIToken}&include=visitorteam, localteam, league, venue,venue.country, tosswon, scoreboards, scoreboards.team, odds, stage, runs, season&filter[starts_between]=${startDate},${endDate}&filter[stage_id]=${seriesIds}&sort=starting_at`,
       responseType: "json",
       headers: {
-        "accept-encoding": null,
+        "accept-encoding": "*",
       },
     });
 

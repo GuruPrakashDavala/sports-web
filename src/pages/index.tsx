@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import Head from "next/head";
-import { Fragment, useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Carousel from "../components/Carousel";
 import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
 import ArticleGrid from "../components/Grids/ArticleGrid";
@@ -80,7 +80,10 @@ const Home = (props: {
     error,
     isFetching,
     status,
-  } = useCurrentFixtures(seriesIds, refetchInterval);
+  } = useCurrentFixtures({
+    seriesIds,
+    refetchInterval,
+  });
 
   const { data: homepageRes, isLoading: isHomepageLoading } = useHomepage();
 
@@ -90,7 +93,7 @@ const Home = (props: {
   const fixtures =
     !isLoading && currentFixtures ? currentFixtures.data.data : props.fixtures;
 
-  useMemo(() => {
+  useEffect(() => {
     const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
     isLive.length > 0
       ? setRefetchInterval(20000) // 2 mins polling
@@ -125,11 +128,7 @@ const Home = (props: {
           swiperId={`fixturecarousel`}
           items={fixtures.map((fixtureItem) => {
             return {
-              content: (
-                <Fragment key={fixtureItem.id}>
-                  <FixtureCard fixture={fixtureItem} />
-                </Fragment>
-              ),
+              content: <FixtureCard fixture={fixtureItem} />,
             };
           })}
         />
@@ -163,7 +162,13 @@ export async function getStaticProps() {
     .toString();
 
   const response = await fetch(
-    `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`
+    `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
   );
 
   const fixtures = await response.json();

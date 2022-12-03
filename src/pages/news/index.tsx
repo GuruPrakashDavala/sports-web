@@ -15,6 +15,9 @@ import { ArticleType } from "../../types/article";
 import { ColorTheme } from "../../types/modifier";
 import { renderImage } from "../../utils/util";
 import { selectBtnStyles } from "../schedule";
+import { useInfiniteArticles } from "../../utils/queries";
+import { colors } from "../../styles/theme";
+import RightArrowIcon from "../../components/Icons/RightArrow";
 
 type ArticleCategories = {
   attributes: {
@@ -23,37 +26,66 @@ type ArticleCategories = {
   };
 };
 
+export type InfiniteArticlesResponseType = {
+  pages: { data: ArticleType[]; meta: any }[];
+  pageParams: any;
+};
+
 const NewsPage = (props: {
   articles: ArticleType[];
   categories: ArticleCategories[];
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [articles, setArticles] = useState(props.articles);
   const bp = useBreakpointIndex();
   const router = useRouter();
 
-  useEffect(() => {
-    router.query.category
-      ? setSelectedCategory(router.query.category as string)
-      : setSelectedCategory("All");
+  const initialData: InfiniteArticlesResponseType = {
+    pages: [{ data: props.articles, meta: undefined }],
+    pageParams: [undefined],
+  };
 
-    const articles =
-      !selectedCategory || selectedCategory === "All"
-        ? props.articles
-        : props.articles.filter((article) => {
-            if (article.attributes.category?.data) {
-              return (
-                article.attributes.category.data.attributes.slug.toLowerCase() ===
-                selectedCategory.toLowerCase()
-              );
-            }
-          });
-    setArticles(articles);
-  }, [router.query.category, selectedCategory]);
+  const {
+    isLoading,
+    isError,
+    error,
+    data: articlesData,
+    hasNextPage,
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteArticles({
+    category: selectedCategory,
+    initialData,
+  });
+
+  const articles = articlesData
+    ? (articlesData as unknown as InfiniteArticlesResponseType)
+    : initialData;
+
+  console.log("initialData");
+  console.log(initialData);
+
+  console.log("dataFromQuery");
+  console.log(articlesData);
+
+  console.log("articles");
+  console.log(articles);
+
+  useEffect(() => {
+    if (router.query.category) {
+      setSelectedCategory(router.query.category as string);
+    } else {
+      setSelectedCategory("All");
+    }
+  }, [router.query.category]);
 
   const categoryChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     event.preventDefault();
     router.push({ query: { category: event.target.value } });
+  };
+
+  const loadMore = () => {
+    fetchNextPage();
   };
 
   return (
@@ -79,7 +111,7 @@ const NewsPage = (props: {
           onChange={categoryChanged}
           value={selectedCategory}
         >
-          <option value="All">All</option>
+          <option value="All">All topics</option>
           {props.categories.map((category) => (
             <option
               value={category.attributes.slug}
@@ -101,53 +133,123 @@ const NewsPage = (props: {
             padding: 0,
           }}
         >
-          {articles.map((block, index) => {
+          {articles.pages.map((group, index) => {
             return (
-              <div
-                sx={{
-                  flexBasis:
-                    index < 2
-                      ? ["100%", null, "calc(100% / 2)"]
-                      : ["100%", null, "calc(100% / 2)", "calc(100% / 3)"],
-                  marginBottom: [null, null, 2],
-                }}
-                key={index}
-              >
-                <ArticleCard
-                  label={block.attributes.title}
-                  imageSrc={renderImage(block.attributes.coverimage.data)}
-                  variant={ArticleVariant.MEDIUM}
-                  date={block.attributes.createdAt}
-                  badge={block.attributes.badge?.data?.attributes.name}
-                  type={block.attributes.type}
-                  category={block.attributes.category}
-                  slug={block.attributes.slug}
-                  styles={{ height: "100%" }}
-                />
-              </div>
+              <Fragment key={index}>
+                {group.data.map((article, index) => (
+                  <div
+                    sx={{
+                      // flexBasis:
+                      //   index < 2
+                      //     ? ["100%", null, "calc(100% / 2)"]
+                      //     : ["100%", null, "calc(100% / 2)", "calc(100% / 3)"],
+                      flexBasis: [
+                        "100%",
+                        null,
+                        "calc(100% / 2)",
+                        "calc(100% / 3)",
+                      ],
+                      marginBottom: [null, null, 2],
+                    }}
+                    key={article.attributes.slug}
+                  >
+                    <ArticleCard
+                      label={article.attributes.title}
+                      imageSrc={renderImage(article.attributes.coverimage.data)}
+                      variant={ArticleVariant.MEDIUM}
+                      date={article.attributes.createdAt}
+                      badge={article.attributes.badge?.data?.attributes.name}
+                      type={article.attributes.type}
+                      category={article.attributes.category}
+                      slug={article.attributes.slug}
+                      styles={{ height: "100%" }}
+                    />
+                  </div>
+                ))}
+              </Fragment>
             );
           })}
         </div>
       )}
 
       {bp === 0 &&
-        articles.map((block) => {
+        articles.pages.map((group, index) => {
           return (
-            <Fragment key={block.attributes.slug}>
-              <ArticleMicroCard
-                label={block.attributes.title}
-                imageSrc={renderImage(block.attributes.coverimage.data)}
-                variant={ArticleVariant.MEDIUM}
-                date={block.attributes.createdAt}
-                badge={block.attributes.badge?.data?.attributes.name}
-                type={block.attributes.type}
-                category={block.attributes.category}
-                slug={block.attributes.slug}
-                styles={{ height: "100%" }}
-              />
+            <Fragment key={index}>
+              {group.data.map((article) => (
+                <Fragment key={article.attributes.slug}>
+                  <ArticleMicroCard
+                    label={article.attributes.title}
+                    imageSrc={renderImage(article.attributes.coverimage.data)}
+                    variant={ArticleVariant.MEDIUM}
+                    date={article.attributes.createdAt}
+                    badge={article.attributes.badge?.data?.attributes.name}
+                    type={article.attributes.type}
+                    category={article.attributes.category}
+                    slug={article.attributes.slug}
+                    styles={{ height: "100%" }}
+                  />
+                </Fragment>
+              ))}
             </Fragment>
           );
         })}
+
+      {/* Load more button component */}
+      <div
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingY: 2,
+        }}
+      >
+        <button
+          type="button"
+          sx={{
+            display: "flex",
+            backgroundColor: !hasNextPage ? colors.gray200 : colors.black,
+            padding: 1,
+            width: "200px",
+            height: "50px",
+            justifyContent: "center",
+            alignItems: "center",
+            ...(hasNextPage && {
+              "&:hover": {
+                opacity: ".675",
+                "> div": {
+                  transition: ".25s ease",
+                  transform: "translateX(10%)",
+                },
+              },
+            }),
+          }}
+          onClick={loadMore}
+          disabled={!hasNextPage}
+        >
+          <p
+            sx={{
+              variant: "text.subheading4",
+              color: !hasNextPage ? colors.black : colors.white,
+            }}
+          >
+            {!hasNextPage
+              ? `All caught up!`
+              : isFetching
+              ? `Loading`
+              : `Load more`}
+          </p>
+
+          {hasNextPage && (
+            <RightArrowIcon
+              styles={{
+                color: colors.white,
+                alignItems: "center",
+              }}
+            />
+          )}
+        </button>
+      </div>
     </SectionWrapper>
   );
 };
@@ -157,7 +259,9 @@ export default NewsPage;
 export async function getStaticProps(context: any) {
   try {
     const [articles, categories] = await Promise.all([
-      fetchStrapiAPI(`/articles?populate=deep, 2`),
+      fetchStrapiAPI(
+        `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2`
+      ),
       fetchStrapiAPI(`/categories?fields[0]=name,slug`),
     ]);
 

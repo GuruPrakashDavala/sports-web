@@ -1,4 +1,9 @@
-import { useQuery, UseQueryResult } from "react-query";
+import {
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+  useQuery,
+  UseQueryResult,
+} from "react-query";
 import { Fixture as FixtureT } from "../types/sportmonks";
 import axios from "axios";
 import { fetchStrapiAPI } from "../lib/strapi";
@@ -6,6 +11,7 @@ import { ArticleType } from "../types/article";
 import { fixtureBallFields, fixtureBaseFields } from "./matchcenter";
 import { HomePageProps } from "../pages";
 import { fixturesRestAPI } from "./util";
+import { InfiniteArticlesResponseType } from "../pages/news";
 
 export const recentArticlesStrapiAPI =
   "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=updatedAt:desc";
@@ -66,10 +72,13 @@ export const useRecentArticles = (): UseQueryResult<
   );
 };
 
-export const useCurrentFixtures = (
-  seriesIds: string,
-  refetchInterval?: number
-) => {
+export const useCurrentFixtures = ({
+  seriesIds,
+  refetchInterval,
+}: {
+  seriesIds: string;
+  refetchInterval?: number;
+}) => {
   return useQuery(["currentFixtures", seriesIds], getCurrentFixtures, {
     refetchInterval: refetchInterval ?? 0,
   });
@@ -93,4 +102,72 @@ export const useHomepage = (): UseQueryResult<
       populate: "deep, 4",
     })
   );
+};
+
+export const useArticles = ({
+  category,
+  initialData,
+  pageNumber,
+}: {
+  category: string;
+  initialData: { data: ArticleType[] };
+  pageNumber?: number;
+}): UseQueryResult<{ data: ArticleType[] }, Error> => {
+  const APIURL =
+    !category || category === "All"
+      ? `/articles?pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2`
+      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2`;
+
+  return useQuery(
+    ["articles", category, pageNumber ?? 1],
+    () => fetchStrapiAPI(APIURL),
+    {
+      keepPreviousData: true,
+      initialData: initialData,
+      // enabled: false,
+    }
+  );
+};
+
+const getInfiniteArticles = ({
+  pageParam = 1,
+  queryKey,
+}: {
+  pageParam?: number;
+  queryKey: string[];
+}) => {
+  const category = queryKey[1];
+  const APIURL =
+    !category || category === "All"
+      ? `/articles?pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`
+      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`;
+
+  return fetchStrapiAPI(APIURL);
+};
+
+export const useInfiniteArticles = ({
+  category,
+  initialData,
+}: {
+  category: string;
+  initialData: InfiniteArticlesResponseType;
+}): UseInfiniteQueryResult<InfiniteArticlesResponseType, Error> => {
+  return useInfiniteQuery(["infiniteArticles", category], getInfiniteArticles, {
+    getNextPageParam: (_lastPage, pages) => {
+      const lastFetchedPageMeta = pages[pages.length - 1].meta;
+      const metaPagination = lastFetchedPageMeta
+        ? lastFetchedPageMeta.pagination
+        : undefined;
+      if (metaPagination) {
+        const currentPage = metaPagination.page;
+        const hasNextPage = currentPage < metaPagination.pageCount;
+        const nextPageNumber = hasNextPage ? currentPage + 1 : undefined;
+        return nextPageNumber;
+      } else {
+        return undefined;
+      }
+    },
+    keepPreviousData: true,
+    initialData: initialData,
+  });
 };
