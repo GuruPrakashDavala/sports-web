@@ -34,7 +34,11 @@ import {
 } from "../../utils/matchcenter";
 import Matchinfo from "../../components/Matchcenter/MatchInfo/Matchinfo";
 import { differenceInMinutes } from "date-fns";
-import { useFixtureDetails } from "../../utils/queries";
+import {
+  recentArticlesStrapiAPI,
+  useFixtureDetails,
+  useRecentArticles,
+} from "../../utils/queries";
 import RelatedArticles from "../../components/Matchcenter/RelatedArticles";
 import { fixturesRestAPI } from "../../utils/util";
 
@@ -100,13 +104,19 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   const bp = useBreakpointIndex();
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
 
-  const { isLoading: isFixtureLoading, data: fixtureResponse } =
+  const { isLoading: fixtureLoading, data: fixtureResponse } =
     useFixtureDetails(props.fixtureId, refetchInterval);
 
   const fixture =
-    !isFixtureLoading && fixtureResponse
+    !fixtureLoading && fixtureResponse
       ? fixtureResponse.data.data
       : props.fixture;
+
+  const { isLoading: recentArticlesLoading, data: articles } =
+    useRecentArticles();
+
+  const recentArticles =
+    !recentArticlesLoading && articles ? articles.data : props.recentArticles;
 
   const tabLists = bp > 0 ? mdTabLists : smTabLists;
   const isLive = isMatchLive(fixture.status);
@@ -431,7 +441,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
 
                   <TabPanel id="livecommentary">
                     {fixture.status !== FixtureStatus.NotStarted &&
-                    !isFixtureLoading &&
+                    !fixtureLoading &&
                     fixture.balls.length > 0 &&
                     s1Team &&
                     s2Team ? (
@@ -481,7 +491,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
           {bp > 2 && (
             <div sx={{ paddingX: [0, 3], paddingTop: 5 }}>
               <AdBlock variant={AdBlockVariant.SQUARE} />
-              <RelatedArticles recentArticles={props.recentArticles} />
+              <RelatedArticles recentArticles={recentArticles} />
             </div>
           )}
         </div>
@@ -506,7 +516,7 @@ export async function getServerSideProps(
 
     const [fixture, recentArticles] = await Promise.all([
       fetch(fixtureURI).then((res) => res.json()),
-      fetchStrapiAPI(`/articles?populate=deep,2`),
+      fetchStrapiAPI(recentArticlesStrapiAPI),
     ]);
 
     return {

@@ -23,7 +23,8 @@ const iconWrapperStyles: ThemeUICSSObject = {
   borderRadius: "50%",
   height: "25px",
   width: "25px",
-  background: "rgb(220, 7, 20)",
+  // background: "rgb(220, 7, 20)",
+  background: colors.experimental.blue100,
   color: colors.white,
 };
 

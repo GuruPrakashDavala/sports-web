@@ -13,10 +13,7 @@ const RelatedArticles = (props: {
   recentArticles?: ArticleType[];
   styles?: ThemeUICSSObject;
 }): JSX.Element => {
-  const styles = props.styles;
-  const { isLoading, data: articles } = useRecentArticles();
-  const recentArticles =
-    !isLoading && articles ? articles.data : props.recentArticles;
+  const { recentArticles, styles } = props;
 
   return (
     <Fragment>

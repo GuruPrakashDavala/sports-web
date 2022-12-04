@@ -10,7 +10,7 @@ import {
   SnackQuoteComponent,
 } from "./blocks";
 
-type WriterType = {
+export type WriterType = {
   data: null | {
     attributes: {
       articles: { data: ArticleType[] };

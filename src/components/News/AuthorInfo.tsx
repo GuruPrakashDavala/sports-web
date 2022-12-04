@@ -4,11 +4,12 @@ import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 
 type AuthorInfoProps = {
+  name: string;
   styles?: ThemeUICSSObject;
 };
 
 const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
-  const { styles = {} } = props;
+  const { name, styles = {} } = props;
   return (
     <p
       sx={{
@@ -18,7 +19,7 @@ const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
         ...styles,
       }}
     >
-      by Editor
+      {name}
     </p>
   );
 };

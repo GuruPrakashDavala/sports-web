@@ -14,7 +14,7 @@ import { fixturesRestAPI } from "./util";
 import { InfiniteArticlesResponseType } from "../pages/news";
 
 export const recentArticlesStrapiAPI =
-  "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=updatedAt:desc";
+  "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=createdAt:desc";
 
 type FixtureAPIResponse = {
   data: FixtureT;
@@ -52,6 +52,22 @@ const getFixtureSchedule = async ({ queryKey }: { queryKey: any }) => {
   return axios.get<FixturesAPIResponse>(
     `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
   );
+};
+
+const getInfiniteArticles = ({
+  pageParam = 1,
+  queryKey,
+}: {
+  pageParam?: number;
+  queryKey: string[];
+}) => {
+  const category = queryKey[1];
+  const APIURL =
+    !category || category === "All"
+      ? `/articles?pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`
+      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`;
+
+  return fetchStrapiAPI(APIURL);
 };
 
 export const useFixtureDetails = (
@@ -104,7 +120,7 @@ export const useHomepage = (): UseQueryResult<
   );
 };
 
-export const useArticles = ({
+const useArticles = ({
   category,
   initialData,
   pageNumber,
@@ -129,28 +145,12 @@ export const useArticles = ({
   );
 };
 
-const getInfiniteArticles = ({
-  pageParam = 1,
-  queryKey,
-}: {
-  pageParam?: number;
-  queryKey: string[];
-}) => {
-  const category = queryKey[1];
-  const APIURL =
-    !category || category === "All"
-      ? `/articles?pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`
-      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`;
-
-  return fetchStrapiAPI(APIURL);
-};
-
 export const useInfiniteArticles = ({
   category,
   initialData,
 }: {
   category: string;
-  initialData: InfiniteArticlesResponseType;
+  initialData?: InfiniteArticlesResponseType;
 }): UseInfiniteQueryResult<InfiniteArticlesResponseType, Error> => {
   return useInfiniteQuery(["infiniteArticles", category], getInfiniteArticles, {
     getNextPageParam: (_lastPage, pages) => {
@@ -170,4 +170,12 @@ export const useInfiniteArticles = ({
     keepPreviousData: true,
     initialData: initialData,
   });
+};
+
+export const useArticle = (
+  slug: string
+): UseQueryResult<{ data: ArticleType[] }, Error> => {
+  return useQuery(["article", slug], () =>
+    fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 4`)
+  );
 };

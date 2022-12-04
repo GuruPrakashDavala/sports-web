@@ -86,7 +86,7 @@ const NewsHeader = ({
           </h1>
         </div>
       ) : (
-        <h2 sx={{ paddingX: 3, paddingY: 3 }}>
+        <h2 sx={{ paddingX: 2, paddingY: 3 }}>
           {category && (
             <span
               sx={{

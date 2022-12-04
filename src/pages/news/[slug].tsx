@@ -20,10 +20,10 @@ import ImageCarousel from "../../components/CarouselBlocks/ImageCarousel";
 import ArticleImage from "../../components/ArticlePrimitives/Image";
 import ArticleQuote from "../../components/ArticlePrimitives/Quote";
 import RichText from "../../components/ArticlePrimitives/RichText/Index";
-import { recentArticlesStrapiAPI } from "../../utils/queries";
+import { recentArticlesStrapiAPI, useArticle } from "../../utils/queries";
 
 const articleContainerStyles: ThemeUICSSObject = {
-  paddingX: [3, null, null, 7],
+  paddingX: [2, null, null, 7],
   paddingY: [null, null, 5],
 };
 
@@ -40,32 +40,33 @@ export const articleBodyWrapperStyles: ThemeUICSSObject = {
   maxWidth: "105rem",
 };
 
-const articleTitleStyles: ThemeUICSSObject = {
-  paddingY: [1, null, null, 4],
-  variant: "text.heading2",
-  fontSize: [5, null, null, "2rem"],
-};
-
 const sideAdBlock: ThemeUICSSObject = {
   marginX: 2,
 };
 
 type ArticlePageProps = {
-  data: ArticleType;
+  article: ArticleType;
   recentArticles: ArticleType[];
+  slug: string;
+  articleId: string;
   styles?: ThemeUICSSObject;
 };
 
 type BlockPickerProps = {
   block: ArticleBlocks;
   index?: number;
+  isLastBlock?: boolean;
 };
 
-const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
+const BlockPicker = ({
+  block,
+  index,
+  isLastBlock,
+}: BlockPickerProps): JSX.Element => {
   switch (block.type) {
     case "tweetembed":
       return (
-        <div sx={{ px: [2], py: [4] }} key={index}>
+        <div sx={{ paddingY: [2, 3] }} key={index}>
           <TwitterTweetEmbed tweetId={block.tweet_id} />
         </div>
       );
@@ -122,20 +123,22 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
 };
 
 const ArticlePage = (props: ArticlePageProps) => {
-  const { data, recentArticles, styles = {} } = props;
-  console.log(data);
+  const { recentArticles, slug, styles = {} } = props;
+  const { data: articleData, isLoading: articleLoading } = useArticle(slug);
+  const article = articleData ? articleData.data[0] : props.article;
 
   return (
     <Fragment>
       <NewsHeader
-        title={data.attributes.title}
-        category={data.attributes.category?.data?.attributes.name}
-        imageSrc={renderImage(data.attributes.coverimage.data)}
+        title={article.attributes.title}
+        category={article.attributes.category?.data?.attributes.name}
+        imageSrc={renderImage(article.attributes.coverimage.data)}
       />
+
       <div sx={articleContainerStyles}>
         <div sx={articleBodyWrapperStyles}>
           {/* Article author info block */}
-          <AuthorInfoBlock date={data.attributes.createdAt} />
+          <AuthorInfoBlock createdAt={article.attributes.createdAt} />
 
           {/* Article m ads */}
           <div></div>
@@ -146,10 +149,15 @@ const ArticlePage = (props: ArticlePageProps) => {
             {/* Create a block picker which can hand pick the components and render inside the body */}
             <AdBlock variant={AdBlockVariant.HORIZONTAL} />
 
-            {data.attributes.blocks?.map((block, i) => {
+            {article.attributes.blocks?.map((block, i) => {
+              const isLastBlock = article.attributes.blocks?.length === i;
               return (
                 <Fragment key={i}>
-                  <BlockPicker block={block} index={i} />
+                  <BlockPicker
+                    block={block}
+                    index={i}
+                    isLastBlock={isLastBlock}
+                  />
                 </Fragment>
               );
             })}
@@ -157,12 +165,12 @@ const ArticlePage = (props: ArticlePageProps) => {
             {/* Published info */}
             <div>
               <PublishInfo
-                date={data.attributes.createdAt}
+                date={article.attributes.createdAt}
                 styles={{
                   variant: "text.label1",
                   color: colors.gray100,
-                  paddingBottom: 3,
-                  marginTop: 6,
+                  paddingY: 3,
+                  paddingTop: 4,
                 }}
               />
               <SocialIcons />
@@ -172,8 +180,10 @@ const ArticlePage = (props: ArticlePageProps) => {
           {/* Article side ads */}
 
           <div sx={sideAdBlock}>
-            <AdBlock variant={AdBlockVariant.SQUARE} height={60} />
-            <AdBlock variant={AdBlockVariant.SQUARE} height={60} />
+            {/* <AdBlock variant={AdBlockVariant.SQUARE} height={60} />
+            <AdBlock variant={AdBlockVariant.SQUARE} height={60} /> */}
+
+            {/* <RelatedArticles recentArticles={recentArticles} /> */}
           </div>
         </div>
 
@@ -183,7 +193,9 @@ const ArticlePage = (props: ArticlePageProps) => {
           height={12}
         />
       </div>
+
       {/* Recent articles */}
+
       <ArticleGrid
         articleGrid={{
           articles: { data: recentArticles },
@@ -199,29 +211,6 @@ const ArticlePage = (props: ArticlePageProps) => {
 
 export default ArticlePage;
 
-// pages/posts/[id].js
-
-// Generates `/posts/1` and `/posts/2`
-
-// export async function getStaticPaths() {
-//   return {
-//     paths: [{ params: { slug: "1" } }, { params: { slug: "2" } }],
-//     fallback: false, // can also be true or 'blocking'
-//   };
-// }
-
-// export async function getStaticProps() {
-//   const post = await getPost("");
-//   // const post = await res.json();
-//   // By returning { props: { posts } }, the Blog component
-//   // will receive `posts` as a prop at build time
-//   return {
-//     props: {
-//       post,
-//     },
-//   };
-// }
-
 export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
@@ -230,13 +219,19 @@ export async function getServerSideProps(context: any) {
   ]);
 
   if (!article.data || article.data.length === 0) {
-    console.log(article);
+    console.log("articleNotMatchedWithSlug");
+    console.log(slug);
     return {
       notFound: true,
     };
   }
 
   return {
-    props: { data: article.data[0], recentArticles: recentArticles.data },
+    props: {
+      article: article.data[0],
+      articleId: article.data[0].id,
+      slug,
+      recentArticles: recentArticles.data,
+    },
   };
 }

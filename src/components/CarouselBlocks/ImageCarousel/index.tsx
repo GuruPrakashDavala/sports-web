@@ -41,12 +41,18 @@ const ImageCarousel = (props: { images: ImageType[]; index: number }) => {
       }}
       key={index}
     >
-      <div sx={{ display: "flex", flexDirection: "row", alingItems: "center" }}>
+      <div
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          paddingBottom: 1,
+        }}
+      >
         <ImageCollectionIcon />
         <p
           sx={{
             paddingX: "5px",
-            paddingY: 1,
             variant: "text.label2",
             color: colors.gray100,
           }}

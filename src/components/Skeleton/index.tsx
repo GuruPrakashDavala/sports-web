@@ -36,7 +36,7 @@ const skeletonCircleStyles: ThemeUICSSObject = {
   borderRadius: "50%",
 };
 
-type SkeletonProps = {
+export type SkeletonProps = {
   circle?: boolean;
   styles?: ThemeUICSSObject;
   width?: ThemeUICSSObject["width"];

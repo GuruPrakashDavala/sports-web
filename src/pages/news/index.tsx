@@ -18,6 +18,8 @@ import { selectBtnStyles } from "../schedule";
 import { useInfiniteArticles } from "../../utils/queries";
 import { colors } from "../../styles/theme";
 import RightArrowIcon from "../../components/Icons/RightArrow";
+import ArticleCardSkeleton from "../../components/Loaders/Cards/ArticleCard";
+import { ThemeUICSSObject } from "theme-ui";
 
 type ArticleCategories = {
   attributes: {
@@ -31,6 +33,43 @@ export type InfiniteArticlesResponseType = {
   pageParams: any;
 };
 
+const headerContainerStyles: ThemeUICSSObject = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  paddingRight: [null, 2, null, 3],
+};
+
+const loaderContainerStyles: ThemeUICSSObject = {
+  display: "flex",
+  margin: 0,
+  padding: 0,
+  flexDirection: "row",
+  flexWrap: "wrap",
+};
+
+const loadMoreBtnStyles = (hasNextPage?: boolean): ThemeUICSSObject => {
+  return {
+    display: "flex",
+    backgroundColor: !hasNextPage ? colors.gray200 : colors.black,
+    padding: 1,
+    width: "200px",
+    height: "50px",
+    justifyContent: "center",
+    alignItems: "center",
+    ...(hasNextPage && {
+      "&:hover": {
+        opacity: ".675",
+        "> div": {
+          transition: ".25s ease",
+          transform: "translateX(10%)",
+        },
+      },
+    }),
+  };
+};
+
 const NewsPage = (props: {
   articles: ArticleType[];
   categories: ArticleCategories[];
@@ -38,6 +77,9 @@ const NewsPage = (props: {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const bp = useBreakpointIndex();
   const router = useRouter();
+  const newsCategories = props.categories.filter(
+    (category) => category.attributes.slug !== "All"
+  );
 
   const initialData: InfiniteArticlesResponseType = {
     pages: [{ data: props.articles, meta: undefined }],
@@ -52,7 +94,6 @@ const NewsPage = (props: {
     hasNextPage,
     fetchNextPage,
     isFetching,
-    isFetchingNextPage,
   } = useInfiniteArticles({
     category: selectedCategory,
     initialData,
@@ -62,20 +103,9 @@ const NewsPage = (props: {
     ? (articlesData as unknown as InfiniteArticlesResponseType)
     : initialData;
 
-  console.log("initialData");
-  console.log(initialData);
-
-  console.log("dataFromQuery");
-  console.log(articlesData);
-
-  console.log("articles");
-  console.log(articles);
-
   useEffect(() => {
     if (router.query.category) {
       setSelectedCategory(router.query.category as string);
-    } else {
-      setSelectedCategory("All");
     }
   }, [router.query.category]);
 
@@ -88,31 +118,27 @@ const NewsPage = (props: {
     fetchNextPage();
   };
 
+  if (error) {
+    return <div>Something went wrong</div>;
+  }
+
   return (
     <SectionWrapper styles={{ paddingY: 2 }}>
-      <div
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingRight: [null, 2, null, 3],
-        }}
-      >
+      <div sx={headerContainerStyles}>
         <SectionHeading
-          title={`All news`}
+          title={`News`}
           theme={ColorTheme.LIGHT}
           styles={{ px: [0, 1] }}
         />
 
         <select
-          name="league"
+          name="category"
           sx={{ ...selectBtnStyles, marginBottom: 0, width: "fit-content" }}
           onChange={categoryChanged}
           value={selectedCategory}
         >
           <option value="All">All topics</option>
-          {props.categories.map((category) => (
+          {newsCategories.map((category) => (
             <option
               value={category.attributes.slug}
               key={category.attributes.slug}
@@ -123,7 +149,24 @@ const NewsPage = (props: {
         </select>
       </div>
 
-      {bp > 0 && (
+      {/* Loading state */}
+      {!articles && isLoading && (
+        <div sx={loaderContainerStyles}>
+          {new Array(8).fill(0).map((_item, index) => (
+            <Fragment key={index}>
+              <ArticleCardSkeleton
+                styles={{
+                  flexBasis: ["100%", "calc(100% / 2)", "calc(100% / 3)"],
+                }}
+              />
+            </Fragment>
+          ))}
+        </div>
+      )}
+
+      {/* Tablets/Desktop layout articles */}
+
+      {bp > 0 && articles ? (
         <div
           sx={{
             display: "flex",
@@ -170,9 +213,8 @@ const NewsPage = (props: {
             );
           })}
         </div>
-      )}
-
-      {bp === 0 &&
+      ) : (
+        //  bp === 0: Mobile layout articles
         articles.pages.map((group, index) => {
           return (
             <Fragment key={index}>
@@ -193,63 +235,50 @@ const NewsPage = (props: {
               ))}
             </Fragment>
           );
-        })}
+        })
+      )}
 
       {/* Load more button component */}
-      <div
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingY: 2,
-        }}
-      >
-        <button
-          type="button"
+
+      {articles && (
+        <div
           sx={{
             display: "flex",
-            backgroundColor: !hasNextPage ? colors.gray200 : colors.black,
-            padding: 1,
-            width: "200px",
-            height: "50px",
             justifyContent: "center",
             alignItems: "center",
-            ...(hasNextPage && {
-              "&:hover": {
-                opacity: ".675",
-                "> div": {
-                  transition: ".25s ease",
-                  transform: "translateX(10%)",
-                },
-              },
-            }),
+            paddingY: 2,
           }}
-          onClick={loadMore}
-          disabled={!hasNextPage}
         >
-          <p
-            sx={{
-              variant: "text.subheading4",
-              color: !hasNextPage ? colors.black : colors.white,
-            }}
+          <button
+            type="button"
+            sx={loadMoreBtnStyles(hasNextPage)}
+            onClick={loadMore}
+            disabled={!hasNextPage}
           >
-            {!hasNextPage
-              ? `All caught up!`
-              : isFetching
-              ? `Loading`
-              : `Load more`}
-          </p>
-
-          {hasNextPage && (
-            <RightArrowIcon
-              styles={{
-                color: colors.white,
-                alignItems: "center",
+            <p
+              sx={{
+                variant: "text.subheading4",
+                color: !hasNextPage ? colors.black : colors.white,
               }}
-            />
-          )}
-        </button>
-      </div>
+            >
+              {!hasNextPage
+                ? `All caught up!`
+                : isFetching
+                ? `Loading`
+                : `Load more`}
+            </p>
+
+            {hasNextPage && (
+              <RightArrowIcon
+                styles={{
+                  color: colors.white,
+                  alignItems: "center",
+                }}
+              />
+            )}
+          </button>
+        </div>
+      )}
     </SectionWrapper>
   );
 };

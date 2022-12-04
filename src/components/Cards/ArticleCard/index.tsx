@@ -53,8 +53,8 @@ const cardInfo: ThemeUICSSObject = {
   flexGrow: 1,
   gap: 1,
   color: colors.white,
-  paddingTop: 5,
-  paddingBottom: 3,
+  paddingTop: [3, 4, 5],
+  paddingBottom: [2, null, 3],
 };
 
 // card info styles when hovered out of the card

@@ -2,61 +2,68 @@
 
 import { colors } from "../../../styles/theme";
 
-const ArticleQuote = (props: {
+type ArticleQuoteType = {
   quote: string;
   index: number;
   pre?: string;
   post?: string;
-}) => {
+};
+
+const ArticleQuote = (props: ArticleQuoteType) => {
   const { quote, index, pre, post } = props;
   return (
     <div
       sx={{
-        padding: [3],
-        marginTop: [3],
-        background: colors.gray300,
-        borderRadius: [4],
-        display: "flex",
-        flexDirection: "column",
+        paddingY: [2, 3],
       }}
       key={index}
     >
-      {pre && (
-        <span
-          sx={{
-            display: "inline-block",
-            color: colors.black,
-            variant: "text.subheading5",
-          }}
-        >
-          {pre}
-        </span>
-      )}
-
-      <q
+      <div
         sx={{
+          padding: 2,
           display: "flex",
-          variant: "text.quote2",
-          fontStyle: "italic",
-          paddingY: [3],
-          justifyContent: "center",
+          flexDirection: "column",
+          background: colors.gray300,
+          borderRadius: "10px",
         }}
       >
-        {quote}
-      </q>
+        {pre && (
+          <span
+            sx={{
+              display: "inline-block",
+              color: colors.black,
+              variant: "text.subheading5",
+            }}
+          >
+            {pre}
+          </span>
+        )}
 
-      {post && (
-        <span
+        <q
           sx={{
-            color: colors.black,
-            variant: "text.subheading4",
             display: "flex",
-            justifyContent: "end",
+            variant: "text.quote2",
+            fontStyle: "italic",
+            paddingY: 3,
+            justifyContent: "center",
           }}
         >
-          &mdash; {post}
-        </span>
-      )}
+          {quote}
+        </q>
+
+        {post && (
+          <span
+            sx={{
+              color: colors.black,
+              variant: "text.subheading4",
+              display: "flex",
+              justifyContent: "end",
+            }}
+          >
+            &mdash; {post}
+          </span>
+        )}
+      </div>
     </div>
   );
 };
