@@ -8,11 +8,12 @@ import { renderImage } from "../../../utils/util";
 import Carousel, { CarouselItem } from "../../Carousel";
 import ImageCollectionIcon from "../../Icons/ImageCollectionIcon";
 import ImageViewer from "react-simple-image-viewer";
+import RightArrowIcon from "../../Icons/RightArrow";
+import LeftArrowIcon from "../../Icons/LeftArrow";
 
 const ImageCarousel = (props: { images: ImageType[]; index: number }) => {
   const { images, index } = props;
   const imagesList = images.map((image) => renderImage(image));
-  console.log(imagesList);
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
@@ -87,17 +88,30 @@ const ImageCarousel = (props: { images: ImageType[]; index: number }) => {
       />
 
       {isViewerOpen && (
-        <ImageViewer
-          src={imagesList}
-          currentIndex={currentImage}
-          onClose={closeImageViewer}
-          disableScroll={false}
-          backgroundStyle={{
-            backgroundColor: "rgba(0,0,0,0.9)",
-            zIndex: 99,
+        <div
+          sx={{
+            "> div > span": {
+              opacity: 1,
+              width: "fit-content",
+              height: "60px",
+              "&:hover": { opacity: 1 },
+            },
           }}
-          closeOnClickOutside={true}
-        />
+        >
+          <ImageViewer
+            src={imagesList}
+            currentIndex={currentImage}
+            onClose={closeImageViewer}
+            disableScroll={false}
+            backgroundStyle={{
+              backgroundColor: "rgba(0,0,0,0.9)",
+              zIndex: 99,
+            }}
+            closeOnClickOutside={true}
+            rightArrowComponent={<RightArrowIcon />}
+            leftArrowComponent={<LeftArrowIcon />}
+          />
+        </div>
       )}
     </div>
   );
