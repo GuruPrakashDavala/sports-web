@@ -70,6 +70,7 @@ const ImageCarousel = (props: { images: ImageType[]; index: number }) => {
         }}
       >
         <ImageCollectionIcon />
+        {/* <FaEye sx={{ marginLeft: "5px" }} /> */}
         <p
           sx={{
             paddingX: "5px",
@@ -77,7 +78,8 @@ const ImageCarousel = (props: { images: ImageType[]; index: number }) => {
             color: colors.gray100,
           }}
         >
-          Image slider: Swipe left to see more images
+          Image slider: Swipe left to see more images. Tap on the image for full
+          view.
         </p>
       </div>
 
