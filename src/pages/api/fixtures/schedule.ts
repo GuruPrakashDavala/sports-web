@@ -44,7 +44,7 @@ export default async function handler(
 
     const fixtures = await axios({
       method: "GET",
-      url: `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=${APIToken}&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs&filter[stage_id]=${seriesIds}`,
+      url: `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=${APIToken}&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs&filter[stage_id]=${seriesIds}&sort=starting_at`,
       responseType: "json",
       headers: {
         "accept-encoding": null,

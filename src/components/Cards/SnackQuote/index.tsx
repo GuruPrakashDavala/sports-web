@@ -24,12 +24,12 @@ const containerStyles = {
   paddingX: [null, null, null, 2],
   transition: "background-color 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
   willChange: "background-color",
-  "&:hover": {
-    backgroundColor: colors.experimental.blue150,
-    transition:
-      "background-color 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
-    willChange: "transform",
-  },
+  // "&:hover": {
+  //   backgroundColor: colors.experimental.blue150,
+  //   transition:
+  //     "background-color 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
+  //   willChange: "transform",
+  // },
 };
 
 const quoteStyles = {
@@ -53,17 +53,17 @@ const quoteAnchorStyles = {
   color: colors.white,
   background: "linear-gradient(to bottom, #CA0E14 0%, #CA0E14 100%)",
   backgroundPosition: "0 100%",
-  transition: "background-size 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
+  transition: "background-size 400ms cubic-bezier(0.200, 0.045, 0.355, 1)",
   willChange: "background-size",
   backgroundRepeat: "repeat-x",
   backgroundSize: "2px 0",
   "&:hover": {
-    backgroundSize: "2px 10px",
+    backgroundSize: "2px 6px",
     transition:
-      "background-size 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
+      "background-size 150ms cubic-bezier(0.200, 0.045, 0.355, 1) 100ms",
     "> span": {
       transform: "translateX(5px)",
-      transition: "transform 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
+      transition: "transform 150ms cubic-bezier(0.200, 0.045, 0.355, 1) 100ms",
       willChange: "transform",
     },
   },

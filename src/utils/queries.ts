@@ -76,6 +76,7 @@ export const useFixtureDetails = (
 ) => {
   return useQuery(["fixtureDetail", fixtureId], getFixtureDetails, {
     refetchInterval: refetchInterval ?? 0,
+    keepPreviousData: true,
   });
 };
 

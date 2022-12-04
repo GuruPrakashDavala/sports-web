@@ -120,6 +120,7 @@ const Schedule = (props: {
   series: [] | CMSFixtures[];
   seriesIds: string;
 }): JSX.Element => {
+  console.log(props.series);
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const { data: fixtureSchedule, isLoading } = useFixtureSchedule(
     props.seriesIds,
