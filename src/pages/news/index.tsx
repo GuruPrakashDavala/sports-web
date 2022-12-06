@@ -289,7 +289,7 @@ export async function getStaticProps(context: any) {
   try {
     const [articles, categories] = await Promise.all([
       fetchStrapiAPI(
-        `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2`
+        `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`
       ),
       fetchStrapiAPI(`/categories?fields[0]=name,slug`),
     ]);

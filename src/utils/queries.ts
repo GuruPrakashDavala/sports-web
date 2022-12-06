@@ -64,8 +64,8 @@ const getInfiniteArticles = ({
   const category = queryKey[1];
   const APIURL =
     !category || category === "All"
-      ? `/articles?pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`
-      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2`;
+      ? `/articles?pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`
+      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
 
   return fetchStrapiAPI(APIURL);
 };
