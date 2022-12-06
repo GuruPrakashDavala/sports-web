@@ -40,6 +40,7 @@ import {
   useRecentArticles,
 } from "../../utils/queries";
 import RelatedArticles from "../../components/Matchcenter/RelatedArticles";
+import LivecommentarySkeleton from "../../components/Loaders/Matchcenter/Livecommentary";
 
 type MatchCenterProps = {
   fixture: FixtureT;
@@ -452,6 +453,8 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         bowling={fixture.bowling}
                         manofmatch={fixture.manofmatch}
                       />
+                    ) : fixtureLoading ? (
+                      <LivecommentarySkeleton />
                     ) : (
                       <Abandoned
                         note={fixture.note}

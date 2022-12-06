@@ -76,7 +76,7 @@ const InningsTable = (props: InningsTableProps) => {
           bp > 3 ? batting.batsman.fullname : batting.batsman.lastname;
         const isBatsmanOut = batting.result.is_wicket;
         const result = batting.result.name;
-        const bowlerName = batting.bowler ? batting.bowler.lastname : "";
+        const bowlerName = batting.bowler ? batting.bowler.fullname : "";
         const catchstump = batting.catchstump
           ? batting.catchstump.lastname
           : "";

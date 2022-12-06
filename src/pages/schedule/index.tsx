@@ -308,7 +308,7 @@ const Schedule = (props: {
   );
 };
 
-export async function getServerSideProps(context: any) {
+export async function getStaticProps(context: any) {
   try {
     const fixturesDefinedInCMS = await fetchStrapiAPI(
       `/fixtures-list?populate=deep,2`
@@ -330,6 +330,7 @@ export async function getServerSideProps(context: any) {
         series: fixturesDefinedInCMS.data.attributes.series,
         seriesIds,
       },
+      revalidate: 60 * 5,
     };
   } catch (err) {
     console.log(err);

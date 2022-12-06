@@ -148,39 +148,44 @@ const Home = (props: {
 };
 
 export async function getStaticProps() {
-  const [homepage, fixturesDefinedInCMS] = await Promise.all([
-    fetchStrapiAPI("/home", {
-      populate: "deep, 4",
-    }),
-    fetchStrapiAPI("/fixtures-list", {
-      populate: "deep, 2",
-    }),
-  ]);
+  try {
+    const [homepage, fixturesDefinedInCMS] = await Promise.all([
+      fetchStrapiAPI("/home", {
+        populate: "deep, 4",
+      }),
+      fetchStrapiAPI("/fixtures-list", {
+        populate: "deep, 2",
+      }),
+    ]);
 
-  const seriesIds = fixturesDefinedInCMS.data.attributes.series
-    .map((series: any) => series.seriesId)
-    .toString();
+    const seriesIds = fixturesDefinedInCMS.data.attributes.series
+      .map((series: any) => series.seriesId)
+      .toString();
 
-  const response = await fetch(
-    `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+    const response = await fetch(
+      `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    const fixtures = await response.json();
+
+    return {
+      props: {
+        homepage: homepage.data,
+        fixtures: fixtures.data,
+        seriesIds,
       },
-    }
-  );
-
-  const fixtures = await response.json();
-
-  return {
-    props: {
-      homepage: homepage.data,
-      fixtures: fixtures.data,
-      seriesIds,
-    },
-    revalidate: 60 * 5,
-  };
+      revalidate: 60 * 5,
+    };
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
 export default Home;

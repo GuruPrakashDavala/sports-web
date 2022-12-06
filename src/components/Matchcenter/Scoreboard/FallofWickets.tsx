@@ -11,7 +11,6 @@ type FallOfWicketsProps = {
 
 const FallofWickets = (props: FallOfWicketsProps) => {
   const { fallOfWickets } = props;
-  const bp = useBreakpointIndex();
 
   return (
     <Fragment>
@@ -60,7 +59,7 @@ const FallofWickets = (props: FallOfWicketsProps) => {
                 <li
                   sx={{
                     flexBasis: "50%",
-                    variant: bp === 0 ? "text.body4" : "text.subheading3",
+                    variant: "text.body4",
                   }}
                 >
                   {batting.batsman.lastname}

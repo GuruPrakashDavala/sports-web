@@ -37,7 +37,6 @@ const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
   return axios.get<FixtureAPIResponse>(
     `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}`
-    //`https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}&fields=${fields}`
   );
 };
 
@@ -75,9 +74,11 @@ export const useFixtureDetails = (
   fixtureId: string,
   refetchInterval?: number
 ) => {
+  const refetchOnWindowFocus = refetchInterval === 0 ? false : true;
   return useQuery(["fixtureDetail", fixtureId], getFixtureDetails, {
     refetchInterval: refetchInterval ?? 0,
     keepPreviousData: true,
+    refetchOnWindowFocus: refetchOnWindowFocus,
   });
 };
 
@@ -108,6 +109,7 @@ export const useFixtureSchedule = (
 ) => {
   return useQuery(["schedule", seriesIds], getFixtureSchedule, {
     refetchInterval: refetchInterval ?? 0,
+    refetchOnWindowFocus: false,
   });
 };
 
