@@ -36,7 +36,8 @@ const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   const fixtureId = queryKey[1];
   const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
   return axios.get<FixtureAPIResponse>(
-    `${fixturesRestAPI}/fixtures/single-fixture?fixtureId=${fixtureId}&fields=${fields}`
+    `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}`
+    //`https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}&fields=${fields}`
   );
 };
 
