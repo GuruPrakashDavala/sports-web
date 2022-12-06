@@ -40,7 +40,6 @@ import {
   useRecentArticles,
 } from "../../utils/queries";
 import RelatedArticles from "../../components/Matchcenter/RelatedArticles";
-import { fixturesRestAPI } from "../../utils/util";
 
 type MatchCenterProps = {
   fixture: FixtureT;
@@ -512,7 +511,10 @@ export async function getServerSideProps(
     }
 
     const fixtureId = slug[0];
-    const fixtureURI = `${fixturesRestAPI}/fixtures/single-fixture?fixtureId=${fixtureId}&fields=${fields}`;
+    const sportmonkAPIURL = process.env.NEXT_PUBLIC_SPORTMONK_API;
+    const APIToken = process.env.NEXT_PUBLIC_SPORT_MONKS_API_TOKEN;
+
+    const fixtureURI = `${sportmonkAPIURL}/fixtures/${fixtureId}?api_token=${APIToken}&include=${fields}`;
 
     const [fixture, recentArticles] = await Promise.all([
       fetch(fixtureURI).then((res) => res.json()),

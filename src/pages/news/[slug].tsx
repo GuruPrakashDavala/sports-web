@@ -1,12 +1,12 @@
 /** @jsxImportSource theme-ui */
 
+import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
 import SocialIcons from "../../components/News/SocialIcons";
 import NewsHeader from "../../components/News/Header";
 import AuthorInfoBlock from "../../components/News/AuthorInfoBlock";
-import { Fragment } from "react";
 import PublishInfo from "../../components/News/PublishInfo";
 import ArticleGrid from "../../components/Grids/ArticleGrid";
 import { fetchStrapiAPI } from "../../lib/strapi";

@@ -47,9 +47,9 @@ export default async function handler(
 
     // const legacyAPIURl = `https://cricket.sportmonks.com/api/v2.0/fixtures/${fixtureId}?api_token=${APIToken}&include=visitorteam, localteam, league, venue, scoreboards, manofmatch, batting, batting.batsman, batting.batsmanout, batting.result, batting.bowler, batting.catchstump, batting.runoutby, odds.bookmaker, odds, odds.market, bowling, bowling.bowler, scoreboards.team,balls, balls.batsmanout, balls.batsmanone,balls.batsmantwo,balls.catchstump,balls.score,balls.runoutby, lineup, tosswon, runs,stage, runs.team, firstumpire, secondumpire`;
 
-    const fixtures = await axios({
+    const { data: fixture } = await axios({
       method: "GET",
-      url: `https://cricket.sportmonks.com/api/v2.0/fixtures/${fixtureId}?api_token=${APIToken}&include=${
+      url: `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}&fields=${
         fields ?? baseFields
       }`,
       responseType: "json",
@@ -59,7 +59,7 @@ export default async function handler(
     });
 
     res.status(200).json({
-      data: fixtures.data.data,
+      data: fixture.data,
     });
   } catch (err) {
     console.log(err);
