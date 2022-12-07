@@ -395,7 +395,7 @@ const LiveCommentary = (props: {
 
   useEffect(() => {
     setBallsInList(reversedOrder.slice(0, ballsLimit));
-  }, [ballsLimit]);
+  }, [ballsLimit, balls]);
 
   const getMoreBalls = () => {
     setBallsLimit((prev) => prev + 25);
@@ -463,7 +463,7 @@ const LiveCommentary = (props: {
         dataLength={ballsInList.length}
         next={getMoreBalls}
         hasMore={ballsLimit > reversedOrder.length ? false : true}
-        loader={<h4>Loading...</h4>}
+        loader={<h4>Loading live commentary...</h4>}
       >
         {ballsInList &&
           ballsInList.map((ball) => {

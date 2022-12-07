@@ -33,7 +33,7 @@ import {
   fixtureBaseFields,
 } from "../../utils/matchcenter";
 import Matchinfo from "../../components/Matchcenter/MatchInfo/Matchinfo";
-import { differenceInMinutes } from "date-fns";
+import { differenceInMinutes, isToday } from "date-fns";
 import {
   recentArticlesStrapiAPI,
   useFixtureDetails,
@@ -231,16 +231,20 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
       now
     );
 
+    const isFixtureStartsToday = isToday(new Date(fixture.starting_at));
+
     const doesGameStartsInLessThanSixtyMins =
       differenceInMins > 0 && differenceInMins < 60;
 
     if (isLive) {
-      setRefetchInterval(20000); // 2 mins polling
+      setRefetchInterval(25000); // 2.5 mins polling
     } else {
       isFinished
         ? setRefetchInterval(0)
         : doesGameStartsInLessThanSixtyMins
         ? setRefetchInterval(1000 * 300) // 5 mins polling
+        : isFixtureStartsToday
+        ? setRefetchInterval(1000 * 1200) // 20 mins polling
         : setRefetchInterval(0);
     }
   }, [fixtureResponse]);
