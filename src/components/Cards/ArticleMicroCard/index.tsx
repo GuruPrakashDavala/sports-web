@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import { useBreakpointIndex } from "@theme-ui/match-media";
 import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
@@ -15,13 +16,20 @@ import {
   NewscardProps,
 } from "../ArticleCard";
 
-const cardWrapperStyles: ThemeUICSSObject = {
-  display: "flex",
-  height: "100%",
-  width: "100%",
-  borderBottom: "1px solid",
-  borderBottomColor: colors.gray200,
-  paddingY: 2,
+const cardHoverStyles: ThemeUICSSObject = {
+  transition:
+    "background-color 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
+  "> div .info": {
+    transform: "translateY(-3px)",
+    transition: "transform 150ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
+    willChange: "transform",
+  },
+};
+
+// card info styles when hovered out of the card
+const cardInfoTransition: ThemeUICSSObject = {
+  transition: "transform 400ms cubic-bezier(0.645, 0.045, 0.355, 1) 100ms",
+  willChange: "transform",
 };
 
 const imageWrapperStyles: ThemeUICSSObject = {
@@ -44,6 +52,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
     styles = {},
   } = props;
 
+  const bp = useBreakpointIndex();
   const articlePublishedDate = getArticleFormattedDate(date);
 
   const articleVariantImageSize =
@@ -54,6 +63,17 @@ const ArticleMicroCard = (props: NewscardProps) => {
       : 96;
 
   const path = `news/${slug}`;
+
+  const cardWrapperStyles: ThemeUICSSObject = {
+    display: "flex",
+    height: "100%",
+    width: "100%",
+    textDecoration: "none",
+    borderBottom: "1px solid",
+    borderBottomColor: colors.gray200,
+    paddingY: 2,
+    "&:hover": bp > 1 ? cardHoverStyles : null,
+  };
 
   return (
     <Link href={path} styles={{ cursor: "pointer", paddingTop: 2 }}>
@@ -90,7 +110,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
           </div> */}
         </div>
 
-        <div sx={{ flexBasis: "50%" }}>
+        <div className="info" sx={{ flexBasis: "50%", ...cardInfoTransition }}>
           <p
             sx={{
               variant: "text.label2",

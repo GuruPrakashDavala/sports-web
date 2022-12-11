@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
-import RelatedArticles from "../RelatedArticles";
 
 const rowWrapperStyles: ThemeUICSSObject = {
   display: "flex",

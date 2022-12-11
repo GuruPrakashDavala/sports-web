@@ -61,7 +61,7 @@ export const PlayerBattingDetails = (props: {
             >
               {bp > 1 ? batsman.fullname : batsman.lastname}
 
-              {batsman.id === recentBall.batsman_id && (
+              {batsman.id === recentBall.batsman_id && excludeWicketPlayer && (
                 <BatIcon
                   styles={{
                     display: "flex",
@@ -313,11 +313,24 @@ const LiveCommentary = (props: {
     OversSummaryT | undefined
   >(undefined);
 
+  const [thirdInningsOversSummary, setThirdInningsOversSummary] = useState<
+    OversSummaryT | undefined
+  >(undefined);
+
+  const [fourthInningsOversSummary, setFourthInningsOversSummary] = useState<
+    OversSummaryT | undefined
+  >(undefined);
+
   useMemo(() => {
     const firstInningsOversSummary = getOversSummary("S1", balls);
     const secondInningsOversSummary = getOversSummary("S2", balls);
+    const thirdInningsOversSummary = getOversSummary("S3", balls);
+    const fourthInningsOversSummary = getOversSummary("S4", balls);
     setFirstInningsOversSummary(firstInningsOversSummary);
     setSecondInningsOversSummary(secondInningsOversSummary);
+    setThirdInningsOversSummary(thirdInningsOversSummary);
+    setFourthInningsOversSummary(fourthInningsOversSummary);
+    console.log(fourthInningsOversSummary);
   }, [balls]);
 
   const getMoreBalls = () => {
@@ -362,6 +375,10 @@ const LiveCommentary = (props: {
                 ? firstInningsOversSummary
                 : ball.scoreboard === "S2"
                 ? secondInningsOversSummary
+                : ball.scoreboard === "S3"
+                ? thirdInningsOversSummary
+                : ball.scoreboard === "S4"
+                ? fourthInningsOversSummary
                 : undefined;
 
             return (

@@ -55,7 +55,11 @@ const FixturesContent = (props: {
       {fixtures.map((fixture) => {
         return (
           <Fragment key={fixture.id}>
-            <FixtureCard fixture={fixture} styles={{ paddingX: 0 }} />
+            <FixtureCard
+              fixture={fixture}
+              styles={{ paddingX: 0 }}
+              includeStageName={true}
+            />
           </Fragment>
         );
       })}

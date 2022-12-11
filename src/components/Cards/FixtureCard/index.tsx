@@ -53,9 +53,10 @@ export const getTeamDetails = (scoreboards: ScoreboardT[], innings: string) => {
 
 const FixtureCard = (props: {
   fixture: FixtureT;
+  includeStageName?: boolean;
   styles?: ThemeUICSSObject;
 }): JSX.Element => {
-  const { fixture, styles = {} } = props;
+  const { fixture, includeStageName, styles = {} } = props;
   const bp = useBreakpointIndex();
 
   const s1TeamDetails =
@@ -151,9 +152,11 @@ const FixtureCard = (props: {
               {fixture.round}
             </div>
 
-            {/* <p sx={{ variant: "text.label3", color: colors.gray100 }}>
-              {fixture.stage.name}
-            </p> */}
+            {includeStageName && (
+              <p sx={{ variant: "text.label3", color: colors.gray100 }}>
+                {fixture.stage.name}
+              </p>
+            )}
 
             <p sx={{ variant: "text.label3", color: colors.gray100 }}>
               {format(fixtureStartingDate, "iii d MMM - p OOOO")}
@@ -262,7 +265,13 @@ const FixtureCard = (props: {
         </div>
 
         {fixture.note.length > 0 ? (
-          <p sx={{ variant: "text.label3", paddingY: 1, color: colors.green }}>
+          <p
+            sx={{
+              variant: "text.label3",
+              paddingY: 1,
+              color: isLive ? colors.red300 : colors.green,
+            }}
+          >
             {/* Innings break note should be handled appropriately */}
             {fixture.status === "Innings Break" ? fixture.note : fixture.note}
           </p>

@@ -26,7 +26,7 @@ export type OversSummary = {
   };
 }[];
 
-const getBallType = (ball: SummaryBall) => {
+const getBallType = (ball: SummaryBall): string | number => {
   const type = ball.isWicket
     ? `W`
     : ball.six
@@ -81,7 +81,7 @@ const OverSummary = (props: {
           gap: [null, 3, null, 5],
           marginX: [0, 1],
           marginY: 1,
-          justifyContent: ["space-evenly", "flex-start"],
+          justifyContent: ["space-evenly"],
           border: "1px solid",
           borderColor: colors.gray200,
         }}
@@ -105,7 +105,7 @@ const OverSummary = (props: {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: ["60%", "30%"],
+            width: ["60%", "50%"],
           }}
         >
           <p>Runs scored: {overTotal}</p>
