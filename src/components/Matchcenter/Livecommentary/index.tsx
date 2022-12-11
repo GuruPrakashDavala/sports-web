@@ -247,7 +247,8 @@ const getWicketCommentary = (ball: BallT, wicketType: string): string => {
   }
 };
 
-const getNormalCommentary = (ball: BallT): JSX.Element => {
+const NormalCommentary = (props: { ball: BallT }): JSX.Element => {
+  const { ball } = props;
   const bp = useBreakpointIndex();
   return (
     <Fragment>
@@ -341,7 +342,9 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
       ) : (
         <Fragment>
           {getBallInfoCircle(ball.score)}
-          <div sx={{ paddingX: 1 }}>{getNormalCommentary(ball)}</div>
+          <div sx={{ paddingX: 1 }}>
+            <NormalCommentary ball={ball} />
+          </div>
         </Fragment>
       )}
     </div>
