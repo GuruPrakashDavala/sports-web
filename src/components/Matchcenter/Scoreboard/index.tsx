@@ -91,10 +91,10 @@ const Scoreboard = (props: ScoreboardProps) => {
   };
 
   useEffect(() => {
-    if (fixture.status === FixtureStatus.SecondInnings) {
+    if (fixture && fixture.status === FixtureStatus.SecondInnings) {
       setTabIndex(1);
     }
-  }, [fixture, s1Team, s2Team]);
+  }, []);
 
   return (
     <Tabs
@@ -111,13 +111,15 @@ const Scoreboard = (props: ScoreboardProps) => {
           </div>
         </Tab>
 
-        <Tab>
-          <div sx={tabItemStyles}>
-            <Image src={s2Team.image} width={24} height={24} />
-            <p sx={{ marginLeft: 1 }}>{s2Team.name}</p>
-            {fixture.status === "2nd Innings" && <LivePulse />}
-          </div>
-        </Tab>
+        {fixture.status !== FixtureStatus.FirstInnings && (
+          <Tab>
+            <div sx={tabItemStyles}>
+              <Image src={s2Team.image} width={24} height={24} />
+              <p sx={{ marginLeft: 1 }}>{s2Team.name}</p>
+              {fixture.status === "2nd Innings" && <LivePulse />}
+            </div>
+          </Tab>
+        )}
       </TabList>
 
       <TabPanel>
@@ -132,17 +134,19 @@ const Scoreboard = (props: ScoreboardProps) => {
         />
       </TabPanel>
 
-      <TabPanel>
-        {/* Second innings team stats */}
-        <ScoreboardContent
-          innings={"S2"}
-          fixture={fixture}
-          team={s2Team}
-          extras={s2Extras}
-          didNotBat={s2DidNotBat}
-          fallOfWickets={s2FallOfWickets}
-        />
-      </TabPanel>
+      {fixture.status !== FixtureStatus.FirstInnings && (
+        <TabPanel>
+          {/* Second innings team stats */}
+          <ScoreboardContent
+            innings={"S2"}
+            fixture={fixture}
+            team={s2Team}
+            extras={s2Extras}
+            didNotBat={s2DidNotBat}
+            fallOfWickets={s2FallOfWickets}
+          />
+        </TabPanel>
+      )}
     </Tabs>
   );
 };

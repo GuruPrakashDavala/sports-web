@@ -25,7 +25,7 @@ const FixturesContent = (props: {
   const { fixtures, selectedStage, series } = props;
 
   const seriesName = series.find(
-    (series) => series.seriesId === selectedStage
+    (series) => series.code === selectedStage
   )?.seriesName;
 
   if (fixtures.length === 0) {
@@ -48,9 +48,7 @@ const FixturesContent = (props: {
             variant: bp > 1 ? "text.subheading2" : "text.subheading3",
           }}
         >
-          {selectedStage === "All"
-            ? `${selectedStage} series`
-            : `${seriesName}`}
+          {selectedStage === "All" ? `All series` : `${seriesName}`}
         </p>
       </div>
 
@@ -109,10 +107,16 @@ const fixtureTabStyles: ThemeUICSSObject = {
   },
 };
 
-type CMSFixtures = {
+type Series = {
   id: number;
   seriesId: string;
+};
+
+type CMSFixtures = {
+  id: number;
+  seriesIds: Series[];
   seriesName: string;
+  code: string;
 };
 
 const Schedule = (props: {
@@ -120,7 +124,7 @@ const Schedule = (props: {
   series: [] | CMSFixtures[];
   seriesIds: string;
 }): JSX.Element => {
-  console.log(props.series);
+  console.log(props);
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const { data: fixtureSchedule, isLoading } = useFixtureSchedule(
     props.seriesIds,
@@ -182,36 +186,53 @@ const Schedule = (props: {
   }, [fixtureSchedule]);
 
   useEffect(() => {
-    router.query.series
-      ? setSelectedStage(router.query.series as string)
-      : setSelectedStage("All");
+    if (selectedStage) {
+      router.query.series
+        ? setSelectedStage(router.query.series as string)
+        : setSelectedStage("All");
 
-    const fixtureSchedule =
-      selectedStage === "All"
-        ? fixtures
-        : fixtures.filter(
-            (fixture) => fixture.stage.id === Number(selectedStage)
-          );
+      const selectedStageSeriesDetails = props.series.filter(
+        (series) => series.code === selectedStage
+      );
 
-    const todayFixtures = fixtureSchedule.filter((fixture) =>
-      isToday(new Date(fixture.starting_at))
-    );
+      // The below seriesIds contains the list of series Ids for the selected series
 
-    const pastFixtures = fixtureSchedule
-      .filter(
+      const seriesIds =
+        selectedStageSeriesDetails.length > 0
+          ? selectedStageSeriesDetails[0].seriesIds.map((seriesItem: any) =>
+              Number(seriesItem.seriesId)
+            )
+          : undefined;
+
+      const fixtureSchedule =
+        selectedStage === "All"
+          ? fixtures
+          : fixtures.filter((fixture) =>
+              (seriesIds ?? []).includes(fixture.stage.id)
+            );
+
+      console.log(fixtureSchedule);
+
+      const todayFixtures = fixtureSchedule.filter((fixture) =>
+        isToday(new Date(fixture.starting_at))
+      );
+
+      const pastFixtures = fixtureSchedule
+        .filter(
+          (fixture) =>
+            compareAsc(new Date(fixture.starting_at), dateFromYesterday) < 0
+        )
+        .reverse();
+
+      const upcomingFixtures = fixtureSchedule.filter(
         (fixture) =>
-          compareAsc(new Date(fixture.starting_at), dateFromYesterday) < 0
-      )
-      .reverse();
+          compareAsc(new Date(fixture.starting_at), dateFromTomorrow) > 0
+      );
 
-    const upcomingFixtures = fixtureSchedule.filter(
-      (fixture) =>
-        compareAsc(new Date(fixture.starting_at), dateFromTomorrow) > 0
-    );
-
-    setTodayFixtures(todayFixtures);
-    setRecentFixtures(pastFixtures);
-    setUpcomingFixtures(upcomingFixtures);
+      setTodayFixtures(todayFixtures);
+      setRecentFixtures(pastFixtures);
+      setUpcomingFixtures(upcomingFixtures);
+    }
   }, [router.query.series, selectedStage, fixtureSchedule]);
 
   const stageChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -267,7 +288,11 @@ const Schedule = (props: {
           >
             <option value="All">All series</option>
             {props.series.map((series) => (
-              <option value={series.seriesId} key={series.seriesId}>
+              // <option value={series.seriesId} key={series.seriesId}>
+              //   {series.seriesName}
+              // </option>
+
+              <option value={series.code} key={series.code}>
                 {series.seriesName}
               </option>
             ))}
@@ -311,11 +336,13 @@ const Schedule = (props: {
 export async function getStaticProps(context: any) {
   try {
     const fixturesDefinedInCMS = await fetchStrapiAPI(
-      `/fixtures-list?populate=deep,2`
+      `/fixtures-list?populate=deep,3`
     );
 
     const seriesIds = fixturesDefinedInCMS.data.attributes.series
-      .map((series: any) => series.seriesId)
+      .map((series: any) =>
+        series.seriesIds.map((seriesItem: any) => seriesItem.seriesId)
+      )
       .toString();
 
     const res = await fetch(

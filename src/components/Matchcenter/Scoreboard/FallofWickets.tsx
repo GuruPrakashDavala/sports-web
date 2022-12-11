@@ -12,6 +12,10 @@ type FallOfWicketsProps = {
 const FallofWickets = (props: FallOfWicketsProps) => {
   const { fallOfWickets } = props;
 
+  if (!fallOfWickets || fallOfWickets.length === 0) {
+    return null;
+  }
+
   return (
     <Fragment>
       {fallOfWickets && (

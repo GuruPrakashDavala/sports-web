@@ -28,6 +28,7 @@ export const getScore = (
   return fullScore[0]
     ? fullScore[0]
     : fixtureStatus === FixtureStatus.FirstInnings ||
+      fixtureStatus === FixtureStatus.InningsBreak ||
       fixtureStatus === FixtureStatus.SecondInnings
     ? "Yet to bat"
     : fixtureStatus;
@@ -96,8 +97,13 @@ const FixtureCard = (props: {
   const s1TeamImage = s1TeamDetails.image;
   const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.code;
   const s2TeamImage = s2TeamDetails.image;
+  const fixtureStartingDate = new Date(fixture.starting_at);
 
   const isLive = isMatchLive(fixture.status);
+
+  const seoUrl = `${fixture.visitorteam.code}-vs-${
+    fixture.localteam.code
+  }-${format(fixtureStartingDate, "dd-y")}`;
   const showMatchcenterCta = true;
 
   return (
@@ -150,7 +156,7 @@ const FixtureCard = (props: {
             </p> */}
 
             <p sx={{ variant: "text.label3", color: colors.gray100 }}>
-              {format(new Date(fixture.starting_at), "iii d MMM - p OOOO")}
+              {format(fixtureStartingDate, "iii d MMM - p OOOO")}
             </p>
 
             {isLive && (
@@ -267,13 +273,13 @@ const FixtureCard = (props: {
         ) : (
           <p sx={{ variant: "text.label3", paddingY: 1 }}>
             {"Match starts at "}
-            {format(new Date(fixture.starting_at), "iii d MMM - p")}
+            {format(fixtureStartingDate, "iii d MMM - p")}
           </p>
         )}
 
         {showMatchcenterCta && (
           <Link
-            href={`/matchcenter/${fixture.id}/ind-vs-rsa-2022`}
+            href={`/matchcenter/${fixture.id}/${seoUrl}`}
             styles={{
               padding: 2,
               background: colors.black,

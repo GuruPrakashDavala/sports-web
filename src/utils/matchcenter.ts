@@ -1,6 +1,10 @@
 import { getYear } from "date-fns";
 import { FixtureStatus } from "../types/matchcenter";
-import { Batting as BattingT, Player as PlayerT } from "../types/sportmonks";
+import {
+  Ball as BallT,
+  Batting as BattingT,
+  Player as PlayerT,
+} from "../types/sportmonks";
 
 export const now = new Date();
 
@@ -120,4 +124,96 @@ export const isMatchFinished = (status: string) => {
     status === FixtureStatus.Cancelled;
 
   return isFinished;
+};
+
+// Livescore util functions
+
+export const getSingleOverScoresBallbyBall = (
+  over: number,
+  innings: string,
+  balls: BallT[]
+) => {
+  const value = Number((over % 1).toFixed(1));
+  if (value === 0.1) {
+    const overNumber = Math.round(over);
+    const ballsInAnOver = [
+      overNumber + 0.1,
+      overNumber + 0.2,
+      overNumber + 0.3,
+      overNumber + 0.4,
+      overNumber + 0.5,
+      overNumber + 0.6,
+    ];
+    const overSummary = balls
+      .filter(
+        (ball) =>
+          ballsInAnOver.includes(ball.ball) && ball.scoreboard === innings
+      )
+      .map((ball) => {
+        return {
+          ball: ball.ball,
+          run: ball.score.runs,
+          isWicket: ball.score.is_wicket,
+          wide: !ball.score.ball,
+          noball: ball.score.noball,
+          noballRuns: ball.score.noball_runs,
+          leg_bye: ball.score.leg_bye,
+          bye: ball.score.bye,
+          six: ball.score.six,
+          four: ball.score.four,
+        };
+      });
+    return overSummary;
+  }
+};
+
+export const getTeamScore = (over: number, innings: string, balls: BallT[]) => {
+  let score = 0;
+  let wickets = 0;
+  const overNumber = over;
+  balls.forEach((ball) => {
+    if (ball.scoreboard === innings) {
+      if (ball.ball < overNumber) {
+        score += ball.score.runs;
+      }
+
+      if (ball.ball < overNumber && ball.score.leg_bye) {
+        score += ball.score.leg_bye;
+      }
+
+      if (ball.ball < overNumber && ball.score.bye) {
+        score += ball.score.bye;
+      }
+
+      if (ball.ball < overNumber && ball.score.is_wicket) {
+        wickets += 1;
+      }
+    }
+  });
+  return { score, wickets };
+};
+
+export const getOversSummary = (innings: string, balls: BallT[]) => {
+  const oversSummary = balls
+    .filter((ball) => {
+      const isFirstBallInFreshOver = Number((ball.ball % 1).toFixed(1));
+      if (isFirstBallInFreshOver === 0.1 && ball.scoreboard === innings) {
+        return ball;
+      }
+    })
+    .map((ball) => {
+      const overSummary = getSingleOverScoresBallbyBall(
+        ball.ball,
+        innings,
+        balls
+      );
+      const over = Math.round(ball.ball) + 1;
+      return {
+        over,
+        balls: overSummary,
+        teamScore: getTeamScore(over, innings, balls),
+      };
+    });
+
+  return oversSummary;
 };

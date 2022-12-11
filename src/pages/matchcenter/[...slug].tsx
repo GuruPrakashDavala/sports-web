@@ -100,7 +100,7 @@ export const tabStyles: ThemeUICSSObject = {
 };
 
 const MatchCenter = (props: MatchCenterProps): JSX.Element => {
-  console.log(props);
+  // console.log(props);
   const bp = useBreakpointIndex();
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
 
@@ -237,7 +237,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
       differenceInMins > 0 && differenceInMins < 60;
 
     if (isLive) {
-      setRefetchInterval(25000); // 2.5 mins polling
+      setRefetchInterval(20000); // 2 mins polling
     } else {
       isFinished
         ? setRefetchInterval(0)

@@ -154,12 +154,16 @@ export async function getStaticProps() {
         populate: "deep, 4",
       }),
       fetchStrapiAPI("/fixtures-list", {
-        populate: "deep, 2",
+        populate: "deep, 3",
       }),
     ]);
 
-    const seriesIds = fixturesDefinedInCMS.data.attributes.series
-      .map((series: any) => series.seriesId)
+    const allSeries = fixturesDefinedInCMS.data.attributes.series;
+
+    const seriesIds = allSeries
+      .map((series: any) =>
+        series.seriesIds.map((seriesItem: any) => seriesItem.seriesId)
+      )
       .toString();
 
     const response = await fetch(

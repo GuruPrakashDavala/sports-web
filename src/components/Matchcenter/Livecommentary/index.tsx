@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { colors } from "../../../styles/theme";
 import BallInfoCircle from "./BallInfoCircle";
 import { Fragment } from "react";
@@ -19,6 +19,7 @@ import {
 import LiveBatting from "./LiveBatting";
 import LiveBowling from "./LiveBowling";
 import WicketCard from "./WicketCard";
+import { getOversSummary } from "../../../utils/matchcenter";
 
 export const PlayerBattingDetails = (props: {
   batsman: PlayerT;
@@ -361,6 +362,24 @@ const getBallInfoCircle = (score: ScoresT): JSX.Element => {
   return <InfoCircle type={type} runs={score.runs} />;
 };
 
+type OversSummary = {
+  over: number;
+  balls?: {
+    ball: number;
+    run: number;
+    isWicket: boolean;
+    wide: boolean;
+    noball: number;
+    noballRuns: number;
+    leg_bye: number;
+    bye: number;
+  }[];
+  teamScore: {
+    score: number;
+    wickets: number;
+  };
+}[];
+
 const LiveCommentary = (props: {
   balls: BallT[];
   status: string;
@@ -379,6 +398,10 @@ const LiveCommentary = (props: {
   // reversedOrder contails the balls in reverse order. Example overs from 19.6 to 0.1
   // Balls data
   const recentBall = reversedOrder[0];
+
+  const isFirstInnings = recentBall.scoreboard === "S1";
+  const isSecondInnings = recentBall.scoreboard === "S2";
+
   const previousOver = {
     lastOver: Number((recentBall.ball - 1).toFixed(1)),
     scoreboard: recentBall.scoreboard,
@@ -397,9 +420,144 @@ const LiveCommentary = (props: {
     setBallsInList(reversedOrder.slice(0, ballsLimit));
   }, [ballsLimit, balls]);
 
+  const [firstInningsOversSummary, setFirstInningsOversSummary] = useState<
+    OversSummary | undefined
+  >(undefined);
+
+  const [secondInningsOversSummary, setSecondInningsOversSummary] = useState<
+    OversSummary | undefined
+  >(undefined);
+
+  useMemo(() => {
+    const firstInningsOversSummary = getOversSummary("S1", balls);
+    const secondInningsOversSummary = getOversSummary("S2", balls);
+    setFirstInningsOversSummary(firstInningsOversSummary);
+    setSecondInningsOversSummary(secondInningsOversSummary);
+  }, [balls]);
+
   const getMoreBalls = () => {
     setBallsLimit((prev) => prev + 25);
   };
+
+  const getOverStats = (
+    overNumber: number,
+    innings: string,
+    ball: BallT
+  ): JSX.Element => {
+    const inningsOversSummary =
+      innings === "S1"
+        ? firstInningsOversSummary
+        : innings === "S2"
+        ? secondInningsOversSummary
+        : undefined;
+
+    if (!inningsOversSummary) {
+      return <></>;
+    }
+
+    const overSummary = inningsOversSummary.find(
+      (overSummary) => overSummary.over === overNumber
+    );
+
+    if (!overSummary) {
+      return <></>;
+    }
+
+    const overTotal = overSummary.balls?.reduce((accumulator, obj) => {
+      return accumulator + obj.run;
+    }, 0);
+
+    return (
+      <Fragment>
+        <div
+          sx={{
+            display: "flex",
+            padding: 1,
+            borderRadius: "10px",
+            background: colors.gray300,
+            gap: [2, 3, null, 5],
+            marginX: [0, 1],
+            marginY: 1,
+            justifyContent: ["space-evenly", "flex-start"],
+            border: "1px solid",
+            borderColor: colors.gray200,
+          }}
+        >
+          <div
+            sx={{
+              display: "flex",
+              variant: "text.subheading2",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {overNumber}
+          </div>
+
+          <div
+            sx={{
+              display: "flex",
+              gap: 1,
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div>Runs scored: {overTotal}</div>
+
+            <div sx={{ display: "flex", gap: ["5px", 1] }}>
+              {overSummary.balls?.map((ball, index) => {
+                return (
+                  <span
+                    key={index}
+                    sx={{
+                      border: "1px solid",
+                      borderColor: colors.gray200,
+                      padding: "5px",
+                      background: colors.gray300,
+                      variant: "text.subheading3",
+                    }}
+                  >
+                    {ball.run}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
+          <div
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div sx={{ variant: "text.subheading3" }}>{ball.team.code}:</div>
+
+            <div
+              sx={{
+                padding: 1,
+                backgroundColor: colors.gray300,
+                border: "1px solid",
+                borderColor: colors.gray200,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <p sx={{ variant: "text.subheading2" }}>
+                {overSummary?.teamScore.score}-{overSummary?.teamScore.wickets}
+              </p>
+            </div>
+          </div>
+        </div>
+      </Fragment>
+    );
+  };
+
+  const trackOvers: string[] = [];
 
   return (
     <div sx={{ paddingY: [2, 3] }}>
@@ -457,6 +615,8 @@ const LiveCommentary = (props: {
         </Fragment>
       )}
 
+      {status === FixtureStatus.InningsBreak && <div>Innings break </div>}
+
       {/* Ball by ball commentary infinite scroll */}
 
       <InfiniteScroll
@@ -467,15 +627,32 @@ const LiveCommentary = (props: {
       >
         {ballsInList &&
           ballsInList.map((ball) => {
-            return ball.score.is_wicket && ball.batsmanout ? (
-              <WicketBallInfo
-                ball={ball}
-                fullBattingList={batting}
-                recentBall={recentBall}
-                key={ball.id}
-              />
-            ) : (
-              <BallInfo ball={ball} key={ball.id} />
+            const isLastBallOfTheOver =
+              Number((ball.ball % 1).toFixed(1)) === 0.6;
+            const overNumber = Math.round(ball.ball);
+            const overKey: string = `${overNumber}-${ball.scoreboard}`;
+
+            return (
+              <Fragment key={ball.id}>
+                {isLastBallOfTheOver && !trackOvers.includes(overKey) && (
+                  <>
+                    {getOverStats(Math.round(ball.ball), ball.scoreboard, ball)}
+                  </>
+                )}
+
+                {isLastBallOfTheOver && trackOvers.push(overKey) && null}
+
+                {ball.score.is_wicket && ball.batsmanout ? (
+                  <WicketBallInfo
+                    ball={ball}
+                    fullBattingList={batting}
+                    recentBall={recentBall}
+                    key={ball.id}
+                  />
+                ) : (
+                  <BallInfo ball={ball} key={ball.id} />
+                )}
+              </Fragment>
             );
           })}
       </InfiniteScroll>
