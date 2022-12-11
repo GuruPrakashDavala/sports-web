@@ -248,9 +248,10 @@ const getWicketCommentary = (ball: BallT, wicketType: string): string => {
 };
 
 const getNormalCommentary = (ball: BallT): JSX.Element => {
+  const bp = useBreakpointIndex();
   return (
     <Fragment>
-      <p sx={{ display: "inline" }}>
+      <p sx={{ display: "inline", variant: bp < 1 ? "text.body4" : undefined }}>
         {`${ball.ball} - ${ball.bowler.fullname} to ${ball.batsman.fullname}.`}
         &nbsp;
       </p>
@@ -258,7 +259,12 @@ const getNormalCommentary = (ball: BallT): JSX.Element => {
       <p
         sx={{
           display: "inline",
-          variant: ball.score.six || ball.score.four ? "text.subheading3" : "",
+          variant:
+            ball.score.six || ball.score.four
+              ? "text.subheading3"
+              : bp < 1
+              ? "text.body4"
+              : undefined,
         }}
       >
         {ball.score.name}.
@@ -287,6 +293,7 @@ const WicketBallInfo = (props: {
 
 const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
   const { ball, isWicket = false } = props;
+  const bp = useBreakpointIndex();
   const ballInfoContainerStyles: ThemeUICSSObject = {
     display: "flex",
     alignItems: "center",
@@ -303,19 +310,30 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
         <Fragment>
           <BallInfoCircle ball={`W`} color={colors.red100} />
           <span sx={{ paddingX: 1 }}>
-            <p sx={{ display: "inline" }}>
+            <p
+              sx={{
+                display: "inline",
+                variant: bp < 1 ? "text.body4" : undefined,
+              }}
+            >
               {ball.ball} - {ball.bowler.fullname} to {ball.batsman.fullname}.{" "}
             </p>
 
             <p
               sx={{
                 display: "inline",
+                variant: bp < 1 ? "text.body4" : undefined,
               }}
             >
               That&apos;s a wicket. &nbsp;
             </p>
 
-            <p sx={{ display: "inline", variant: "text.subheading3" }}>
+            <p
+              sx={{
+                display: "inline",
+                variant: bp < 1 ? "text.subheading4" : "text.subheading3",
+              }}
+            >
               {getWicketCommentary(ball, ball.score.name)}
             </p>
           </span>
@@ -323,7 +341,7 @@ const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
       ) : (
         <Fragment>
           {getBallInfoCircle(ball.score)}
-          <span sx={{ paddingX: 1 }}>{getNormalCommentary(ball)}</span>
+          <div sx={{ paddingX: 1 }}>{getNormalCommentary(ball)}</div>
         </Fragment>
       )}
     </div>
