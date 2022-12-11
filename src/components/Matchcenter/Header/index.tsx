@@ -158,7 +158,7 @@ const Header = (props: HeaderProps) => {
             >
               <span
                 sx={{
-                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                  variant: bp > 1 ? "text.subheading3" : "text.body4",
                 }}
               >
                 {s1Team.name}
@@ -204,7 +204,7 @@ const Header = (props: HeaderProps) => {
               alignItems: "center",
               flexDirection: "column",
               gridColumn: "span 2/span 2",
-              marginLeft: [2, 3],
+              // marginLeft: [2, 3],
             }}
           >
             <Fragment>
@@ -255,7 +255,7 @@ const Header = (props: HeaderProps) => {
               justifySelf: "start",
               flexDirection: "row",
               gridColumn: "span 5/span 5",
-              marginLeft: [2, 3],
+              // marginLeft: [2, 3],
             }}
           >
             <div
@@ -268,7 +268,7 @@ const Header = (props: HeaderProps) => {
             >
               <span
                 sx={{
-                  variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                  variant: bp > 1 ? "text.subheading3" : "text.body4",
                 }}
               >
                 {s2Team.name}

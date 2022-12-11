@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 
-import { useRecentArticles } from "../../../utils/queries";
 import { Fragment } from "react";
 import ArticleMicroCard from "../../Cards/ArticleMicroCard";
 import { renderImage } from "../../../utils/util";

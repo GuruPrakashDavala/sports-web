@@ -28,7 +28,7 @@ const wicketCardWrapperStyles: ThemeUICSSObject = {
 
 const cardInfoStyles: ThemeUICSSObject = {
   display: "flex",
-  flexBasis: ["20%", null, "10%"],
+  flexBasis: ["15%", null, "10%"],
   flexWrap: "wrap",
   height: "fit-content",
   width: "fit-content",
@@ -58,7 +58,7 @@ const WicketCard = (props: WicketCardProps): JSX.Element => {
             sx={{
               display: "flex",
               flexDirection: "column",
-              flexBasis: ["80%", null, "90%"],
+              flexBasis: ["85%", null, "90%"],
               flexWrap: "wrap",
             }}
           >
