@@ -491,15 +491,16 @@ const LiveCommentary = (props: {
         <div
           sx={{
             display: "flex",
+            flexWrap: "wrap",
             padding: 1,
             borderRadius: "10px",
             background: "beige",
-            gap: [2, 3, null, 5],
+            gap: [null, 3, null, 5],
             marginX: [0, 1],
             marginY: 1,
             justifyContent: ["space-evenly", "flex-start"],
-            // border: "1px solid",
-            // borderColor: colors.gray200,
+            border: "1px solid",
+            borderColor: colors.gray200,
           }}
         >
           <div
@@ -520,11 +521,12 @@ const LiveCommentary = (props: {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              width: ["60%", "30%"],
             }}
           >
             <div>Runs scored: {overTotal}</div>
 
-            <div sx={{ display: "flex", gap: ["5px", 1] }}>
+            <div sx={{ display: "flex", flexWrap: "wrap", gap: ["5px", 1] }}>
               {overSummary.balls?.map((ball, index) => {
                 return (
                   <span
