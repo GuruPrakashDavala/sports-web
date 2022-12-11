@@ -20,6 +20,9 @@ import LiveBatting from "./LiveBatting";
 import LiveBowling from "./LiveBowling";
 import WicketCard from "./WicketCard";
 import { getOversSummary } from "../../../utils/matchcenter";
+import OverSummary, { OversSummary as OversSummaryT } from "./OverSummary";
+import PostMatchInfo from "./PostMatchInfo";
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 export const PlayerBattingDetails = (props: {
   batsman: PlayerT;
@@ -35,6 +38,7 @@ export const PlayerBattingDetails = (props: {
     excludeWicketPlayer = true,
     styles = {},
   } = props;
+  const bp = useBreakpointIndex();
   // Will always return single record (matching batsman record) or undefined
   const battingInningsForBatsmanId = fullBattingList.filter(
     (batting) => batsman.id === batting.batsman.id
@@ -53,9 +57,10 @@ export const PlayerBattingDetails = (props: {
                 flexBasis: ["35%", "30%"],
                 display: "flex",
                 alignItems: "center",
+                variant: bp < 1 ? "text.body4" : undefined,
               }}
             >
-              {batsman.lastname}
+              {bp > 1 ? batsman.fullname : batsman.lastname}
 
               {batsman.id === recentBall.batsman_id && (
                 <BatIcon
@@ -71,16 +76,36 @@ export const PlayerBattingDetails = (props: {
                 />
               )}
             </li>
-            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+            <li
+              sx={{
+                flexBasis: ["16.25%", "17.5%"],
+                variant: bp < 1 ? "text.body4" : undefined,
+              }}
+            >
               {battingInningsForBatsmanId.score}
             </li>
-            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+            <li
+              sx={{
+                flexBasis: ["16.25%", "17.5%"],
+                variant: bp < 1 ? "text.body4" : undefined,
+              }}
+            >
               {battingInningsForBatsmanId.ball}
             </li>
-            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+            <li
+              sx={{
+                flexBasis: ["16.25%", "17.5%"],
+                variant: bp < 1 ? "text.body4" : undefined,
+              }}
+            >
               {battingInningsForBatsmanId.four_x}
             </li>
-            <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
+            <li
+              sx={{
+                flexBasis: ["16.25%", "17.5%"],
+                variant: bp < 1 ? "text.body4" : undefined,
+              }}
+            >
               {battingInningsForBatsmanId.six_x}
             </li>
           </ul>
@@ -121,16 +146,22 @@ export const PlayerBowlingDetails = (props: {
   currentBowler?: boolean;
 }): JSX.Element => {
   const { bowler, fullBowlersList, currentBowler } = props;
+  const bp = useBreakpointIndex();
   const bowlerStats = fullBowlersList.filter(
     (bowling) => bowler.id === bowling.bowler.id
   )?.[0];
   return (
     <ul sx={rowStyles}>
       <li
-        sx={{ flexBasis: "40%", display: "flex", alignItems: "center" }}
+        sx={{
+          flexBasis: "40%",
+          display: "flex",
+          alignItems: "center",
+          variant: bp < 1 ? "text.body4" : undefined,
+        }}
         key={bowler.firstname}
       >
-        {bowler.lastname}
+        {bp > 1 ? bowler.fullname : bowler.lastname}
         {currentBowler && (
           <BallIcon
             styles={{
@@ -145,10 +176,38 @@ export const PlayerBowlingDetails = (props: {
 
       {bowlerStats && (
         <Fragment>
-          <li sx={{ flexBasis: "15%" }}>{bowlerStats.overs}</li>
-          <li sx={{ flexBasis: "15%" }}>{bowlerStats.runs}</li>
-          <li sx={{ flexBasis: "15%" }}>{bowlerStats.wickets}</li>
-          <li sx={{ flexBasis: "15%" }}>{bowlerStats.rate}</li>
+          <li
+            sx={{
+              flexBasis: "15%",
+              variant: bp < 1 ? "text.body4" : undefined,
+            }}
+          >
+            {bowlerStats.overs}
+          </li>
+          <li
+            sx={{
+              flexBasis: "15%",
+              variant: bp < 1 ? "text.body4" : undefined,
+            }}
+          >
+            {bowlerStats.runs}
+          </li>
+          <li
+            sx={{
+              flexBasis: "15%",
+              variant: bp < 1 ? "text.body4" : undefined,
+            }}
+          >
+            {bowlerStats.wickets}
+          </li>
+          <li
+            sx={{
+              flexBasis: "15%",
+              variant: bp < 1 ? "text.body4" : undefined,
+            }}
+          >
+            {bowlerStats.rate}
+          </li>
         </Fragment>
       )}
     </ul>
@@ -224,48 +283,6 @@ const WicketBallInfo = (props: {
       <BallInfo ball={ball} isWicket={true} />
     </Fragment>
   );
-};
-
-const tableWrapperStyles: ThemeUICSSObject = {
-  display: "flex",
-  flexDirection: "column",
-  flexWrap: "wrap",
-  height: "100%",
-  width: "100%",
-  paddingX: [0, 1],
-};
-
-export const rowWrapperStyles: ThemeUICSSObject = {
-  display: "flex",
-  flexDirection: "column",
-  flexWrap: "wrap",
-  border: "1px solid",
-  borderColor: colors.gray200,
-  width: "100%",
-};
-
-export const rowHeaderStyles: ThemeUICSSObject = {
-  display: "flex",
-  width: "100%",
-  flexWrap: "wrap",
-  justifyContent: "center",
-  alignItems: "center",
-  paddingX: 2,
-  paddingY: 2,
-  background: colors.gray300,
-  "> li": {
-    variant: "text.subheading3",
-  },
-};
-
-const rowStyles: ThemeUICSSObject = {
-  display: "flex",
-  width: "100%",
-  flexWrap: "wrap",
-  paddingX: 2,
-  paddingY: 1,
-  justifyContent: "center",
-  alignItems: "center",
 };
 
 const BallInfo = (props: { ball: BallT; isWicket?: boolean }): JSX.Element => {
@@ -362,25 +379,47 @@ const getBallInfoCircle = (score: ScoresT): JSX.Element => {
   return <InfoCircle type={type} runs={score.runs} />;
 };
 
-type OversSummary = {
-  over: number;
-  balls?: {
-    ball: number;
-    run: number;
-    isWicket: boolean;
-    wide: boolean;
-    noball: number;
-    noballRuns: number;
-    leg_bye: number;
-    bye: number;
-    six: boolean;
-    four: boolean;
-  }[];
-  teamScore: {
-    score: number;
-    wickets: number;
-  };
-}[];
+const tableWrapperStyles: ThemeUICSSObject = {
+  display: "flex",
+  flexDirection: "column",
+  flexWrap: "wrap",
+  height: "100%",
+  width: "100%",
+  paddingX: [0, 1],
+};
+
+export const rowWrapperStyles: ThemeUICSSObject = {
+  display: "flex",
+  flexDirection: "column",
+  flexWrap: "wrap",
+  border: "1px solid",
+  borderColor: colors.gray200,
+  width: "100%",
+};
+
+export const rowHeaderStyles: ThemeUICSSObject = {
+  display: "flex",
+  width: "100%",
+  flexWrap: "wrap",
+  justifyContent: "center",
+  alignItems: "center",
+  paddingX: 2,
+  paddingY: 2,
+  background: colors.gray300,
+  "> li": {
+    variant: "text.subheading3",
+  },
+};
+
+const rowStyles: ThemeUICSSObject = {
+  display: "flex",
+  width: "100%",
+  flexWrap: "wrap",
+  paddingX: 2,
+  paddingY: 1,
+  justifyContent: "center",
+  alignItems: "center",
+};
 
 const LiveCommentary = (props: {
   balls: BallT[];
@@ -401,9 +440,6 @@ const LiveCommentary = (props: {
   // Balls data
   const recentBall = reversedOrder[0];
 
-  const isFirstInnings = recentBall.scoreboard === "S1";
-  const isSecondInnings = recentBall.scoreboard === "S2";
-
   const previousOver = {
     lastOver: Number((recentBall.ball - 1).toFixed(1)),
     scoreboard: recentBall.scoreboard,
@@ -423,11 +459,11 @@ const LiveCommentary = (props: {
   }, [ballsLimit, balls]);
 
   const [firstInningsOversSummary, setFirstInningsOversSummary] = useState<
-    OversSummary | undefined
+    OversSummaryT | undefined
   >(undefined);
 
   const [secondInningsOversSummary, setSecondInningsOversSummary] = useState<
-    OversSummary | undefined
+    OversSummaryT | undefined
   >(undefined);
 
   useMemo(() => {
@@ -439,143 +475,6 @@ const LiveCommentary = (props: {
 
   const getMoreBalls = () => {
     setBallsLimit((prev) => prev + 25);
-  };
-
-  const getBallType = (ball: any) => {
-    const type = ball.six
-      ? ball.run
-      : ball.four
-      ? ball.run
-      : ball.bye
-      ? `b ${ball.bye}`
-      : ball.leg_bye
-      ? `lb ${ball.leg_bye}`
-      : ball.noball
-      ? `nb`
-      : ball.wide
-      ? `wd`
-      : ball.run;
-    return type;
-  };
-
-  const getOverStats = (
-    overNumber: number,
-    innings: string,
-    ball: BallT
-  ): JSX.Element => {
-    const inningsOversSummary =
-      innings === "S1"
-        ? firstInningsOversSummary
-        : innings === "S2"
-        ? secondInningsOversSummary
-        : undefined;
-
-    if (!inningsOversSummary) {
-      return <></>;
-    }
-
-    const overSummary = inningsOversSummary.find(
-      (overSummary) => overSummary.over === overNumber
-    );
-
-    if (!overSummary) {
-      return <></>;
-    }
-
-    const overTotal = overSummary.balls?.reduce((accumulator, obj) => {
-      return accumulator + obj.run;
-    }, 0);
-
-    return (
-      <Fragment>
-        <div
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            padding: 1,
-            borderRadius: "10px",
-            background: "beige",
-            gap: [null, 3, null, 5],
-            marginX: [0, 1],
-            marginY: 1,
-            justifyContent: ["space-evenly", "flex-start"],
-            border: "1px solid",
-            borderColor: colors.gray200,
-          }}
-        >
-          <div
-            sx={{
-              display: "flex",
-              variant: "text.subheading2",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {overNumber}
-          </div>
-
-          <div
-            sx={{
-              display: "flex",
-              gap: 1,
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: ["60%", "30%"],
-            }}
-          >
-            <div>Runs scored: {overTotal}</div>
-
-            <div sx={{ display: "flex", flexWrap: "wrap", gap: ["5px", 1] }}>
-              {overSummary.balls?.map((ball, index) => {
-                return (
-                  <span
-                    key={index}
-                    sx={{
-                      border: "1px solid",
-                      borderColor: colors.gray200,
-                      padding: "5px",
-                      background: colors.gray300,
-                      variant: "text.subheading3",
-                    }}
-                  >
-                    {getBallType(ball)}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          <div
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <div sx={{ variant: "text.subheading3" }}>{ball.team.code}:</div>
-
-            <div
-              sx={{
-                padding: 1,
-                backgroundColor: colors.gray300,
-                border: "1px solid",
-                borderColor: colors.gray200,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <p sx={{ variant: "text.subheading2" }}>
-                {overSummary?.teamScore.score}-{overSummary?.teamScore.wickets}
-              </p>
-            </div>
-          </div>
-        </div>
-      </Fragment>
-    );
   };
 
   const trackOvers: string[] = [];
@@ -592,48 +491,7 @@ const LiveCommentary = (props: {
       </div>
 
       {status === FixtureStatus.Finished && (
-        <Fragment>
-          {manofmatch && (
-            <div
-              sx={{
-                backgroundColor: colors.gray300,
-                color: colors.black,
-                marginX: [0, 1],
-                padding: 1,
-                mt: [1, 3],
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-              }}
-            >
-              <p sx={{ variant: "text.subheading3" }}>
-                Man of the match:&nbsp;
-              </p>
-              <p sx={{ variant: "text.heading4" }}>{manofmatch.fullname}</p>
-            </div>
-          )}
-
-          <div
-            sx={{
-              padding: 1,
-              marginX: [0, 1],
-              marginY: [1],
-              marginTop: [1],
-              background: colors.mint,
-            }}
-          >
-            <p sx={{ variant: "text.subheading3", color: colors.white }}>
-              🏆 {note}
-            </p>
-          </div>
-          <div sx={{ marginY: 2, marginX: [0, 1] }}>
-            <p>
-              Well that&apos;s a wrap. Check the points table here. Hope you
-              have a good day. Stay connected with us - install the app. See you
-              in the next game. Until then bye. Take care. Team cricfanatic
-            </p>
-          </div>
-        </Fragment>
+        <PostMatchInfo manofmatch={manofmatch} note={note} />
       )}
 
       {status === FixtureStatus.InningsBreak && <div>Innings break </div>}
@@ -652,13 +510,22 @@ const LiveCommentary = (props: {
               Number((ball.ball % 1).toFixed(1)) === 0.6;
             const overNumber = Math.round(ball.ball);
             const overKey: string = `${overNumber}-${ball.scoreboard}`;
+            const inningsOversSummary =
+              ball.scoreboard === "S1"
+                ? firstInningsOversSummary
+                : ball.scoreboard === "S2"
+                ? secondInningsOversSummary
+                : undefined;
 
             return (
               <Fragment key={ball.id}>
                 {isLastBallOfTheOver && !trackOvers.includes(overKey) && (
-                  <>
-                    {getOverStats(Math.round(ball.ball), ball.scoreboard, ball)}
-                  </>
+                  <OverSummary
+                    overNumber={overNumber}
+                    innings={ball.scoreboard}
+                    ball={ball}
+                    inningsOversSummary={inningsOversSummary}
+                  />
                 )}
 
                 {isLastBallOfTheOver && trackOvers.push(overKey) && null}

@@ -100,7 +100,7 @@ export const tabStyles: ThemeUICSSObject = {
 };
 
 const MatchCenter = (props: MatchCenterProps): JSX.Element => {
-  // console.log(props);
+  console.log(props);
   const bp = useBreakpointIndex();
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
 

@@ -71,7 +71,7 @@ const BowlingTable = (props: InningsTableProps) => {
                   sx={{
                     flexBasis: heading.width,
                     paddingY: [null, 1],
-                    variant: "text.body4",
+                    variant: bp < 1 ? "text.body4" : undefined,
                   }}
                   key={index}
                 >

@@ -11,6 +11,7 @@ type FallOfWicketsProps = {
 
 const FallofWickets = (props: FallOfWicketsProps) => {
   const { fallOfWickets } = props;
+  const bp = useBreakpointIndex();
 
   if (!fallOfWickets || fallOfWickets.length === 0) {
     return null;
@@ -63,10 +64,10 @@ const FallofWickets = (props: FallOfWicketsProps) => {
                 <li
                   sx={{
                     flexBasis: "50%",
-                    variant: "text.body4",
+                    variant: bp < 1 ? "text.body4" : undefined,
                   }}
                 >
-                  {batting.batsman.lastname}
+                  {bp < 1 ? batting.batsman.lastname : batting.batsman.fullname}
                 </li>
                 <li sx={{ flexBasis: "25%", variant: "text.body4" }}>
                   {batting.fow_score}-{index + 1}
