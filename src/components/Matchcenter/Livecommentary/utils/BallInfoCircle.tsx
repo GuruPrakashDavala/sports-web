@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import { ThemeUICSSObject } from "theme-ui";
-import { colors } from "../../../styles/theme";
+import { colors } from "../../../../styles/theme";
 
 const BallInfoCircle = (props: {
   ball: string | number;

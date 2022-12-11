@@ -25,12 +25,11 @@ const LiveBatting = (props: LiveBattingProps) => {
       {/* Table header */}
       <ul sx={rowHeaderStyles}>
         <li sx={{ flexBasis: ["35%", "30%"] }}>Batsman</li>
-        <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>{bp > 1 ? `Runs` : `R`}</li>
-        <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
-          {bp > 1 ? `Balls` : `B`}
-        </li>
-        <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>4S</li>
-        <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>6S</li>
+        <li sx={{ flexBasis: ["13%", "14%"] }}>{bp > 1 ? `Runs` : `R`}</li>
+        <li sx={{ flexBasis: ["13%", "14%"] }}>{bp > 1 ? `Balls` : `B`}</li>
+        <li sx={{ flexBasis: ["13%", "14%"] }}>4S</li>
+        <li sx={{ flexBasis: ["13%", "14%"] }}>6S</li>
+        <li sx={{ flexBasis: ["13%", "14%"] }}>SR</li>
       </ul>
 
       {/* Table row */}

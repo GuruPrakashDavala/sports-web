@@ -28,13 +28,14 @@ const wicketCardWrapperStyles: ThemeUICSSObject = {
 
 const cardInfoStyles: ThemeUICSSObject = {
   display: "flex",
+  flexBasis: ["20%", null, "10%"],
+  flexWrap: "wrap",
   height: "fit-content",
   width: "fit-content",
   alignItems: "center",
-  borderRadius: "10px",
 };
 
-const WicketCard = (props: WicketCardProps) => {
+const WicketCard = (props: WicketCardProps): JSX.Element => {
   const { ball, fullBattingList, recentBall } = props;
 
   return (
@@ -52,11 +53,13 @@ const WicketCard = (props: WicketCardProps) => {
               Out
             </p>
           </div>
+
           <div
             sx={{
               display: "flex",
               flexDirection: "column",
-              flexBasis: "70%",
+              flexBasis: ["80%", null, "90%"],
+              flexWrap: "wrap",
             }}
           >
             <ul
@@ -71,14 +74,11 @@ const WicketCard = (props: WicketCardProps) => {
               }}
             >
               <li sx={{ flexBasis: ["35%", "30%"] }}>Batsman</li>
-              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
-                {/* {bp > 1 ? `Runs` : `R`} */} R
-              </li>
-              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>
-                {/* {bp > 1 ? `Balls` : `B`} */} B
-              </li>
-              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>4S</li>
-              <li sx={{ flexBasis: ["16.25%", "17.5%"] }}>6S</li>
+              <li sx={{ flexBasis: ["13%", "14%"] }}>R</li>
+              <li sx={{ flexBasis: ["13%", "14%"] }}>B</li>
+              <li sx={{ flexBasis: ["13%", "14%"] }}>4S</li>
+              <li sx={{ flexBasis: ["13%", "14%"] }}>6S</li>
+              <li sx={{ flexBasis: ["13%", "14%"] }}>SR</li>
             </ul>
             <PlayerBattingDetails
               batsman={ball.batsmanout}

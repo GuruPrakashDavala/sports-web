@@ -4,28 +4,32 @@ import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
 import { Ball as BallT } from "../../../types/sportmonks";
 
+type SummaryBall = {
+  ball: number;
+  run: number;
+  isWicket: boolean;
+  wide: boolean;
+  noball: number;
+  noballRuns: number;
+  leg_bye: number;
+  bye: number;
+  six: boolean;
+  four: boolean;
+};
+
 export type OversSummary = {
   over: number;
-  balls?: {
-    ball: number;
-    run: number;
-    isWicket: boolean;
-    wide: boolean;
-    noball: number;
-    noballRuns: number;
-    leg_bye: number;
-    bye: number;
-    six: boolean;
-    four: boolean;
-  }[];
+  balls?: SummaryBall[];
   teamScore: {
     score: number;
     wickets: number;
   };
 }[];
 
-const getBallType = (ball: any) => {
-  const type = ball.six
+const getBallType = (ball: SummaryBall) => {
+  const type = ball.isWicket
+    ? `W`
+    : ball.six
     ? ball.run
     : ball.four
     ? ball.run
@@ -34,9 +38,9 @@ const getBallType = (ball: any) => {
     : ball.leg_bye
     ? `lb ${ball.leg_bye}`
     : ball.noball
-    ? `nb`
+    ? `nb ${ball.noballRuns}`
     : ball.wide
-    ? `wd`
+    ? `wd ${ball.run}`
     : ball.run;
   return type;
 };
@@ -108,6 +112,8 @@ const OverSummary = (props: {
 
           <div sx={{ display: "flex", flexWrap: "wrap", gap: ["5px", 1] }}>
             {overSummary.balls?.map((ball, index) => {
+              const ballType = getBallType(ball);
+              const isWicket = ballType === `W`;
               return (
                 <span
                   key={index}
@@ -116,9 +122,11 @@ const OverSummary = (props: {
                     borderColor: colors.gray200,
                     padding: "5px",
                     variant: "text.subheading4",
+                    background: isWicket ? colors.red150 : undefined,
+                    color: isWicket ? colors.white : undefined,
                   }}
                 >
-                  {getBallType(ball)}
+                  {ballType}
                 </span>
               );
             })}

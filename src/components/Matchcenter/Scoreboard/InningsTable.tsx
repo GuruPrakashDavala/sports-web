@@ -53,12 +53,11 @@ const battingInningsTableRowStyles: ThemeUICSSObject = {
 
 const InningsTable = (props: InningsTableProps) => {
   const { fixture, teamInfo, innings } = props;
+  const bp = useBreakpointIndex();
 
   const isScoreboardAvailable = fixture.batting.filter(
     (batting) => batting.scoreboard === innings
   );
-
-  const bp = useBreakpointIndex();
 
   if (isScoreboardAvailable.length === 0) {
     return <Fragment>Batting innings not available</Fragment>;
@@ -76,7 +75,11 @@ const InningsTable = (props: InningsTableProps) => {
           bp > 3 ? batting.batsman.fullname : batting.batsman.lastname;
         const isBatsmanOut = batting.result.is_wicket;
         const result = batting.result.name;
-        const bowlerName = batting.bowler ? batting.bowler.fullname : "";
+        const bowlerName = batting.bowler
+          ? bp < 1
+            ? batting.bowler.lastname
+            : batting.bowler.fullname
+          : ``;
         const catchstump = batting.catchstump
           ? batting.catchstump.lastname
           : "";

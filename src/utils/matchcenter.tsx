@@ -1,10 +1,17 @@
+/** @jsxImportSource theme-ui */
+
+import { Fragment } from "react";
 import { getYear } from "date-fns";
 import { FixtureStatus } from "../types/matchcenter";
 import {
   Ball as BallT,
   Batting as BattingT,
   Player as PlayerT,
+  Scores as ScoresT,
 } from "../types/sportmonks";
+import BallInfoCircle from "../components/Matchcenter/Livecommentary/utils/BallInfoCircle";
+import { colors } from "../styles/theme";
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 export const now = new Date();
 
@@ -126,7 +133,9 @@ export const isMatchFinished = (status: string) => {
   return isFinished;
 };
 
-// Livescore util functions
+// Livescore util functions and components
+
+// Util functions
 
 export const getSingleOverScoresBallbyBall = (
   over: number,
@@ -216,4 +225,118 @@ export const getOversSummary = (innings: string, balls: BallT[]) => {
     });
 
   return oversSummary;
+};
+
+export const getWicketType = (type: string): string => {
+  const wicketType = type.includes("Run Out") ? "Run Out" : type;
+  return wicketType;
+};
+
+export const getWicketCommentary = (
+  ball: BallT,
+  wicketType: string
+): string => {
+  const type = getWicketType(wicketType);
+  switch (type) {
+    case "Catch Out": {
+      return `Caught by ${ball.catchstump.fullname}. ${ball.batsmanout.fullname} out!`;
+    }
+    case "Clean Bowled": {
+      return `Clean Bowled. ${ball.batsmanout.fullname} out!`;
+    }
+    case "LBW OUT": {
+      return `LBW. ${ball.batsmanout.fullname} out!`;
+    }
+    case "Stump Out": {
+      return `Stumped. ${ball.batsmanout.fullname} out!`;
+    }
+    case "Run Out": {
+      const runoutBy = ball.runoutby
+        ? `(${ball.runoutby.fullname} / ${ball.catchstump.fullname})`
+        : ball.catchstump
+        ? `${ball.catchstump.fullname}`
+        : ``;
+      return `Runout by ${runoutBy}. ${ball.batsmanout.fullname} out!`;
+    }
+    default:
+      return ``;
+  }
+};
+
+// Util components
+
+export const InfoCircle = (props: {
+  type: string | number;
+  runs?: number;
+}): JSX.Element => {
+  const { type, runs } = props;
+  switch (type) {
+    case "six":
+      return <BallInfoCircle ball={`6`} color={colors.green} />;
+
+    case "four":
+      return <BallInfoCircle ball={`4`} color={colors.yellow300} />;
+
+    case "bye":
+      return <BallInfoCircle ball={`b`} color={colors.black} runs={runs} />;
+
+    case "leg bye":
+      return <BallInfoCircle ball={`lb`} color={colors.black} runs={runs} />;
+
+    case "no ball":
+      return <BallInfoCircle ball={`nb`} color={colors.black} runs={runs} />;
+
+    case "wide":
+      return <BallInfoCircle ball={`wd`} color={colors.black} runs={runs} />;
+
+    case "wicket":
+      return <BallInfoCircle ball={`W`} color={colors.red150} />;
+
+    default:
+      return <BallInfoCircle ball={type} color={colors.gray200} />;
+  }
+};
+
+export const NormalCommentary = (props: { ball: BallT }): JSX.Element => {
+  const { ball } = props;
+  const bp = useBreakpointIndex();
+  return (
+    <Fragment>
+      <p sx={{ display: "inline", variant: bp < 1 ? "text.body4" : undefined }}>
+        {`${ball.ball} - ${ball.bowler.fullname} to ${ball.batsman.fullname}.`}
+        &nbsp;
+      </p>
+
+      <p
+        sx={{
+          display: "inline",
+          variant:
+            ball.score.six || ball.score.four
+              ? "text.subheading3"
+              : bp < 1
+              ? "text.body4"
+              : undefined,
+        }}
+      >
+        {ball.score.name}.
+      </p>
+    </Fragment>
+  );
+};
+
+export const getBallInfoCircle = (score: ScoresT): JSX.Element => {
+  const type = score.six
+    ? `six`
+    : score.four
+    ? `four`
+    : score.bye > 0
+    ? `bye`
+    : score.leg_bye > 0
+    ? `leg bye`
+    : score.noball > 0
+    ? `no ball`
+    : !score.ball
+    ? `wide`
+    : score.runs;
+  return <InfoCircle type={type} runs={score.runs} />;
 };
