@@ -373,6 +373,8 @@ type OversSummary = {
     noballRuns: number;
     leg_bye: number;
     bye: number;
+    six: boolean;
+    four: boolean;
   }[];
   teamScore: {
     score: number;
@@ -439,6 +441,23 @@ const LiveCommentary = (props: {
     setBallsLimit((prev) => prev + 25);
   };
 
+  const getBallType = (ball: any) => {
+    const type = ball.six
+      ? ball.run
+      : ball.four
+      ? ball.run
+      : ball.bye
+      ? `b ${ball.bye}`
+      : ball.leg_bye
+      ? `lb ${ball.leg_bye}`
+      : ball.noball
+      ? `nb`
+      : ball.wide
+      ? `wd`
+      : ball.run;
+    return type;
+  };
+
   const getOverStats = (
     overNumber: number,
     innings: string,
@@ -474,7 +493,7 @@ const LiveCommentary = (props: {
             display: "flex",
             padding: 1,
             borderRadius: "10px",
-            background: colors.gray300,
+            background: "beige",
             gap: [2, 3, null, 5],
             marginX: [0, 1],
             marginY: 1,
@@ -518,7 +537,7 @@ const LiveCommentary = (props: {
                       variant: "text.subheading3",
                     }}
                   >
-                    {ball.run}
+                    {getBallType(ball)}
                   </span>
                 );
               })}
