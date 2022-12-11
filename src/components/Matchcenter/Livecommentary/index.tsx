@@ -498,8 +498,8 @@ const LiveCommentary = (props: {
             marginX: [0, 1],
             marginY: 1,
             justifyContent: ["space-evenly", "flex-start"],
-            border: "1px solid",
-            borderColor: colors.gray200,
+            // border: "1px solid",
+            // borderColor: colors.gray200,
           }}
         >
           <div
