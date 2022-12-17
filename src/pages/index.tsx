@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Carousel from "../components/Carousel";
 import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
 import ArticleGrid from "../components/Grids/ArticleGrid";
@@ -18,6 +18,7 @@ import { Fixture as FixtureT } from "../types/sportmonks";
 import { isMatchLive } from "../utils/matchcenter";
 import { useCurrentFixtures, useHomepage } from "../utils/queries";
 import { fixturesRestAPI } from "../utils/util";
+import FixtureCarousel from "../components/CarouselBlocks/FixtureCarousel";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
@@ -73,17 +74,11 @@ const Home = (props: {
 }): JSX.Element => {
   const { seriesIds } = props;
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
-  const {
-    data: currentFixtures,
-    isLoading,
-    isError,
-    error,
-    isFetching,
-    status,
-  } = useCurrentFixtures({
-    seriesIds,
-    refetchInterval,
-  });
+  const { data: currentFixtures, isLoading: isFixturesLoading } =
+    useCurrentFixtures({
+      seriesIds,
+      refetchInterval,
+    });
 
   const { data: homepageRes, isLoading: isHomepageLoading } = useHomepage();
 
@@ -91,7 +86,7 @@ const Home = (props: {
     !isHomepageLoading && homepageRes ? homepageRes.data : props.homepage;
 
   const fixtures =
-    !isLoading && currentFixtures ? currentFixtures.data.data : props.fixtures;
+    !isFixturesLoading && currentFixtures ? currentFixtures : props.fixtures;
 
   useEffect(() => {
     const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
@@ -113,39 +108,15 @@ const Home = (props: {
           <ContentGrid blocks={homepage.attributes.contentGrid} />
         )}
 
-      <SectionWrapper>
-        <SectionHeading
-          title={`Match schedule & results`}
-          theme={ColorTheme.LIGHT}
-          styles={{ px: [0, 1] }}
-          link={{
-            href: `/schedule`,
-            external: false,
-            label: `all schedule`,
-          }}
-        />
-        <Carousel
-          swiperId={`fixturecarousel`}
-          items={fixtures.map((fixtureItem) => {
-            return {
-              content: (
-                <FixtureCard
-                  fixture={fixtureItem}
-                  styles={{ cursor: "grab" }}
-                />
-              ),
-            };
-          })}
-        />
-      </SectionWrapper>
+      <FixtureCarousel fixtures={fixtures} />
 
       {homepage.attributes.pageblocks &&
         homepage.attributes.pageblocks.length > 0 &&
         homepage.attributes.pageblocks.map((block, index) => {
           return (
-            <div key={index}>
+            <Fragment key={index}>
               <BlockPicker block={block} index={index} />
-            </div>
+            </Fragment>
           );
         })}
     </section>

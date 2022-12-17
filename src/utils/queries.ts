@@ -35,16 +35,18 @@ type ArticleQueryResponse = {
 const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   const fixtureId = queryKey[1];
   const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
-  return axios.get<FixtureAPIResponse>(
+  const { data: fixtureDetail } = await axios.get<FixtureAPIResponse>(
     `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}`
   );
+  return fixtureDetail;
 };
 
 const getCurrentFixtures = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
-  return axios.get<FixturesAPIResponse>(
+  const { data: fixtures } = await axios.get<FixturesAPIResponse>(
     `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`
   );
+  return fixtures.data;
 };
 
 const getFixtureSchedule = async ({ queryKey }: { queryKey: any }) => {
@@ -103,6 +105,7 @@ export const useCurrentFixtures = ({
   });
 };
 
+// Below query not in use
 export const useFixtureSchedule = (
   seriesIds: string,
   refetchInterval?: number
@@ -158,7 +161,6 @@ export const useInfiniteArticles = ({
 }): UseInfiniteQueryResult<InfiniteArticlesResponseType, Error> => {
   return useInfiniteQuery(["infiniteArticles", category], getInfiniteArticles, {
     getNextPageParam: (_lastPage, pages) => {
-      console.log(pages);
       const lastFetchedPageMeta = pages[pages.length - 1].meta;
       const metaPagination = lastFetchedPageMeta
         ? lastFetchedPageMeta.pagination

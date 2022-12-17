@@ -108,9 +108,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
     useFixtureDetails(props.fixtureId, refetchInterval);
 
   const fixture =
-    !fixtureLoading && fixtureResponse
-      ? fixtureResponse.data.data
-      : props.fixture;
+    !fixtureLoading && fixtureResponse ? fixtureResponse.data : props.fixture;
 
   const { isLoading: recentArticlesLoading, data: articles } =
     useRecentArticles();
