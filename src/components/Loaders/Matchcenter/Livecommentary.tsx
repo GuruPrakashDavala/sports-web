@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 
-import { colors } from "../../../styles/theme";
 import Skeleton, { SkeletonProps } from "../../Skeleton";
 
 const LivecommentarySkeleton = () => {
