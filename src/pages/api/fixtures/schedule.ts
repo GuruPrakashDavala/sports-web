@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cors from "cors";
 import axios from "axios";
+import { add, format } from "date-fns";
 
 // Initializing the cors middleware
 const cors = Cors({
@@ -33,9 +34,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
+  const now = new Date();
+  const startDate = format(now, "yyyy-MM-d");
+  const endDate = format(add(now, { days: 1 }), "yyyy-MM-d");
+  const startAndEndDateRange = `${startDate}, ${endDate}`;
   try {
     await runMiddleware(req, res, cors);
-    const { seriesIds } = req.query;
+    const { seriesIds, starts_between, page = 1 } = req.query;
 
     if (!seriesIds) {
       res.status(200).json({ data: [] });
@@ -44,7 +49,9 @@ export default async function handler(
 
     const { data: fixtures } = await axios({
       method: "GET",
-      url: `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=${APIToken}&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs&filter[stage_id]=${seriesIds}&sort=starting_at`,
+      url: `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=${APIToken}&include=visitorteam, localteam, league, venue, scoreboards, scoreboards.team, stage, season, odds, tosswon, runs&filter[stage_id]=${seriesIds}&filter[starts_between]=${
+        starts_between ?? startAndEndDateRange
+      }&page=${page}&sort=starting_at`,
       responseType: "json",
       headers: {
         "accept-encoding": null,
@@ -52,7 +59,7 @@ export default async function handler(
     });
 
     res.status(200).json({
-      data: fixtures.data,
+      data: fixtures,
     });
   } catch (err) {
     console.log(err);
