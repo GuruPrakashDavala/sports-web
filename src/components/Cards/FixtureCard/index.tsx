@@ -10,7 +10,7 @@ import {
   Fixture as FixtureT,
   Scoreboard as ScoreboardT,
 } from "../../../types/sportmonks";
-import { isMatchLive } from "../../../utils/matchcenter";
+import { isMatchLive, isMatchFinished } from "../../../utils/matchcenter";
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 
@@ -58,7 +58,6 @@ const FixtureCard = (props: {
 }): JSX.Element => {
   const { fixture, includeStageName, styles = {} } = props;
   const bp = useBreakpointIndex();
-
   const s1TeamDetails =
     fixture.runs.length === 0
       ? {
@@ -101,6 +100,7 @@ const FixtureCard = (props: {
   const fixtureStartingDate = new Date(fixture.starting_at);
 
   const isLive = isMatchLive(fixture.status);
+  const isMatchOver = isMatchFinished(fixture.status);
 
   const seoUrl = `${fixture.visitorteam.code}-vs-${
     fixture.localteam.code
@@ -291,12 +291,16 @@ const FixtureCard = (props: {
             href={`/matchcenter/${fixture.id}/${seoUrl}`}
             styles={{
               padding: 2,
-              background: colors.black,
+              background: isLive ? colors.red200 : colors.black,
               marginTop: "auto",
             }}
           >
             <p sx={{ variant: "text.subheading4", color: colors.white }}>
-              View scorecard
+              {isMatchOver
+                ? `View scorecard`
+                : isLive
+                ? `Follow live scores`
+                : `View match facts`}
             </p>
           </Link>
         )}

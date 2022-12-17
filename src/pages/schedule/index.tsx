@@ -46,13 +46,19 @@ const FixturesContent = (props: {
       <div
         sx={{
           display: "flex",
-          padding: [2, 3, 4],
+          padding: [2, 3, 5],
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <p sx={{ variant: "text.subheading3", color: colors.gray200 }}>
-          No fixtures available for the selected option
+        <p
+          sx={{
+            variant: bp > 1 ? "text.subheading2" : "text.subheading3",
+            color: colors.gray200,
+          }}
+        >
+          No fixtures available for the selected option.Try selecting a
+          different option.
         </p>
       </div>
     );

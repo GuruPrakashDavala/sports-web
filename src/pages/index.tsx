@@ -128,7 +128,12 @@ const Home = (props: {
           swiperId={`fixturecarousel`}
           items={fixtures.map((fixtureItem) => {
             return {
-              content: <FixtureCard fixture={fixtureItem} />,
+              content: (
+                <FixtureCard
+                  fixture={fixtureItem}
+                  styles={{ cursor: "grab" }}
+                />
+              ),
             };
           })}
         />

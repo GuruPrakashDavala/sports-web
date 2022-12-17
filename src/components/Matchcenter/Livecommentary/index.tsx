@@ -13,6 +13,7 @@ import {
   Batting as BattingT,
   Bowling as BowlingT,
   Player as PlayerT,
+  Scoreboard as ScoreboardT,
 } from "../../../types/sportmonks";
 import LiveBatting from "./LiveBatting";
 import LiveBowling from "./LiveBowling";
@@ -274,9 +275,11 @@ const LiveCommentary = (props: {
   note: string;
   batting: BattingT[];
   bowling: BowlingT[];
+  scoreboards: ScoreboardT[];
   manofmatch?: null | PlayerT;
 }): JSX.Element => {
-  const { balls, status, note, batting, bowling, manofmatch } = props;
+  const { balls, status, note, batting, bowling, manofmatch, scoreboards } =
+    props;
   const reversedOrder = [...balls].reverse();
   const [ballsLimit, setBallsLimit] = useState<number>(25);
   const [ballsInList, setBallsInList] = useState<BallT[]>(
@@ -286,6 +289,13 @@ const LiveCommentary = (props: {
   // reversedOrder contails the balls in reverse order. Example overs from 19.6 to 0.1
   // Balls data
   const recentBall = reversedOrder[0];
+  const liveScoreboard = recentBall.scoreboard;
+  const isCurrentInningsAllOut = scoreboards.find(
+    (scoreboard) =>
+      scoreboard.scoreboard === liveScoreboard &&
+      scoreboard.type === "total" &&
+      scoreboard.wickets === 10
+  );
 
   const previousOver = {
     lastOver: Number((recentBall.ball - 1).toFixed(1)),
@@ -330,7 +340,6 @@ const LiveCommentary = (props: {
     setSecondInningsOversSummary(secondInningsOversSummary);
     setThirdInningsOversSummary(thirdInningsOversSummary);
     setFourthInningsOversSummary(fourthInningsOversSummary);
-    console.log(fourthInningsOversSummary);
   }, [balls]);
 
   const getMoreBalls = () => {
@@ -342,7 +351,12 @@ const LiveCommentary = (props: {
   return (
     <div sx={{ paddingY: [2, 3] }}>
       <div sx={tableWrapperStyles}>
-        <LiveBatting fullBattingList={batting} recentBall={recentBall} />
+        {!isCurrentInningsAllOut ? (
+          <LiveBatting fullBattingList={batting} recentBall={recentBall} />
+        ) : (
+          <></>
+        )}
+
         <LiveBowling
           recentBall={recentBall}
           fullBowlersList={bowling}

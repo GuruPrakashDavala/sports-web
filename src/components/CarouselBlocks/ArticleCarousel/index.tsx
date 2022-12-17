@@ -43,7 +43,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
           category={article.attributes.category}
           slug={article.attributes.slug}
           theme={theme}
-          styles={{ height: "100%", ...styles }}
+          styles={{ height: "100%", cursor: "grab", ...styles }}
         />
       ),
     };

@@ -428,7 +428,10 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                   />
                 )}
 
-                <Tabs defaultIndex={isLive ? 2 : 0} sx={{ ...tabStyles }}>
+                <Tabs
+                  defaultIndex={isLive || isFinished ? 2 : 0}
+                  sx={{ ...tabStyles }}
+                >
                   <TabList>
                     {tabLists.map((tab) => (
                       <Fragment key={tab.id}>
@@ -456,6 +459,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         batting={fixture.batting}
                         bowling={fixture.bowling}
                         manofmatch={fixture.manofmatch}
+                        scoreboards={fixture.scoreboards}
                       />
                     ) : fixtureLoading ? (
                       <LivecommentarySkeleton />
