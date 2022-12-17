@@ -21,6 +21,8 @@ import {
   isMatchLive,
 } from "../../utils/matchcenter";
 import FixtureSkeleton from "../../components/Loaders/Matchcenter/FixtureSkeleton";
+import { loadMoreBtnStyles } from "../news";
+import RightArrowIcon from "../../components/Icons/RightArrow";
 
 const FixturesContent = (props: {
   selectedStage: string;
@@ -37,6 +39,23 @@ const FixturesContent = (props: {
 
   if (!fixtures) {
     return <FixtureSkeleton />;
+  }
+
+  if (fixtures.pages[0].data.length === 0) {
+    return (
+      <div
+        sx={{
+          display: "flex",
+          padding: [2, 3, 4],
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <p sx={{ variant: "text.subheading3", color: colors.gray200 }}>
+          No fixtures available for the selected option
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -138,7 +157,6 @@ export type CMSFixtures = {
 };
 
 const Schedule = (props: {
-  // fixtures: FixtureT[];
   series: [] | CMSFixtures[];
   seriesIds: string;
 }): JSX.Element => {
@@ -149,15 +167,25 @@ const Schedule = (props: {
   const startDate = format(now, "yyyy-MM-d");
   const endDate = format(add(now, { days: 1 }), "yyyy-MM-d");
   const startAndEndDateRange = `${startDate}, ${endDate}`;
+
   // Default date is for a day
   const [dateRange, setDateRange] = useState<string>(startAndEndDateRange);
 
-  const { data: fixturesData, isLoading: fixturesLoading } =
-    useInfiniteFixtures({
-      seriesIds: seriesIds,
-      dateRange,
-      refetchInterval,
-    });
+  const {
+    data: fixturesData,
+    isLoading: fixturesLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetching,
+  } = useInfiniteFixtures({
+    seriesIds: seriesIds,
+    dateRange,
+    refetchInterval,
+  });
+
+  const loadMore = () => {
+    fetchNextPage();
+  };
 
   const fixturesFromQuery =
     fixturesData as unknown as InfiniteFixturesResponseType;
@@ -181,9 +209,6 @@ const Schedule = (props: {
       const isLive = fixtures.pages.filter((page) =>
         page.data.find((fixture) => isMatchLive(fixture.status))
       );
-
-      console.log("isAnyFixtureLive");
-      console.log(isLive);
 
       isLive && isLive.length > 0
         ? setRefetchInterval(20000) // 2 mins polling for live fixtures
@@ -280,6 +305,46 @@ const Schedule = (props: {
           />
         </TabPanel>
       </Tabs>
+
+      {fixtures && (
+        <div
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingY: 2,
+          }}
+        >
+          <button
+            type="button"
+            sx={loadMoreBtnStyles(hasNextPage)}
+            onClick={loadMore}
+            disabled={!hasNextPage}
+          >
+            <p
+              sx={{
+                variant: "text.subheading4",
+                color: !hasNextPage ? colors.black : colors.white,
+              }}
+            >
+              {!hasNextPage
+                ? `All caught up!`
+                : isFetching
+                ? `Loading`
+                : `Load more`}
+            </p>
+
+            {hasNextPage && (
+              <RightArrowIcon
+                styles={{
+                  color: colors.white,
+                  alignItems: "center",
+                }}
+              />
+            )}
+          </button>
+        </div>
+      )}
     </SectionWrapper>
   );
 };

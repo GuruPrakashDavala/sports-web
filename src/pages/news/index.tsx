@@ -49,7 +49,7 @@ const loaderContainerStyles: ThemeUICSSObject = {
   flexWrap: "wrap",
 };
 
-const loadMoreBtnStyles = (hasNextPage?: boolean): ThemeUICSSObject => {
+export const loadMoreBtnStyles = (hasNextPage?: boolean): ThemeUICSSObject => {
   return {
     display: "flex",
     backgroundColor: !hasNextPage ? colors.gray200 : colors.black,
