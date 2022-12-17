@@ -49,7 +49,7 @@ const getCurrentFixtures = async ({ queryKey }: { queryKey: any }) => {
 
 const getFixtureSchedule = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
-  return axios.get<FixturesAPIResponse>(
+  return axios.get(
     `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
   );
 };
@@ -158,6 +158,7 @@ export const useInfiniteArticles = ({
 }): UseInfiniteQueryResult<InfiniteArticlesResponseType, Error> => {
   return useInfiniteQuery(["infiniteArticles", category], getInfiniteArticles, {
     getNextPageParam: (_lastPage, pages) => {
+      console.log(pages);
       const lastFetchedPageMeta = pages[pages.length - 1].meta;
       const metaPagination = lastFetchedPageMeta
         ? lastFetchedPageMeta.pagination
@@ -181,5 +182,75 @@ export const useArticle = (
 ): UseQueryResult<{ data: ArticleType[] }, Error> => {
   return useQuery(["article", slug], () =>
     fetchStrapiAPI(`/articles?filters[slug][$eq]=${slug}&populate=deep, 4`)
+  );
+};
+
+const getInfiniteFixtures = async ({
+  pageParam = 1,
+  queryKey,
+}: {
+  pageParam?: number;
+  queryKey: string[];
+}) => {
+  const seriesIds = queryKey[1];
+  const dateRange = queryKey[2];
+
+  const { data: fixturesRes } = await axios.get<{ data: FixtureResponse }>(
+    `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}&starts_between=${dateRange}&page=${pageParam}`
+  );
+
+  return fixturesRes.data;
+};
+
+type FixtureResponse = {
+  data: FixtureT[];
+  links: any;
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    per_page: number;
+    to: number;
+    total: number;
+  };
+};
+
+export type InfiniteFixturesResponseType = {
+  pages: FixtureResponse[];
+  pageParams: any;
+};
+
+export const useInfiniteFixtures = ({
+  seriesIds,
+  dateRange,
+  refetchInterval,
+  initialData,
+}: {
+  seriesIds: string;
+  dateRange: string;
+  initialData?: any;
+  refetchInterval?: number;
+}): UseInfiniteQueryResult<InfiniteFixturesResponseType, Error> => {
+  return useInfiniteQuery(
+    ["infiniteFixtures", seriesIds, dateRange],
+    getInfiniteFixtures,
+    {
+      getNextPageParam: (_lastPage, pages) => {
+        const lastFetchedPageMeta =
+          pages.length > 0 ? pages[pages.length - 1].meta : undefined;
+        if (lastFetchedPageMeta) {
+          const currentPage = lastFetchedPageMeta.current_page;
+          const lastPage = lastFetchedPageMeta.last_page;
+          const hasNextPage = currentPage < lastPage;
+          const nextPageNumber = hasNextPage ? currentPage + 1 : undefined;
+          return nextPageNumber;
+        } else {
+          return undefined;
+        }
+      },
+      refetchInterval,
+      initialData: initialData,
+      keepPreviousData: false,
+    }
   );
 };

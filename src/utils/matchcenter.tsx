@@ -12,6 +12,8 @@ import {
 import BallInfoCircle from "../components/Matchcenter/Livecommentary/utils/BallInfoCircle";
 import { colors } from "../styles/theme";
 import { useBreakpointIndex } from "@theme-ui/match-media";
+import { CMSFixtures } from "../pages/schedule";
+import { set, add, sub, format } from "date-fns";
 
 export const now = new Date();
 
@@ -256,7 +258,7 @@ export const getWicketCommentary = (
         : ball.catchstump
         ? `${ball.catchstump.fullname}`
         : ``;
-      return `Runout by ${runoutBy}. ${ball.batsmanout.fullname} out!`;
+      return `Runout by ${runoutBy}. ${ball.score.runs} run. ${ball.batsmanout.fullname} out!`;
     }
     default:
       return ``;
@@ -339,4 +341,74 @@ export const getBallInfoCircle = (score: ScoresT): JSX.Element => {
     ? `wide`
     : score.runs;
   return <InfoCircle type={type} runs={score.runs} />;
+};
+
+// Schedule page stage Ids filter
+
+export const getSelectedSeriesStageIds = (
+  selectedStage: string,
+  seriesDetails: CMSFixtures[],
+  allSeriesIdsInTheCMS: string
+): string => {
+  if (selectedStage === "All") {
+    return allSeriesIdsInTheCMS;
+  }
+
+  // Below process: Filtering the stage Ids for selected series
+
+  const selectedStageDetails = seriesDetails.filter(
+    (series) => series.code === selectedStage
+  );
+
+  /* 
+    The below seriesIds contains the list of series Ids for the selected series 
+  */
+
+  const seriesStageIds =
+    selectedStageDetails.length > 0
+      ? selectedStageDetails[0].seriesIds.map((seriesItem) =>
+          Number(seriesItem.seriesId)
+        )
+      : [];
+
+  return seriesStageIds.toString();
+};
+
+export const getDatesForSelectedTab = (value: number) => {
+  // Default date is for a day
+  const startDate = format(now, "yyyy-MM-d");
+  const endDate = format(add(now, { days: 1 }), "yyyy-MM-d");
+  const startAndEndDateRange = `${startDate}, ${endDate}`;
+
+  switch (value) {
+    case 0: {
+      const startDate = format(now, "yyyy-MM-d");
+      const endDate = format(add(now, { days: 1 }), "yyyy-MM-d");
+      const startAndEndDateRange = `${startDate}, ${endDate}`;
+      return startAndEndDateRange;
+    }
+    case 1: {
+      const dateFromTomorrow = add(
+        set(now, {
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        }),
+        { days: 1 }
+      );
+      const startDate = format(dateFromTomorrow, "yyyy-MM-d");
+      const endDate = format(add(now, { years: 1 }), "yyyy-MM-d");
+      const startAndEndDateRange = `${startDate}, ${endDate}`;
+      return startAndEndDateRange;
+    }
+    case 2: {
+      const startDate = format(sub(now, { months: 6 }), "yyyy-MM-d");
+      const endDate = format(now, "yyyy-MM-d");
+      const startAndEndDateRange = `${startDate}, ${endDate}`;
+      return startAndEndDateRange;
+    }
+    default:
+      return startAndEndDateRange;
+  }
 };

@@ -57,9 +57,23 @@ const tabTeamImageStyles: ThemeUICSSObject = {
 
 const ScoreboardContent = (props: ScoreboardContentProps): JSX.Element => {
   const { fixture, team, extras, didNotBat, fallOfWickets, innings } = props;
+  const recentBall =
+    fixture.balls && fixture.balls.length > 0
+      ? fixture.balls[fixture.balls.length - 1]
+      : undefined;
+
+  const bothBatsmanInCrease = recentBall
+    ? [recentBall.batsman_one_on_creeze_id, recentBall.batsman_two_on_creeze_id]
+    : undefined;
+
   return (
     <div sx={{ paddingY: [1, 2, 3] }}>
-      <InningsTable innings={innings} fixture={fixture} teamInfo={team} />
+      <InningsTable
+        innings={innings}
+        fixture={fixture}
+        teamInfo={team}
+        bothBatsmanInCrease={bothBatsmanInCrease}
+      />
       <InningsAdditionalInfo
         extras={extras}
         score={getScore(fixture.scoreboards, innings, fixture.status)}

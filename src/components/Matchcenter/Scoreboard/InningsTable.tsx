@@ -12,6 +12,7 @@ type InningsTableProps = {
   fixture: FixtureT;
   teamInfo: TeamInfo;
   innings: string;
+  bothBatsmanInCrease?: number[];
 };
 
 export const getWicketCatchStumpRunout = (
@@ -51,8 +52,8 @@ const battingInningsTableRowStyles: ThemeUICSSObject = {
   borderColor: colors.gray200,
 };
 
-const InningsTable = (props: InningsTableProps) => {
-  const { fixture, teamInfo, innings } = props;
+const InningsTable = (props: InningsTableProps): JSX.Element => {
+  const { fixture, teamInfo, innings, bothBatsmanInCrease = [] } = props;
   const bp = useBreakpointIndex();
 
   const isScoreboardAvailable = fixture.batting.filter(
@@ -72,7 +73,7 @@ const InningsTable = (props: InningsTableProps) => {
       />
       {fixture.batting.map((batting) => {
         const batsmanName =
-          bp > 3 ? batting.batsman.fullname : batting.batsman.lastname;
+          bp > 2 ? batting.batsman.fullname : batting.batsman.lastname;
         const isBatsmanOut = batting.result.is_wicket;
         const result = batting.result.name;
         const bowlerName = batting.bowler
@@ -84,9 +85,18 @@ const InningsTable = (props: InningsTableProps) => {
           ? batting.catchstump.lastname
           : "";
         const runoutBy = batting.runoutby ? batting.runoutby.lastname : "";
+        const batsmanId = batting.batsman.id;
 
         return batting.scoreboard === innings ? (
-          <ul key={batting.id} sx={battingInningsTableRowStyles}>
+          <ul
+            key={batting.id}
+            sx={{
+              ...battingInningsTableRowStyles,
+              ...(!isBatsmanOut && bothBatsmanInCrease.includes(batsmanId)
+                ? { borderLeft: `2px solid ${colors.green}` }
+                : {}),
+            }}
+          >
             <li
               sx={{
                 flexBasis: "40%",

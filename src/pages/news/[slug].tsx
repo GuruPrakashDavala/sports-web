@@ -124,7 +124,6 @@ const BlockPicker = ({
 
 const ArticlePage = (props: ArticlePageProps) => {
   const { recentArticles, slug, styles = {} } = props;
-  console.log(props.article.attributes.blocks);
   const { data: articleData, isLoading: articleLoading } = useArticle(slug);
   const article = articleData ? articleData.data[0] : props.article;
 

@@ -8,28 +8,37 @@ import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { tabStyles } from "../matchcenter/[...slug]";
-import { compareAsc, isToday, set, add, sub } from "date-fns";
+import { add, format } from "date-fns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
-import { useFixtureSchedule } from "../../utils/queries";
-import { isMatchLive } from "../../utils/matchcenter";
+import {
+  InfiniteFixturesResponseType,
+  useInfiniteFixtures,
+} from "../../utils/queries";
+import {
+  getDatesForSelectedTab,
+  getSelectedSeriesStageIds,
+  isMatchLive,
+} from "../../utils/matchcenter";
 import { fixturesRestAPI } from "../../utils/util";
+import ArticleCardSkeleton from "../../components/Loaders/Cards/ArticleCard";
 
 const FixturesContent = (props: {
-  fixtures: FixtureT[];
   selectedStage: string;
   series: [] | CMSFixtures[];
+  fixtures?: InfiniteFixturesResponseType;
+  isRecentTab?: boolean;
 }): JSX.Element => {
+  const { fixtures, selectedStage, series, isRecentTab } = props;
   const bp = useBreakpointIndex();
-  const { fixtures, selectedStage, series } = props;
 
   const seriesName = series.find(
     (series) => series.code === selectedStage
   )?.seriesName;
 
-  if (fixtures.length === 0) {
-    return <></>;
+  if (!fixtures) {
+    return <ArticleCardSkeleton />;
   }
 
   return (
@@ -51,15 +60,21 @@ const FixturesContent = (props: {
           {selectedStage === "All" ? `All series` : `${seriesName}`}
         </p>
       </div>
-
-      {fixtures.map((fixture) => {
+      {fixtures.pages.map((group, index) => {
+        const fixturesGroup = isRecentTab ? group.data.reverse() : group.data;
         return (
-          <Fragment key={fixture.id}>
-            <FixtureCard
-              fixture={fixture}
-              styles={{ paddingX: 0 }}
-              includeStageName={true}
-            />
+          <Fragment key={index}>
+            {fixturesGroup.map((fixture) => {
+              return (
+                <Fragment key={fixture.id}>
+                  <FixtureCard
+                    fixture={fixture}
+                    styles={{ paddingX: 0 }}
+                    includeStageName={true}
+                  />
+                </Fragment>
+              );
+            })}
           </Fragment>
         );
       })}
@@ -116,7 +131,7 @@ type Series = {
   seriesId: string;
 };
 
-type CMSFixtures = {
+export type CMSFixtures = {
   id: number;
   seriesIds: Series[];
   seriesName: string;
@@ -130,27 +145,29 @@ const Schedule = (props: {
 }): JSX.Element => {
   console.log(props);
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
-  const { data: fixtureSchedule, isLoading } = useFixtureSchedule(
-    props.seriesIds,
-    refetchInterval
-  );
+  const [seriesIds, setSeriesIds] = useState<string>(props.seriesIds);
+
+  const now = new Date();
+  const startDate = format(now, "yyyy-MM-d");
+  const endDate = format(add(now, { days: 1 }), "yyyy-MM-d");
+  const startAndEndDateRange = `${startDate}, ${endDate}`;
+  // Default date is for a day
+  const [dateRange, setDateRange] = useState<string>(startAndEndDateRange);
+
+  const { data: fixturesData, isLoading: fixturesLoading } =
+    useInfiniteFixtures({
+      seriesIds: seriesIds,
+      dateRange,
+      refetchInterval,
+    });
+
+  const fixturesFromQuery =
+    fixturesData as unknown as InfiniteFixturesResponseType;
 
   const fixtures =
-    !isLoading && fixtureSchedule ? fixtureSchedule.data.data : props.fixtures;
+    !fixturesLoading && fixturesData ? fixturesFromQuery : undefined;
 
   const [selectedStage, setSelectedStage] = useState<string>("All");
-
-  const [todayFixtures, setTodayFixtures] = useState<FixtureT[] | undefined>(
-    undefined
-  );
-
-  const [recentFixtures, setRecentFixtures] = useState<FixtureT[] | undefined>(
-    undefined
-  );
-
-  const [upcomingFixtures, setUpcomingFixtures] = useState<
-    FixtureT[] | undefined
-  >(undefined);
 
   const tabLists = [
     { id: "0", name: "today" },
@@ -160,84 +177,40 @@ const Schedule = (props: {
 
   const bp = useBreakpointIndex();
   const router = useRouter();
-  const [tabIndex, setTabIndex] = useState<number>(0);
-
-  const now = new Date();
-  const dateFromTomorrow = add(
-    set(now, {
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-      milliseconds: 0,
-    }),
-    { days: 1 }
-  );
-
-  const dateFromYesterday = sub(
-    set(now, {
-      hours: 23,
-      minutes: 59,
-      seconds: 55,
-    }),
-    { days: 1 }
-  );
 
   useMemo(() => {
-    const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
-    isLive.length > 0
-      ? setRefetchInterval(20000) // 2 mins polling
-      : setRefetchInterval(1000 * 300); // 5 mins polling;
-  }, [fixtureSchedule]);
+    if (fixtures) {
+      const isLive = fixtures.pages.filter((page) =>
+        page.data.find((fixture) => isMatchLive(fixture.status))
+      );
+
+      console.log("isAnyFixtureLive");
+      console.log(isLive);
+
+      isLive && isLive.length > 0
+        ? setRefetchInterval(20000) // 2 mins polling for live fixtures
+        : setRefetchInterval(1000 * 300); // 5 mins polling;
+    }
+  }, [fixtures]);
 
   useEffect(() => {
+    // selectedStage contains the series code
     if (selectedStage) {
       router.query.series
         ? setSelectedStage(router.query.series as string)
         : setSelectedStage("All");
 
-      const selectedStageSeriesDetails = props.series.filter(
-        (series) => series.code === selectedStage
-      );
-
-      // The below seriesIds contains the list of series Ids for the selected series
-
-      const seriesIds =
-        selectedStageSeriesDetails.length > 0
-          ? selectedStageSeriesDetails[0].seriesIds.map((seriesItem: any) =>
-              Number(seriesItem.seriesId)
-            )
-          : undefined;
-
-      const fixtureSchedule =
+      setSeriesIds(
         selectedStage === "All"
-          ? fixtures
-          : fixtures.filter((fixture) =>
-              (seriesIds ?? []).includes(fixture.stage.id)
-            );
-
-      console.log(fixtureSchedule);
-
-      const todayFixtures = fixtureSchedule.filter((fixture) =>
-        isToday(new Date(fixture.starting_at))
+          ? props.seriesIds
+          : getSelectedSeriesStageIds(
+              selectedStage,
+              props.series,
+              props.seriesIds
+            )
       );
-
-      const pastFixtures = fixtureSchedule
-        .filter(
-          (fixture) =>
-            compareAsc(new Date(fixture.starting_at), dateFromYesterday) < 0
-        )
-        .reverse();
-
-      const upcomingFixtures = fixtureSchedule.filter(
-        (fixture) =>
-          compareAsc(new Date(fixture.starting_at), dateFromTomorrow) > 0
-      );
-
-      setTodayFixtures(todayFixtures);
-      setRecentFixtures(pastFixtures);
-      setUpcomingFixtures(upcomingFixtures);
     }
-  }, [router.query.series, selectedStage, fixtureSchedule]);
+  }, [router.query.series, selectedStage]);
 
   const stageChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     event.preventDefault();
@@ -246,27 +219,12 @@ const Schedule = (props: {
     });
   };
 
-  // useEffect(() => {
-  //   console.log(router);
-  //   const queryPath = router.query.slug;
-  //   switch (queryPath) {
-  //     case "live":
-  //       setTabIndex(0);
-  //     case "upcoming":
-  //       setTabIndex(1);
-  //     case "recent":
-  //       console.log("recent case");
-  //       setTabIndex(2);
-  //     default:
-  //       setTabIndex(0);
-  //   }
-  // }, [router.query.slug, tabIndex]);
-
   return (
     <SectionWrapper styles={{ paddingX: [2, 3, 5, null, 7], paddingY: 1 }}>
       <Tabs
-        defaultIndex={tabIndex}
+        defaultIndex={0}
         sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
+        onSelect={(index) => setDateRange(getDatesForSelectedTab(index))}
       >
         <TabList>
           <div
@@ -292,10 +250,6 @@ const Schedule = (props: {
           >
             <option value="All">All series</option>
             {props.series.map((series) => (
-              // <option value={series.seriesId} key={series.seriesId}>
-              //   {series.seriesName}
-              // </option>
-
               <option value={series.code} key={series.code}>
                 {series.seriesName}
               </option>
@@ -304,33 +258,28 @@ const Schedule = (props: {
         </TabList>
 
         <TabPanel id="todayfixtures">
-          {todayFixtures && (
-            <FixturesContent
-              fixtures={todayFixtures}
-              selectedStage={selectedStage}
-              series={props.series}
-            />
-          )}
+          <FixturesContent
+            selectedStage={selectedStage}
+            series={props.series}
+            fixtures={fixturesFromQuery}
+          />
         </TabPanel>
 
         <TabPanel id="upcomingfixtures">
-          {upcomingFixtures && (
-            <FixturesContent
-              fixtures={upcomingFixtures}
-              selectedStage={selectedStage}
-              series={props.series}
-            />
-          )}
+          <FixturesContent
+            selectedStage={selectedStage}
+            series={props.series}
+            fixtures={fixturesFromQuery}
+          />
         </TabPanel>
 
         <TabPanel id="recentfixtures">
-          {recentFixtures && (
-            <FixturesContent
-              fixtures={recentFixtures}
-              selectedStage={selectedStage}
-              series={props.series}
-            />
-          )}
+          <FixturesContent
+            selectedStage={selectedStage}
+            series={props.series}
+            fixtures={fixturesFromQuery}
+            isRecentTab={true}
+          />
         </TabPanel>
       </Tabs>
     </SectionWrapper>
@@ -357,7 +306,7 @@ export async function getStaticProps(context: any) {
 
     return {
       props: {
-        fixtures: fixtures.data,
+        fixtures: fixtures.data.data,
         series: fixturesDefinedInCMS.data.attributes.series,
         seriesIds,
       },

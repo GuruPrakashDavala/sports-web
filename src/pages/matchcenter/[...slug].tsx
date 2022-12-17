@@ -237,7 +237,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
       differenceInMins > 0 && differenceInMins < 60;
 
     if (isLive) {
-      setRefetchInterval(20000); // 2 mins polling
+      setRefetchInterval(15000); // 1.5 mins polling
     } else {
       isFinished
         ? setRefetchInterval(0)
@@ -428,7 +428,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                   />
                 )}
 
-                <Tabs defaultIndex={2} sx={{ ...tabStyles }}>
+                <Tabs defaultIndex={isLive ? 2 : 0} sx={{ ...tabStyles }}>
                   <TabList>
                     {tabLists.map((tab) => (
                       <Fragment key={tab.id}>

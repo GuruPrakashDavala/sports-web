@@ -107,7 +107,7 @@ export default async function handler(
 
     const latestFixtures =
       fixturesInOrder.length > 0
-        ? fixturesInOrder.splice(0, 6)
+        ? fixturesInOrder.splice(0, 10)
         : fixturesInOrder;
 
     res.status(200).json({
