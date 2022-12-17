@@ -8,8 +8,9 @@ const ArticleImage = (props: {
   image: ImageType;
   index: number;
   source?: string;
+  info?: string;
 }) => {
-  const { image, source, index } = props;
+  const { image, source, info, index } = props;
   return (
     <div
       sx={{
@@ -24,6 +25,19 @@ const ArticleImage = (props: {
         height={"100%"}
         width={"100%"}
       />
+
+      {info && (
+        <p
+          sx={{
+            paddingTop: [1],
+            variant: "text.label2",
+            color: colors.gray100,
+          }}
+        >
+          {info}
+        </p>
+      )}
+
       {source && (
         <p
           sx={{
