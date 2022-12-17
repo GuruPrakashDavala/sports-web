@@ -94,7 +94,7 @@ const OverSummary = (props: {
             flexDirection: "column",
           }}
         >
-          <p sx={{ variant: "text.subheading3" }}>Ov</p>
+          <p sx={{ variant: "text.subheading3" }}>Over</p>
           <p sx={{ variant: "text.subheading2" }}> {overNumber}</p>
         </div>
 
