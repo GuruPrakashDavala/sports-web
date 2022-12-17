@@ -14,6 +14,7 @@ type WicketCardProps = {
 const wicketCardContainerStyles: ThemeUICSSObject = {
   display: "flex",
   margin: [0, 1],
+  marginY: [1],
   background: colors.red200,
   borderRadius: "10px",
 };
