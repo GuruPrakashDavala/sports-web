@@ -306,7 +306,7 @@ const Schedule = (props: {
         </TabPanel>
       </Tabs>
 
-      {fixtures && (
+      {fixtures && fixtures.pages[0].data.length > 0 && (
         <div
           sx={{
             display: "flex",

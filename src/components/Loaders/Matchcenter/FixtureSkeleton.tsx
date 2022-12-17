@@ -8,8 +8,8 @@ const FixtureSkeleton = (props: SkeletonProps) => {
   return (
     <div
       sx={{
-        padding: 1,
         ...props.styles,
+        paddingY: 2,
       }}
     >
       <div
@@ -19,8 +19,8 @@ const FixtureSkeleton = (props: SkeletonProps) => {
           gap: 2,
         }}
       >
-        <ArticleCardSkeleton />
-        <ArticleCardSkeleton />
+        <ArticleCardSkeleton styles={{ padding: 0 }} />
+        <ArticleCardSkeleton styles={{ padding: 0 }} />
       </div>
     </div>
   );
