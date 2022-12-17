@@ -3,7 +3,6 @@
 import { Fragment, useEffect, useState, useMemo } from "react";
 import FixtureCard from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
-import { Fixture as FixtureT } from "../../types/sportmonks";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
@@ -21,8 +20,7 @@ import {
   getSelectedSeriesStageIds,
   isMatchLive,
 } from "../../utils/matchcenter";
-import { fixturesRestAPI } from "../../utils/util";
-import ArticleCardSkeleton from "../../components/Loaders/Cards/ArticleCard";
+import FixtureSkeleton from "../../components/Loaders/Matchcenter/FixtureSkeleton";
 
 const FixturesContent = (props: {
   selectedStage: string;
@@ -38,7 +36,7 @@ const FixturesContent = (props: {
   )?.seriesName;
 
   if (!fixtures) {
-    return <ArticleCardSkeleton />;
+    return <FixtureSkeleton />;
   }
 
   return (
@@ -60,6 +58,7 @@ const FixturesContent = (props: {
           {selectedStage === "All" ? `All series` : `${seriesName}`}
         </p>
       </div>
+
       {fixtures.pages.map((group, index) => {
         const fixturesGroup = isRecentTab ? group.data.reverse() : group.data;
         return (
@@ -139,11 +138,10 @@ export type CMSFixtures = {
 };
 
 const Schedule = (props: {
-  fixtures: FixtureT[];
+  // fixtures: FixtureT[];
   series: [] | CMSFixtures[];
   seriesIds: string;
 }): JSX.Element => {
-  console.log(props);
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const [seriesIds, setSeriesIds] = useState<string>(props.seriesIds);
 
@@ -261,7 +259,7 @@ const Schedule = (props: {
           <FixturesContent
             selectedStage={selectedStage}
             series={props.series}
-            fixtures={fixturesFromQuery}
+            fixtures={fixtures}
           />
         </TabPanel>
 
@@ -269,7 +267,7 @@ const Schedule = (props: {
           <FixturesContent
             selectedStage={selectedStage}
             series={props.series}
-            fixtures={fixturesFromQuery}
+            fixtures={fixtures}
           />
         </TabPanel>
 
@@ -277,7 +275,7 @@ const Schedule = (props: {
           <FixturesContent
             selectedStage={selectedStage}
             series={props.series}
-            fixtures={fixturesFromQuery}
+            fixtures={fixtures}
             isRecentTab={true}
           />
         </TabPanel>
@@ -298,15 +296,15 @@ export async function getStaticProps(context: any) {
       )
       .toString();
 
-    const res = await fetch(
-      `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
-    );
+    // const res = await fetch(
+    //   `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
+    // );
 
-    const fixtures = await res.json();
+    // const fixtures = await res.json();
 
     return {
       props: {
-        fixtures: fixtures.data.data,
+        // fixtures: undefined,
         series: fixturesDefinedInCMS.data.attributes.series,
         seriesIds,
       },
