@@ -2,18 +2,14 @@
 
 import Head from "next/head";
 import { useState, useEffect, Fragment } from "react";
-import Carousel from "../components/Carousel";
 import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
 import ArticleGrid from "../components/Grids/ArticleGrid";
 import ContentGrid from "../components/Grids/ContentGrid";
-import SectionHeading from "../components/SectionHeading";
-import SectionWrapper from "../components/Wrappers/SectionWrapper";
 import { fetchStrapiAPI } from "../lib/strapi";
 import { ColorTheme } from "../types/modifier";
 import { ImageType } from "../types/article";
 import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 import Quote from "../components/Quote";
-import FixtureCard from "../components/Cards/FixtureCard";
 import { Fixture as FixtureT } from "../types/sportmonks";
 import { isMatchLive } from "../utils/matchcenter";
 import { useCurrentFixtures, useHomepage } from "../utils/queries";

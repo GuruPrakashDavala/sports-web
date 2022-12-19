@@ -8,6 +8,7 @@ import { RobotoFontFace } from "../styles/theme/font-roboto";
 import Layout from "../components/Layout/Layout";
 import ProgressBarStyles, { useProgressBar } from "../utils/progressbar";
 import { QueryClientProvider, QueryClient } from "react-query";
+import "../components/Header/Header.css";
 
 const queryClient = new QueryClient();
 

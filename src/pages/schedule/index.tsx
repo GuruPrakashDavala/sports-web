@@ -355,7 +355,7 @@ const Schedule = (props: {
   );
 };
 
-export async function getStaticProps(context: any) {
+export async function getStaticProps() {
   try {
     const fixturesDefinedInCMS = await fetchStrapiAPI(
       `/fixtures-list?populate=deep,3`
@@ -367,19 +367,12 @@ export async function getStaticProps(context: any) {
       )
       .toString();
 
-    // const res = await fetch(
-    //   `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
-    // );
-
-    // const fixtures = await res.json();
-
     return {
       props: {
-        // fixtures: undefined,
         series: fixturesDefinedInCMS.data.attributes.series,
         seriesIds,
       },
-      revalidate: 60 * 5,
+      revalidate: 60 * 10,
     };
   } catch (err) {
     console.log(err);
