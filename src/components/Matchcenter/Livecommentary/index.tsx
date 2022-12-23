@@ -54,7 +54,7 @@ export const PlayerBattingDetails = (props: {
           <ul sx={{ ...rowStyles, ...styles }}>
             <li
               sx={{
-                flexBasis: ["35%", "30%"],
+                flexBasis: ["45%", "30%"],
                 display: "flex",
                 alignItems: "center",
                 variant: bp < 1 ? "text.body4" : undefined,
@@ -79,7 +79,7 @@ export const PlayerBattingDetails = (props: {
 
             <li
               sx={{
-                flexBasis: ["13%", "14%"],
+                flexBasis: ["11%", "14%"],
                 variant: bp < 1 ? "text.body4" : undefined,
               }}
             >
@@ -88,7 +88,7 @@ export const PlayerBattingDetails = (props: {
 
             <li
               sx={{
-                flexBasis: ["13%", "14%"],
+                flexBasis: ["11%", "14%"],
                 variant: bp < 1 ? "text.body4" : undefined,
               }}
             >
@@ -97,7 +97,7 @@ export const PlayerBattingDetails = (props: {
 
             <li
               sx={{
-                flexBasis: ["13%", "14%"],
+                flexBasis: ["11%", "14%"],
                 variant: bp < 1 ? "text.body4" : undefined,
               }}
             >
@@ -106,7 +106,7 @@ export const PlayerBattingDetails = (props: {
 
             <li
               sx={{
-                flexBasis: ["13%", "14%"],
+                flexBasis: ["11%", "14%"],
                 variant: bp < 1 ? "text.body4" : undefined,
               }}
             >
@@ -115,7 +115,7 @@ export const PlayerBattingDetails = (props: {
 
             <li
               sx={{
-                flexBasis: ["13%", "14%"],
+                flexBasis: ["11%", "14%"],
                 variant: bp < 1 ? "text.body4" : undefined,
               }}
             >
@@ -249,9 +249,9 @@ export const rowHeaderStyles: ThemeUICSSObject = {
   display: "flex",
   width: "100%",
   flexWrap: "wrap",
-  justifyContent: "center",
+  // justifyContent: "center",
   alignItems: "center",
-  paddingX: 2,
+  paddingX: [1, 2],
   paddingY: 2,
   background: colors.gray300,
   "> li": {
@@ -263,9 +263,9 @@ const rowStyles: ThemeUICSSObject = {
   display: "flex",
   width: "100%",
   flexWrap: "wrap",
-  paddingX: 2,
+  paddingX: [1, 2],
   paddingY: 1,
-  justifyContent: "center",
+  // justifyContent: "center",
   alignItems: "center",
 };
 

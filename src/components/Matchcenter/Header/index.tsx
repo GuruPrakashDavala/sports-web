@@ -158,7 +158,7 @@ const Header = (props: HeaderProps) => {
             >
               <span
                 sx={{
-                  variant: bp > 1 ? "text.subheading3" : "text.body4",
+                  variant: bp > 1 ? "" : "text.body4",
                 }}
               >
                 {s1Team.name}
@@ -267,7 +267,7 @@ const Header = (props: HeaderProps) => {
             >
               <span
                 sx={{
-                  variant: bp > 1 ? "text.subheading3" : "text.body4",
+                  variant: bp > 1 ? "" : "text.body4",
                 }}
               >
                 {s2Team.name}

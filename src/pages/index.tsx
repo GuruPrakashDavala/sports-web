@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import axios from "axios";
 import Head from "next/head";
 import { useState, useEffect, Fragment } from "react";
 import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
@@ -12,7 +13,11 @@ import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 import Quote from "../components/Quote";
 import { Fixture as FixtureT } from "../types/sportmonks";
 import { isMatchLive } from "../utils/matchcenter";
-import { useCurrentFixtures, useHomepage } from "../utils/queries";
+import {
+  FixturesAPIResponse,
+  useCurrentFixtures,
+  useHomepage,
+} from "../utils/queries";
 import { fixturesRestAPI } from "../utils/util";
 import FixtureCarousel from "../components/CarouselBlocks/FixtureCarousel";
 
@@ -160,7 +165,7 @@ export async function getStaticProps() {
     };
   } catch (err) {
     console.log(err);
-    return null;
+    return {};
   }
 }
 

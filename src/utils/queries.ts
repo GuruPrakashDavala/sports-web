@@ -22,7 +22,7 @@ type FixtureAPIResponse = {
   statusText: string;
 };
 
-type FixturesAPIResponse = {
+export type FixturesAPIResponse = {
   data: FixtureT[];
   status: number;
   statusText: string;
