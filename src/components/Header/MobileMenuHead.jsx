@@ -1,10 +1,9 @@
-import { forwardRef } from "react";
 import { FaAngleLeft } from "react-icons/fa";
 
-const MobileMenuHead = forwardRef((props, ref) => {
-  const { hideSubMenu, toggleMenu, title } = props;
+const MobileMenuHead = (props) => {
+  const { hideSubMenu, toggleMenu, title, mobileMenuHeadRef } = props;
   return (
-    <div className="mobile-menu-head" ref={ref}>
+    <div className="mobile-menu-head" ref={mobileMenuHeadRef}>
       <div className="go-back" onClick={hideSubMenu}>
         <FaAngleLeft />
       </div>
@@ -14,7 +13,7 @@ const MobileMenuHead = forwardRef((props, ref) => {
       </div>
     </div>
   );
-});
+};
 
 MobileMenuHead.displayName = `MobileMenuHead`;
 

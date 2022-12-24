@@ -4,13 +4,8 @@ import { createRef, useEffect, useState } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import ListItemCard from "./ListItemCard";
 import { FaAngleDown, FaSearch, FaShoppingCart } from "react-icons/fa";
-import dynamic from "next/dynamic";
-const MobileMenuHead = dynamic(() => import("./MobileMenuHead"), {
-  ssr: false,
-});
-const MenuItem = dynamic(() => import("./MenuItem"), {
-  ssr: false,
-});
+import MenuItem from "./MenuItem";
+import MobileMenuHead from "./MobileMenuHead";
 
 const Header = () => {
   const bp = useBreakpointIndex();
@@ -23,6 +18,14 @@ const Header = () => {
   const [menu, setMenu] = useState("");
   const [subMenuTitle, setSubMenuTitle] = useState("");
   const [activeSubMenu, setActiveSubMenu] = useState("");
+
+  useEffect(() => {
+    console.log(activeSubMenu);
+    console.log(subMenuRefOne);
+    console.log(subMenuRefTwo);
+    console.log("mobileMenuHeadRef");
+    console.log(mobileMenuHeadRef);
+  }, [activeSubMenu, subMenuRefOne, subMenuRefTwo]);
 
   // Mobile utils for opening the sidebar
   const showSubMenu = (subMenuIndex) => {
@@ -548,7 +551,7 @@ const Header = () => {
                 <MobileMenuHead
                   hideSubMenu={hideSubMenu}
                   toggleMenu={toggleMenu}
-                  ref={mobileMenuHeadRef}
+                  mobileMenuHeadRef={mobileMenuHeadRef}
                   title={subMenuTitle}
                 />
 
@@ -580,7 +583,10 @@ const Header = () => {
                     </div>
                   </li>
 
-                  <MenuItem ref={subMenuRefTwo} showSubMenu={showSubMenu} />
+                  <MenuItem
+                    menuItemRef={subMenuRefTwo}
+                    showSubMenu={showSubMenu}
+                  />
                 </ul>
               </nav>
             </div>

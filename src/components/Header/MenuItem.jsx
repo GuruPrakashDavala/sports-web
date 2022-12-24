@@ -1,8 +1,7 @@
-import { forwardRef } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-const MenuItem = forwardRef((props, ref) => {
-  const { showSubMenu } = props;
+const MenuItem = (props) => {
+  const { showSubMenu, menuItemRef } = props;
   return (
     <li className="menu-item-has-children">
       <a href="#" onClick={() => showSubMenu(2)}>
@@ -11,7 +10,7 @@ const MenuItem = forwardRef((props, ref) => {
           <FaAngleDown />
         </span>
       </a>
-      <div className="sub-menu mega-menu mega-menu-column-4" ref={ref}>
+      <div className="sub-menu mega-menu mega-menu-column-4" ref={menuItemRef}>
         <div className="list-item">
           <h4 className="title">Mens fashion</h4>
           <ul>
@@ -112,7 +111,7 @@ const MenuItem = forwardRef((props, ref) => {
       </div>
     </li>
   );
-});
+};
 
 MenuItem.displayName = `MenuItem`;
 
