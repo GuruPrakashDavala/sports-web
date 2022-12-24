@@ -1,16 +1,17 @@
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { forwardRef } from "react";
+import { FaAngleDown } from "react-icons/fa";
 
-const MenuItem = () => {
+const MenuItem = forwardRef((props, ref) => {
+  const { showSubMenu } = props;
   return (
     <li className="menu-item-has-children">
-      <a href="#">
+      <a href="#" onClick={() => showSubMenu(2)}>
         Multiple category divisions
         <span className="icon">
-          {/* <FontAwesomeIcon icon={faAngleDown} /> */}
+          <FaAngleDown />
         </span>
       </a>
-      <div className="sub-menu mega-menu mega-menu-column-4">
+      <div className="sub-menu mega-menu mega-menu-column-4" ref={ref}>
         <div className="list-item">
           <h4 className="title">Mens fashion</h4>
           <ul>
@@ -104,15 +105,6 @@ const MenuItem = () => {
               <a href="#"> Product list </a>
             </li>
           </ul>
-          <h4 className="title">Home and kitchen</h4>
-          <ul>
-            <li>
-              <a href="#"> Product list </a>
-            </li>
-            <li>
-              <a href="#"> Product list </a>
-            </li>
-          </ul>
         </div>
         <div className="list-item">
           <img src="img/shop1.jpg" alt="shop" />
@@ -120,6 +112,8 @@ const MenuItem = () => {
       </div>
     </li>
   );
-};
+});
+
+MenuItem.displayName = `MenuItem`;
 
 export default MenuItem;

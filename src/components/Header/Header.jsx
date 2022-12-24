@@ -3,38 +3,45 @@
 import { createRef, useEffect, useState } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import MenuItem from "./MenuItem";
+import ListItemCard from "./ListItemCard";
+import MobileMenuHead from "./MobileMenuHead";
+import { FaAngleDown, FaSearch, FaShoppingCart } from "react-icons/fa";
 
 const Header = () => {
   const bp = useBreakpointIndex();
   const menuRef = createRef();
   const menuOverlayRef = createRef();
+  const subMenuRefOne = createRef();
+  const subMenuRefTwo = createRef();
+  const mobileMenuHeadRef = createRef();
 
-  let subMenu;
   const [menu, setMenu] = useState("");
+  const [subMenuTitle, setSubMenuTitle] = useState("");
+  const [activeSubMenu, setActiveSubMenu] = useState("");
 
-  const showSubMenu = (e) => {
-    console.log("trigger showSubMenu");
+  // Mobile utils for opening the sidebar
+  const showSubMenu = (subMenuIndex) => {
     if (!menu.classList.contains("active")) {
       return;
     }
-    if (e.target.closest(".menu-item-has-children")) {
-      const hasChildren = e.target.closest(".menu-item-has-children");
-      showSelectedSubMenu(hasChildren);
+
+    if (subMenuIndex === 1) {
+      setActiveSubMenu(subMenuRefOne.current);
+      subMenuRefOne.current.classList.add("active");
+      subMenuRefOne.current.style.animation = "slideLeft 0.5s ease forwards";
+      setSubMenuTitle("News");
+      mobileMenuHeadRef.current.classList.add("active");
+    }
+
+    if (subMenuIndex === 2) {
+      setActiveSubMenu(subMenuRefTwo.current);
+      subMenuRefTwo.current.classList.add("active");
+      subMenuRefTwo.current.style.animation = "slideLeft 0.5s ease forwards";
+      setSubMenuTitle("Multiple categories");
+      mobileMenuHeadRef.current.classList.add("active");
     }
   };
 
-  const showSelectedSubMenu = (hasChildren) => {
-    subMenu = hasChildren.querySelector(".sub-menu");
-    subMenu.classList.add("active");
-    subMenu.style.animation = "slideLeft 0.5s ease forwards";
-    // TODO: replace the menu title with state variable
-    const menuTitle =
-      hasChildren.querySelector(".icon").parentNode.childNodes[0].textContent;
-    menu.querySelector(".current-menu-title").innerHTML = menuTitle;
-    menu.querySelector(".mobile-menu-head").classList.add("active");
-  };
-
-  // Mobile way of opening the sidebar
   const toggleMenu = () => {
     if (menu.classList.contains("active")) {
       document.querySelector("body").style.overflow = "visible";
@@ -42,23 +49,21 @@ const Header = () => {
       document.querySelector("body").style.overflow = "hidden";
     }
 
-    // Default toggle logic
     menu.classList.toggle("active");
     menuOverlayRef.current.classList.toggle("active");
-    if (subMenu && subMenu.classList.contains("active")) {
+    if (activeSubMenu && activeSubMenu.classList.contains("active")) {
       hideSubMenu();
     }
   };
 
   const hideSubMenu = () => {
-    subMenu.style.animation = "slideRight 0.5s ease forwards";
+    activeSubMenu.style.animation = "slideRight 0.5s ease forwards";
     setTimeout(() => {
-      subMenu.classList.remove("active");
+      activeSubMenu.classList.remove("active");
     }, 300);
-
-    // TODO: replace this with state variable
-    menu.querySelector(".current-menu-title").innerHTML = "";
-    menu.querySelector(".mobile-menu-head").classList.remove("active");
+    setSubMenuTitle("");
+    mobileMenuHeadRef.current.classList.remove("active");
+    setActiveSubMenu("");
   };
 
   useEffect(() => {
@@ -155,6 +160,7 @@ const Header = () => {
         display: "flex",
         flexWrap: "wrap",
         padding: "20px 15px",
+        // List item styles
         "> .list-item": {
           flex: "0 0 25%",
           padding: "0 15px",
@@ -167,7 +173,7 @@ const Header = () => {
             margin: 0,
           },
           ".text-center": {
-            "> .title": {
+            "> a > .title": {
               textAlign: "center",
             },
           },
@@ -343,7 +349,7 @@ const Header = () => {
     left: 0,
     width: "100%",
     height: "100%",
-    paddingTop: "65px",
+    paddingTop: "85px",
     maxWidth: "none",
     minWidth: "auto",
     /* Hide sub menu in iniail state */
@@ -353,21 +359,17 @@ const Header = () => {
     zIndex: 500,
     backgroundColor: "white",
     transition: "all 0.5s ease",
-    "ul > li > a": {
+    ".list-item > ul > li > a": {
       display: "block",
       padding: "10px 0",
       color: "#555555",
       textDecoration: "none",
       textTransform: "capitalize",
-      // Hover color transition
       transition: "color 0.3s ease",
       "&:hover": {
         color: "#ea4636",
         background: "beige",
       },
-    },
-    ".list-item > ul > li > a": {
-      display: "block",
     },
     ".list-item > ul": {
       marginBottom: "15px",
@@ -414,6 +416,7 @@ const Header = () => {
       },
       ".sub-menu.mega-menu-column-4 > .list-item > img": {
         marginTop: 0,
+        width: "250px", // static
       },
       ".sub-menu.mega-menu-column-4 > .list-item > .title": {
         color: "#ea4636",
@@ -428,7 +431,7 @@ const Header = () => {
       ".sub-menu.mega-menu-column-4 > .list-item.text-center > a > .title": {
         marginBottom: "20px",
       },
-      ".sub-menu.mega-menu-column-4 > .list-item.text-center:last-child > .title":
+      ".sub-menu.mega-menu-column-4 > .list-item.text-center:last-child > a > .title":
         {
           marginBottom: "0px",
         },
@@ -440,7 +443,7 @@ const Header = () => {
     // Mobile header top bar styles
     ".mobile-menu-head": {
       display: "flex",
-      height: "50px",
+      height: "70px",
       borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
       justifyContent: "space-between",
       alignItems: "center",
@@ -450,17 +453,18 @@ const Header = () => {
       backgroundColor: "#ffffff",
       top: 0,
       "> .go-back": {
-        height: "50px",
-        width: "50px",
         borderRight: "1px solid rgba(0, 0, 0, 0.1)",
         cursor: "pointer",
-        lineHeight: "50px",
-        textAlign: "center",
         color: "#000000",
         fontSize: "16px",
+        height: "100%",
+        padding: "20px",
+        alignItems: "center",
+        justifyContent: "center",
         /* Hide go back in initial state */
         display: "none",
       },
+      // TODO: Should be updated
       "> .current-menu-title": {
         fontSize: "15px",
         fontWeight: 500,
@@ -469,20 +473,21 @@ const Header = () => {
 
       /* Close button */
       "> .mobile-menu-close": {
-        height: "50px",
-        width: "50px",
-        borderLeft: "1px solid rgba(0, 0, 0, 0.1)",
-        cursor: "pointer",
-        lineHeight: "50px",
-        textAlign: "center",
         color: "#000000",
         fontSize: "25px",
+        borderLeft: "1px solid rgba(0, 0, 0, 0.1)",
+        cursor: "pointer",
+        display: "flex",
+        height: "100%",
+        padding: "20px",
+        alignItems: "center",
+        justifyContent: "center",
       },
     },
 
     // Mobile menu head active state
     ".mobile-menu-head.active > .go-back": {
-      display: "block",
+      display: "flex",
     },
 
     /* Menu main layout */
@@ -492,6 +497,11 @@ const Header = () => {
       overflowY: "auto",
     },
   };
+
+  const headerCSS = bp > 2 ? headerStyles : smHeaderStyles;
+  const itemLeftCSS = bp > 2 ? itemLeft : smHeaderItemLeftAndRight;
+  const itemCenterCSS = bp > 2 ? headerItemCenter : smHeaderItemCenter;
+  const menuCSS = bp > 2 ? menuStyles : smMenuStyles;
 
   return (
     <>
@@ -507,14 +517,11 @@ const Header = () => {
         A test div with theme UI props
       </div>
 
-      <header sx={bp > 2 ? headerStyles : smHeaderStyles}>
+      <header sx={headerCSS}>
         <div id="container" sx={container}>
           <div id="row v-center" sx={{ ...row, ...vCenter }}>
-            {/* Brand logo section */}
-            <div
-              id="item-left"
-              sx={bp > 2 ? itemLeft : smHeaderItemLeftAndRight}
-            >
+            {/* Left item - Brand logo section */}
+            <div id="item-left" sx={itemLeftCSS}>
               <div id="logo">
                 <a href="#" sx={logoLink}>
                   MyStore
@@ -523,10 +530,7 @@ const Header = () => {
             </div>
 
             {/* Menu starts here */}
-            <div
-              id="item-center"
-              sx={bp > 2 ? headerItemCenter : smHeaderItemCenter}
-            >
+            <div id="item-center" sx={itemCenterCSS}>
               {/* Menu overlay is used to create overlay in the background and close the menu when clicked on outside */}
               <div
                 className="menu-overlay"
@@ -534,65 +538,44 @@ const Header = () => {
                 ref={menuOverlayRef}
               ></div>
 
-              <nav
-                className="menu"
-                ref={menuRef}
-                sx={bp > 2 ? menuStyles : smMenuStyles}
-              >
+              <nav className="menu" ref={menuRef} sx={menuCSS}>
                 {/* Mobile menu header - back button, logo and close button */}
-                <div className="mobile-menu-head">
-                  <div className="go-back" onClick={hideSubMenu}>
-                    {/* <FontAwesomeIcon icon={faAngleLeft} /> */}
-                    Icon
-                  </div>
-                  <div className="current-menu-title"></div>
-                  <div className="mobile-menu-close" onClick={toggleMenu}>
-                    &times;
-                  </div>
-                </div>
+                <MobileMenuHead
+                  hideSubMenu={hideSubMenu}
+                  toggleMenu={toggleMenu}
+                  ref={mobileMenuHeadRef}
+                  title={subMenuTitle}
+                />
 
                 {/* Menu items */}
-                <ul className="menu-main" onClick={showSubMenu}>
+                <ul className="menu-main">
                   <li>
                     <a href="#">Home</a>
                   </li>
 
                   <li className="menu-item-has-children">
-                    <a href="#">
-                      New
+                    <a href="#" onClick={() => showSubMenu(1)}>
+                      News
                       <span className="icon">
-                        {/* <FontAwesomeIcon icon={faAngleDown} /> */}
-                        Icon
+                        <FaAngleDown />
                       </span>
                     </a>
 
-                    {/* Sub menu - mega menu. Each class here has a purpose */}
-                    <div className="sub-menu mega-menu mega-menu-column-4">
+                    <div
+                      className="sub-menu mega-menu mega-menu-column-4"
+                      ref={subMenuRefOne}
+                    >
                       {/* Image products */}
                       <div className="list-item text-center">
-                        <a href="">
-                          <img
-                            src="img/t20_logo.png"
-                            alt="new product"
-                            className="imgHeight"
-                          />
-                          <h4 className="title">Product 1</h4>
-                        </a>
+                        <ListItemCard />
                       </div>
                       <div className="list-item text-center">
-                        <a href="">
-                          <img
-                            src="img/lpl.png"
-                            alt="new product"
-                            className="imgHeight"
-                          />
-                          <h4 className="title">Product 2</h4>
-                        </a>
+                        <ListItemCard />
                       </div>
                     </div>
                   </li>
 
-                  <MenuItem />
+                  <MenuItem ref={subMenuRefTwo} showSubMenu={showSubMenu} />
                 </ul>
               </nav>
             </div>
@@ -602,21 +585,18 @@ const Header = () => {
             <div className="item-right" sx={bp > 2 ? itemRight : smItemRight}>
               <a href="">
                 <span className="icon">
-                  {/* <FontAwesomeIcon icon={faSearch} /> */}
-                  Icon
+                  <FaSearch />
                 </span>
               </a>
               <a href="">
                 <span className="icon">
-                  {/* <FontAwesomeIcon icon={faHeart} /> */}
-                  Icon
+                  <FaSearch />
                 </span>
               </a>
               <a href="">
                 {/* <i className="fas fa-shopping-cart"></i> */}
                 <span className="icon">
-                  {/* <FontAwesomeIcon icon={faShoppingCart} /> */}
-                  Icon
+                  <FaShoppingCart />
                 </span>
               </a>
 
