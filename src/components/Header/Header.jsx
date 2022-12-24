@@ -2,10 +2,15 @@
 
 import { createRef, useEffect, useState } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import MenuItem from "./MenuItem";
 import ListItemCard from "./ListItemCard";
-import MobileMenuHead from "./MobileMenuHead";
 import { FaAngleDown, FaSearch, FaShoppingCart } from "react-icons/fa";
+import dynamic from "next/dynamic";
+const MobileMenuHead = dynamic(() => import("./MobileMenuHead"), {
+  ssr: false,
+});
+const MenuItem = dynamic(() => import("./MenuItem"), {
+  ssr: false,
+});
 
 const Header = () => {
   const bp = useBreakpointIndex();
