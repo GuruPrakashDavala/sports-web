@@ -7,7 +7,7 @@ const MenuItem = (props) => {
   const categories = ["International", "Mens", "Womens"];
   return (
     <li className="menu-item-has-children">
-      <a href="#" onClick={() => showSubMenu(2)}>
+      <a onClick={() => showSubMenu(2)}>
         <span className="menu-category-title">Multiple category divisions</span>
         <span className="icon">
           <FaAngleDown />
@@ -64,7 +64,7 @@ const MenuItem = (props) => {
 
         <div className="list-item">
           <a href="https://amazon.co.uk">
-            <img src="img/shop1.jpg" alt="shop" />
+            <img src="img/icc.png" alt="shop" />
           </a>
         </div>
       </div>

@@ -20,9 +20,4 @@
       transform: translateX(100%);
     }
   }
-
-  .imgHeight {
-    height: 220px;
-    width: 220px;
-  }
 }

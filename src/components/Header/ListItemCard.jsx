@@ -19,7 +19,7 @@ const listItemCardStyles = {
 const ListItemCard = () => {
   return (
     <a href="" sx={listItemCardStyles}>
-      <img src="img/t20_logo.png" alt="new product" className="imgHeight" />
+      <img src="img/t20_logo.png" alt="new product" />
       <h4 className="title">Product 1</h4>
     </a>
   );

@@ -12,6 +12,10 @@ const wrapperStyles: ThemeUICSSObject = {
   "> div > div > iframe": {
     maxWidth: ["90vw", 400],
   },
+  "> div > div > iframe > body": {
+    opacity: 0.6,
+    backgroundColor: "red !important",
+  },
 };
 
 type TwitterTweetEmbedProps = { tweetId: string };
@@ -23,7 +27,14 @@ const TwitterTweetEmbed = ({
 
   return (
     <div sx={wrapperStyles}>
-      {userCanView ? <TwitterTweetEmbedComponent tweetId={tweetId} /> : <></>}
+      {userCanView ? (
+        <TwitterTweetEmbedComponent
+          tweetId={tweetId}
+          placeholder={`Tweet loading`}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

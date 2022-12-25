@@ -1,10 +1,12 @@
 /** @jsxImportSource theme-ui */
+import React from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { default as NextLink } from "next/link";
 
 type LinkProps = {
   children: JSX.Element;
   href: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   styles?: ThemeUICSSObject;
 };
 
