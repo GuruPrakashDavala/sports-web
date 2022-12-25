@@ -1,5 +1,7 @@
 /** @jsxImportSource theme-ui */
 
+import { colors } from "../../styles/theme";
+
 const listItemCardStyles = {
   display: "flex",
   flexWrap: "wrap",
@@ -7,8 +9,10 @@ const listItemCardStyles = {
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
+  textDecoration: "none",
   "> .title": {
-    color: "red",
+    paddingY: 1,
+    color: colors.experimental.blue150,
   },
 };
 

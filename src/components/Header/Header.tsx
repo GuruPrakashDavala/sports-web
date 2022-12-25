@@ -6,72 +6,92 @@ import ListItemCard from "./ListItemCard";
 import { FaAngleDown, FaSearch, FaShoppingCart } from "react-icons/fa";
 import MenuItem from "./MenuItem";
 import MobileMenuHead from "./MobileMenuHead";
+import { colors } from "../../styles/theme";
+import { ThemeUICSSObject } from "theme-ui";
 
 const Header = () => {
   const bp = useBreakpointIndex();
-  const menuRef = createRef();
-  const menuOverlayRef = createRef();
-  const subMenuRefOne = createRef();
-  const subMenuRefTwo = createRef();
-  const mobileMenuHeadRef = createRef();
+  // Refs
+  const menuRef = createRef<HTMLDivElement>();
+  const menuOverlayRef = createRef<HTMLDivElement>();
+  const subMenuRefOne = createRef<HTMLDivElement>();
+  const subMenuRefTwo = createRef<HTMLDivElement>();
+  const mobileMenuHeadRef = createRef<HTMLDivElement>();
 
-  const [menu, setMenu] = useState("");
-  const [subMenuTitle, setSubMenuTitle] = useState("");
-  const [activeSubMenu, setActiveSubMenu] = useState("");
-
-  useEffect(() => {
-    console.log(activeSubMenu);
-    console.log(subMenuRefOne);
-    console.log(subMenuRefTwo);
-    console.log("mobileMenuHeadRef");
-    console.log(mobileMenuHeadRef);
-  }, [activeSubMenu, subMenuRefOne, subMenuRefTwo]);
+  // State variables
+  const [documentBody, setDocumentBody] = useState<HTMLElement | undefined>(
+    undefined
+  );
+  const [menu, setMenu] = useState<undefined | HTMLElement>(undefined);
+  const [subMenuTitle, setSubMenuTitle] = useState<undefined | string>(
+    undefined
+  );
+  const [activeSubMenu, setActiveSubMenu] = useState<undefined | HTMLElement>(
+    undefined
+  );
 
   // Mobile utils for opening the sidebar
-  const showSubMenu = (subMenuIndex) => {
-    if (!menu.classList.contains("active")) {
+  const showSubMenu = (subMenuIndex: number): void => {
+    if (menu && !menu.classList.contains("active")) {
       return;
     }
 
-    if (subMenuIndex === 1) {
-      setActiveSubMenu(subMenuRefOne.current);
-      subMenuRefOne.current.classList.add("active");
-      subMenuRefOne.current.style.animation = "slideLeft 0.5s ease forwards";
-      setSubMenuTitle("News");
-      mobileMenuHeadRef.current.classList.add("active");
+    if (
+      !subMenuRefOne.current ||
+      !subMenuRefTwo.current ||
+      !mobileMenuHeadRef.current
+    ) {
+      return;
     }
 
-    if (subMenuIndex === 2) {
-      setActiveSubMenu(subMenuRefTwo.current);
-      subMenuRefTwo.current.classList.add("active");
-      subMenuRefTwo.current.style.animation = "slideLeft 0.5s ease forwards";
-      setSubMenuTitle("Multiple categories");
-      mobileMenuHeadRef.current.classList.add("active");
+    switch (subMenuIndex) {
+      case 1: {
+        setActiveSubMenu(subMenuRefOne.current);
+        subMenuRefOne.current.classList.add("active");
+        subMenuRefOne.current.style.animation = "slideLeft 0.5s ease forwards";
+        setSubMenuTitle("News");
+        mobileMenuHeadRef.current.classList.add("active");
+        break;
+      }
+      case 2: {
+        setActiveSubMenu(subMenuRefTwo.current);
+        subMenuRefTwo.current.classList.add("active");
+        subMenuRefTwo.current.style.animation = "slideLeft 0.5s ease forwards";
+        setSubMenuTitle("Multiple categories");
+        mobileMenuHeadRef.current.classList.add("active");
+        break;
+      }
+      default:
+        return;
     }
   };
 
-  const toggleMenu = () => {
-    if (menu.classList.contains("active")) {
-      document.querySelector("body").style.overflow = "visible";
-    } else {
-      document.querySelector("body").style.overflow = "hidden";
+  const toggleMenu = (): void => {
+    if (documentBody && menu && menuOverlayRef.current) {
+      if (menu.classList.contains("active")) {
+        documentBody.style.overflow = "visible";
+      } else {
+        documentBody.style.overflow = "hidden";
+      }
+      menu.classList.toggle("active");
+      menuOverlayRef.current.classList.toggle("active");
     }
 
-    menu.classList.toggle("active");
-    menuOverlayRef.current.classList.toggle("active");
     if (activeSubMenu && activeSubMenu.classList.contains("active")) {
       hideSubMenu();
     }
   };
 
-  const hideSubMenu = () => {
-    activeSubMenu.style.animation = "slideRight 0.5s ease forwards";
-    setTimeout(() => {
-      activeSubMenu.classList.remove("active");
-    }, 300);
-    setSubMenuTitle("");
-    mobileMenuHeadRef.current.classList.remove("active");
-    setActiveSubMenu("");
+  const hideSubMenu = (): void => {
+    if (activeSubMenu && mobileMenuHeadRef.current) {
+      activeSubMenu.style.animation = "slideRight 0.5s ease forwards";
+      setTimeout(() => {
+        activeSubMenu.classList.remove("active");
+      }, 300);
+      setSubMenuTitle("");
+      mobileMenuHeadRef.current.classList.remove("active");
+      setActiveSubMenu(undefined);
+    }
   };
 
   useEffect(() => {
@@ -90,17 +110,29 @@ const Header = () => {
   }, [bp]);
 
   useEffect(() => {
-    setMenu(menuRef.current);
+    if (document) {
+      setDocumentBody(document.querySelector("body") as HTMLElement);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenu(menuRef.current);
+    }
   }, [menuRef]);
 
-  // Common styles
-
-  const row = {
+  const row: ThemeUICSSObject = {
     display: "flex",
     flexWrap: "wrap",
   };
 
   // Desktop styles
+
+  const container = {
+    maxWidth: "1200px",
+    margin: "auto",
+    width: "100%",
+  };
 
   const subMenuListStyles = {
     lineHeight: 1,
@@ -108,13 +140,13 @@ const Header = () => {
     display: "block",
     "> a": {
       display: "inline-block",
-      padding: "10px 0",
-      fontSize: "15px",
-      color: "#555555",
-      transition: "color 0.3s ease, background 0.3s ease",
+      paddingY: "5px",
+      border: "none",
+      color: colors.gray100,
+      variant: "text.body4",
       "&:hover": {
-        color: "#ea4636",
-        background: "beige",
+        border: "none",
+        textDecoration: "underline",
       },
     },
   };
@@ -122,36 +154,54 @@ const Header = () => {
   const subMenuStyles = {
     position: "absolute",
     zIndex: 500,
-    backgroundColor: "white",
-    boxShadow: "-2px 2px 70px -25px rgba(0, 0, 0, 0.3)",
-    padding: "20px 30px",
-    transition: " all 0.5s ease",
-    marginTop: "25px",
+    backgroundColor: colors.white,
+    // boxShadow: "-2px 2px 70px -25px rgba(0, 0, 0, 0.3)",
+    paddingX: 2,
+    paddingY: 3,
+    transition: "all 0.3s ease",
+    // marginTop: "25px",
     opacity: 0,
     visibility: "hidden",
-    // Sub menu nested styles
-    "> ul > li": subMenuListStyles,
+    border: "1px solid rgba(0,0,0,.2)",
+    // Sub menu global ul li styles. Applies to the list items inside .list-item class
+    "> .list-item > ul": {
+      marginBottom: 3,
+    },
     "> .single-column-menu": {
       minWidth: "280px",
       maxWidth: "350px",
     },
   };
 
-  const menuButtonStyles = {
-    fontSize: "15px",
-    fontWeight: "500",
-    color: "black",
-    position: "relative",
-    textTransform: "capitalize",
-    transition: "color 0.5s ease",
-  };
-
-  const menuStyles = {
+  const menuStyles: ThemeUICSSObject = {
     "> ul li": {
       display: "inline-block",
-      lineHeight: "50px",
-      marginLeft: "25px",
-      "> a": {},
+      marginLeft: 1,
+      "> a": {
+        display: "flex",
+        justifyContent: "center",
+        textDecoration: "none",
+        borderBottom: "4px solid transparent",
+        transition: "left .2s ease-out,border-color .1s ease-in",
+        // Arrow icon for categories - Hidden
+        ".icon": {
+          display: "none",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        "> .menu-category-title": {
+          paddingX: 1,
+          paddingY: 2,
+          variant: "text.subheading4",
+          color: "black",
+        },
+      },
+      "&:hover": {
+        "> a": {
+          borderBottom: "4px solid",
+          borderColor: colors.experimental.blue150,
+        },
+      },
       "> .sub-menu": subMenuStyles,
       "> .sub-menu.mega-menu": {
         left: "50%",
@@ -162,28 +212,21 @@ const Header = () => {
       },
 
       "> .sub-menu.mega-menu-column-4": {
-        // maxWidth: "1100px",
         maxWidth: "900px",
         width: "100%",
         display: "flex",
         flexWrap: "wrap",
-        padding: "20px 15px",
+        paddingX: 3,
+        paddingY: 4,
         // List item styles
         "> .list-item": {
           flex: "0 0 25%",
-          padding: "0 15px",
+          paddingX: 2,
           "> .title": {
-            fontSize: "16px",
-            color: "#ea4636",
-            fontWeight: 500,
-            lineHeight: 1,
-            padding: "10px 0",
+            color: colors.experimental.blue150,
+            paddingY: 1,
+            variant: "text.subheading4",
             margin: 0,
-          },
-          ".text-center": {
-            "> a > .title": {
-              textAlign: "center",
-            },
           },
           // Should be revised after testing with different layouts
           "> a img": {
@@ -194,8 +237,8 @@ const Header = () => {
           },
         },
       },
-    },
-    // show submenu if available when hovered on menu title
+    } as ThemeUICSSObject,
+    // Show submenu if available when hovered on menu category title
     "> ul li.menu-item-has-children": {
       "&:hover": {
         "> .sub-menu": {
@@ -205,26 +248,28 @@ const Header = () => {
         },
       },
     },
+    // Hide mobile menu head on desktop
     "> .mobile-menu-head": {
       display: "none",
     },
   };
 
-  const headerStyles = {
+  const headerStyles: ThemeUICSSObject = {
     display: "block",
     width: "100%",
     position: "relative",
     zIndex: "99",
-    padding: "15px",
+    borderBottom: "1px solid rgba(0,0,0,.2)",
     "> .mobile-menu-trigger": {
       display: "none",
     },
   };
 
-  const itemLeft = {
+  const itemLeft: ThemeUICSSObject = {
     flex: "0 0 17%",
   };
 
+  // Right item disabled
   const itemRightIcons = {
     textDecoration: "none",
     fontSize: "16px",
@@ -234,9 +279,10 @@ const Header = () => {
     transition: "color 0.5s ease",
   };
 
-  const itemRight = {
+  const itemRight: ThemeUICSSObject = {
     flex: "0 0 17%",
-    display: "flex",
+    // display: "flex",
+    display: "none",
     justifyContent: "flex-end",
     "> a": itemRightIcons,
     "> .mobile-menu-trigger": {
@@ -244,26 +290,19 @@ const Header = () => {
     },
   };
 
-  const logoLink = {
-    fontSize: "30px",
-    color: "#000000",
+  const logoLink: ThemeUICSSObject = {
     textDecoration: "none",
-    fontWeight: 700,
+    variant: "text.subheading2",
+    color: "black",
   };
 
-  const headerItemCenter = {
+  const headerItemCenter: ThemeUICSSObject = {
     flex: "0 0 66%",
   };
 
-  const container = {
-    maxWidth: "1200px",
-    margin: "auto",
-    width: "100%",
-  };
+  // Mobile header styles
 
-  // Mobile styles
-
-  const menuOverlayStyles = {
+  const menuOverlayStyles: ThemeUICSSObject = {
     position: "fixed",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     left: 0,
@@ -276,12 +315,12 @@ const Header = () => {
     transition: "all 0.5s ease",
   };
 
-  const menuOverlayActiveStyles = {
+  const menuOverlayActiveStyles: ThemeUICSSObject = {
     visibility: "visible",
     opacity: 1,
   };
 
-  const smHeaderItemCenter = {
+  const smHeaderItemCenter: ThemeUICSSObject = {
     order: 3,
     flex: "0 0 100%",
     "> .menu.active": {
@@ -291,23 +330,18 @@ const Header = () => {
     "> .menu-overlay.active": menuOverlayActiveStyles,
   };
 
-  const smHeaderItemLeftAndRight = {
-    flex: "0 0 auto",
-  };
-
-  /* Mobile menu trigger */
-  const mobileMenuTrigger = {
+  /* Mobile menu trigger CSS */
+  const mobileMenuTrigger: ThemeUICSSObject = {
     display: "flex",
     height: "30px",
     width: "30px",
-    marginLeft: "15px",
     cursor: "pointer",
     alignItems: "center",
     justifyContent: "center",
     "> span": {
       display: "block",
       height: "2px",
-      backgroundColor: "#333333",
+      backgroundColor: "white",
       width: "24px",
       position: "relative",
     },
@@ -317,7 +351,7 @@ const Header = () => {
       left: 0,
       width: "100%",
       height: "100%",
-      backgroundColor: "#333333",
+      backgroundColor: "white",
     },
     "> span:before": {
       top: "-6px",
@@ -327,23 +361,38 @@ const Header = () => {
     },
   };
 
-  const smItemRight = {
-    ...smHeaderItemLeftAndRight,
+  const smHeaderItemLeftAndRight: ThemeUICSSObject = {
+    flex: "0 0 auto",
+    display: "flex",
+    gap: 2,
+    flexWrap: "wrap",
     alignItems: "center",
+    justifyContent: "center",
     "> .mobile-menu-trigger": mobileMenuTrigger,
   };
 
-  const vCenter = {
+  const smItemRight: ThemeUICSSObject = {
+    flex: "0 0 auto",
+    alignItems: "center",
+    display: "none",
+    // Disable right icons on mobile
+    "> a": {
+      display: "none",
+    },
+  };
+
+  const vCenter: ThemeUICSSObject = {
     alignItems: "center",
     ...(bp < 3 ? { justifyContent: "space-between" } : {}),
   };
 
-  const smHeaderStyles = {
+  const smHeaderStyles: ThemeUICSSObject = {
     display: "block",
     width: "100%",
     position: "relative",
     zIndex: "99",
-    padding: "15px",
+    padding: 1,
+    background: colors.experimental.blue150,
   };
 
   const smSubMenuStyles = {
@@ -367,27 +416,34 @@ const Header = () => {
     zIndex: 500,
     backgroundColor: "white",
     transition: "all 0.5s ease",
-    ".list-item > ul > li > a": {
+    "> .list-item > ul > li > a": {
       display: "block",
-      padding: "10px 0",
-      color: "#555555",
+      paddingY: 1,
+      color: colors.gray100,
       textDecoration: "none",
       textTransform: "capitalize",
       transition: "color 0.3s ease",
+      variant: "text.heading4",
       "&:hover": {
-        color: "#ea4636",
-        background: "beige",
+        color: colors.experimental.blue150,
+        textDecoration: "underline",
       },
     },
     ".list-item > ul": {
       marginBottom: "15px",
     },
+    ".list-item > a > img": {
+      maxWidth: "100%",
+      width: "100%",
+      verticalAlign: "middle",
+      marginTop: 0,
+    },
   };
 
-  const smMenuStyles = {
+  const smMenuStyles: ThemeUICSSObject = {
     position: "fixed",
     width: "320px",
-    backgroundColor: "#ffffff",
+    backgroundColor: "white",
     left: 0,
     top: 0,
     height: "100%",
@@ -400,12 +456,14 @@ const Header = () => {
       margin: 0,
       display: "block",
       "> a": {
-        ...menuButtonStyles,
+        position: "relative",
+        textDecoration: "none",
         lineHeight: "50px",
         height: "50px",
         padding: "0 50px 0 15px",
         display: "block",
         borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+        transition: "color 0.5s ease",
         "> .icon": {
           position: "absolute",
           height: "50px",
@@ -416,22 +474,20 @@ const Header = () => {
           lineHeight: "50px",
           transform: " rotate(-90deg)",
         },
+        "> .menu-category-title": {
+          color: "black",
+          variant: "text.subheading4",
+        },
       },
       ".sub-menu.mega-menu, .sub-menu": smSubMenuStyles,
       // Show submenu when active class is attached
       ".sub-menu.active": {
         display: "block",
       },
-      ".sub-menu.mega-menu-column-4 > .list-item > img": {
-        marginTop: 0,
-        width: "250px", // static
-      },
       ".sub-menu.mega-menu-column-4 > .list-item > .title": {
-        color: "#ea4636",
-        fontWeight: "500",
-        lineHeight: 1,
-        padding: "10px 0",
+        paddingY: 1,
         margin: 0,
+        color: colors.experimental.blue150,
       },
       ".sub-menu.mega-menu-column-4 > .list-item.text-center > .title": {
         marginBottom: "20px",
@@ -447,7 +503,7 @@ const Header = () => {
         flex: "0 0 100%",
         padding: 0,
       },
-    },
+    } as ThemeUICSSObject,
     // Mobile header top bar styles
     ".mobile-menu-head": {
       display: "flex",
@@ -455,10 +511,9 @@ const Header = () => {
       borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
       justifyContent: "space-between",
       alignItems: "center",
-      position: "relative",
       zIndex: 501,
       position: "sticky",
-      backgroundColor: "#ffffff",
+      backgroundColor: "white",
       top: 0,
       "> .go-back": {
         borderRight: "1px solid rgba(0, 0, 0, 0.1)",
@@ -471,18 +526,15 @@ const Header = () => {
         justifyContent: "center",
         /* Hide go back in initial state */
         display: "none",
+        backgroundColor: colors.gray300,
       },
-      // TODO: Should be updated
       "> .current-menu-title": {
-        fontSize: "15px",
-        fontWeight: 500,
-        color: "#000000",
+        variant: "text.subheading3",
       },
-
       /* Close button */
       "> .mobile-menu-close": {
-        color: "#000000",
-        fontSize: "25px",
+        color: colors.red200,
+        fontSize: "28px",
         borderLeft: "1px solid rgba(0, 0, 0, 0.1)",
         cursor: "pointer",
         display: "flex",
@@ -513,26 +565,23 @@ const Header = () => {
 
   return (
     <>
-      <div
-        sx={{
-          backgroundColor: "beige",
-          color: "black",
-          padding: "10px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        A test div with theme UI props
-      </div>
-
       <header sx={headerCSS}>
         <div id="container" sx={container}>
           <div id="row v-center" sx={{ ...row, ...vCenter }}>
             {/* Left item - Brand logo section */}
             <div id="item-left" sx={itemLeftCSS}>
+              {/* Mobile menu trigger */}
+              <div className="mobile-menu-trigger" onClick={toggleMenu}>
+                <span></span>
+              </div>
+
               <div id="logo">
                 <a href="#" sx={logoLink}>
-                  MyStore
+                  <img
+                    src="/assets/bat_logo.png"
+                    alt="logo"
+                    sx={{ height: "40px", width: "auto", color: colors.white }}
+                  />
                 </a>
               </div>
             </div>
@@ -558,12 +607,14 @@ const Header = () => {
                 {/* Menu items */}
                 <ul className="menu-main">
                   <li>
-                    <a href="#">Home</a>
+                    <a href="#">
+                      <span className="menu-category-title">Home</span>
+                    </a>
                   </li>
 
                   <li className="menu-item-has-children">
                     <a href="#" onClick={() => showSubMenu(1)}>
-                      News
+                      <span className="menu-category-title">News</span>
                       <span className="icon">
                         <FaAngleDown />
                       </span>
@@ -577,6 +628,15 @@ const Header = () => {
                       <div className="list-item text-center">
                         <ListItemCard />
                       </div>
+
+                      <div className="list-item text-center">
+                        <ListItemCard />
+                      </div>
+
+                      <div className="list-item text-center">
+                        <ListItemCard />
+                      </div>
+
                       <div className="list-item text-center">
                         <ListItemCard />
                       </div>
@@ -610,11 +670,6 @@ const Header = () => {
                   <FaShoppingCart />
                 </span>
               </a>
-
-              {/* Mobile menu trigger */}
-              <div className="mobile-menu-trigger" onClick={toggleMenu}>
-                <span></span>
-              </div>
             </div>
             {/* Right items ends here */}
           </div>

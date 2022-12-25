@@ -46,7 +46,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
                   flexBasis:
                     index < 2
                       ? ["100%", null, "calc(100% / 3)"]
-                      : ["100%", null, "calc(100% / 2)", "calc(100% / 3)"],
+                      : ["100%", null, "calc(100% / 3)", "calc(100% / 3)"],
                   marginBottom: [null, null, 2],
                 }}
                 key={index}

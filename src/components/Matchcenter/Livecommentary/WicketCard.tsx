@@ -74,12 +74,12 @@ const WicketCard = (props: WicketCardProps): JSX.Element => {
                 },
               }}
             >
-              <li sx={{ flexBasis: ["35%", "30%"] }}>Batsman</li>
-              <li sx={{ flexBasis: ["13%", "14%"] }}>R</li>
-              <li sx={{ flexBasis: ["13%", "14%"] }}>B</li>
-              <li sx={{ flexBasis: ["13%", "14%"] }}>4S</li>
-              <li sx={{ flexBasis: ["13%", "14%"] }}>6S</li>
-              <li sx={{ flexBasis: ["13%", "14%"] }}>SR</li>
+              <li sx={{ flexBasis: ["45%", "30%"] }}>Batsman</li>
+              <li sx={{ flexBasis: ["11%", "14%"] }}>R</li>
+              <li sx={{ flexBasis: ["11%", "14%"] }}>B</li>
+              <li sx={{ flexBasis: ["11%", "14%"] }}>4S</li>
+              <li sx={{ flexBasis: ["11%", "14%"] }}>6S</li>
+              <li sx={{ flexBasis: ["11%", "14%"] }}>SR</li>
             </ul>
             <PlayerBattingDetails
               batsman={ball.batsmanout}
