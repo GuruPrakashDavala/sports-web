@@ -1,9 +1,14 @@
 /** @jsxImportSource theme-ui */
 
-import { createRef, useEffect, useState, Fragment } from "react";
+import {
+  createRef,
+  useEffect,
+  useState,
+  useRef,
+  RefObject,
+  Fragment,
+} from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import ListItemCard from "./ListItemCard";
-import MenuItem from "./MenuItem";
 import MobileMenuHead from "./MobileMenuHead";
 import Link from "../Primitives/Link";
 import {
@@ -21,13 +26,17 @@ import {
   smHeaderItemsCenter,
   AppHeader,
 } from "../../utils/header";
-import { FaAngleDown } from "react-icons/fa";
 import { useRouter } from "next/router";
+import MenuListItem from "./MenuListItem";
 
 const Header = (props: { appHeader: AppHeader }) => {
   const { appHeader } = props;
   console.log(appHeader);
-  const fixtureAndResults = appHeader.HeaderItems[1];
+  const headerItems = appHeader.HeaderItems;
+
+  const elementsRef = useRef(headerItems.map(() => createRef()));
+  console.log("elementsRef");
+  console.log(elementsRef);
 
   const bp = useBreakpointIndex();
   // DOM Refs
@@ -68,39 +77,23 @@ const Header = (props: { appHeader: AppHeader }) => {
     }
   };
 
-  const showSubMenu = (subMenuIndex: number): void => {
+  const showSubMenu = (
+    subMenuRef: RefObject<HTMLDivElement>,
+    title: string
+  ): void => {
     if (menu && !menu.classList.contains("active")) {
       return;
     }
 
-    if (
-      !subMenuRefOne.current ||
-      !subMenuRefTwo.current ||
-      !mobileMenuHeadRef.current
-    ) {
+    if (!subMenuRef.current || !mobileMenuHeadRef.current) {
       return;
     }
 
-    switch (subMenuIndex) {
-      case 1: {
-        setActiveSubMenu(subMenuRefOne.current);
-        subMenuRefOne.current.classList.add("active");
-        subMenuRefOne.current.style.animation = "slideLeft 0.3s ease forwards";
-        setSubMenuTitle("News");
-        mobileMenuHeadRef.current.classList.add("active");
-        break;
-      }
-      case 2: {
-        setActiveSubMenu(subMenuRefTwo.current);
-        subMenuRefTwo.current.classList.add("active");
-        subMenuRefTwo.current.style.animation = "slideLeft 0.3s ease forwards";
-        setSubMenuTitle("Multiple categories");
-        mobileMenuHeadRef.current.classList.add("active");
-        break;
-      }
-      default:
-        return;
-    }
+    setActiveSubMenu(subMenuRef.current);
+    subMenuRef.current.classList.add("active");
+    subMenuRef.current.style.animation = "slideLeft 0.3s ease forwards";
+    setSubMenuTitle(title);
+    mobileMenuHeadRef.current.classList.add("active");
   };
 
   const hideSubMenu = (): void => {
@@ -116,8 +109,9 @@ const Header = (props: { appHeader: AppHeader }) => {
   };
 
   const hideMainMenu = (): void => {
-    if (menu && menu.classList.contains("active")) {
+    if (documentBody && menu && menu.classList.contains("active")) {
       menu.classList.remove("active");
+      documentBody.style.overflow = "visible";
     }
 
     if (
@@ -145,13 +139,6 @@ const Header = (props: { appHeader: AppHeader }) => {
       setMenu(menuRef.current);
     }
   }, [menuRef]);
-
-  useEffect(() => {
-    if (router.asPath) {
-      console.log(router);
-      hideMainMenu();
-    }
-  }, [router.asPath]);
 
   const headerCSS = bp > 2 ? desktopHeaderStyles : mobileHeaderStyles;
   const itemLeftCSS =
@@ -203,13 +190,34 @@ const Header = (props: { appHeader: AppHeader }) => {
 
               {/* Menu items */}
               <ul className="menu-main">
-                <li>
-                  <Link href="/">
-                    <span className="menu-category-title">Home</span>
-                  </Link>
-                </li>
+                {headerItems.map((headerItem, index) => {
+                  const listItems =
+                    headerItem.menucategory.data?.attributes.category_items;
+                  return (
+                    <Fragment key={headerItem.id}>
+                      {headerItem.menucategory.data && listItems ? (
+                        <MenuListItem
+                          subMenuRef={elementsRef.current[index]}
+                          showSubMenu={showSubMenu}
+                          hideSubMenu={hideSubMenu}
+                          hideMainMenu={hideMainMenu}
+                          listItems={listItems}
+                          title={headerItem.name}
+                        />
+                      ) : (
+                        <li key={headerItem.id} onClick={hideMainMenu}>
+                          <Link href={headerItem.href ?? ``}>
+                            <span className="menu-category-title">
+                              {headerItem.name}
+                            </span>
+                          </Link>
+                        </li>
+                      )}
+                    </Fragment>
+                  );
+                })}
 
-                <li className="menu-item-has-children">
+                {/* <li className="menu-item-has-children">
                   <a onClick={() => showSubMenu(1)}>
                     <span className="menu-category-title">News</span>
                     <span className="icon">
@@ -244,10 +252,11 @@ const Header = (props: { appHeader: AppHeader }) => {
                   showSubMenu={showSubMenu}
                   name={fixtureAndResults.name}
                   menuCategory={fixtureAndResults.menucategory}
-                />
+                /> */}
               </ul>
             </nav>
           </div>
+
           {/* Menu ends here */}
 
           {/* Right items starts here */}

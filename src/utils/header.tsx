@@ -150,13 +150,19 @@ export const desktopMenuStyles: ThemeUICSSObject = {
     marginLeft: 5,
   },
   // Show submenu if available when hovered on menu category title
-  "> ul li.menu-item-has-children": {
-    "&:hover": {
-      "> .sub-menu": {
-        marginTop: 0,
-        visibility: "visible",
-        opacity: 1,
-      },
+  "> ul li.menu-item-has-children.active": {
+    // "&:hover": {
+    //   "> .sub-menu": {
+    //     marginTop: 0,
+    //     visibility: "visible",
+    //     opacity: 1,
+    //   },
+    // },
+
+    "> .sub-menu": {
+      marginTop: 0,
+      visibility: "visible",
+      opacity: 1,
     },
   },
   // Hide mobile menu head on desktop
