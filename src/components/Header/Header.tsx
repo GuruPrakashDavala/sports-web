@@ -82,7 +82,7 @@ const Header = (props: { appHeader: AppHeader }) => {
       case 1: {
         setActiveSubMenu(subMenuRefOne.current);
         subMenuRefOne.current.classList.add("active");
-        subMenuRefOne.current.style.animation = "slideLeft 0.2s ease forwards";
+        subMenuRefOne.current.style.animation = "slideLeft 0.3s ease forwards";
         setSubMenuTitle("News");
         mobileMenuHeadRef.current.classList.add("active");
         break;
@@ -90,7 +90,7 @@ const Header = (props: { appHeader: AppHeader }) => {
       case 2: {
         setActiveSubMenu(subMenuRefTwo.current);
         subMenuRefTwo.current.classList.add("active");
-        subMenuRefTwo.current.style.animation = "slideLeft 0.2s ease forwards";
+        subMenuRefTwo.current.style.animation = "slideLeft 0.3s ease forwards";
         setSubMenuTitle("Multiple categories");
         mobileMenuHeadRef.current.classList.add("active");
         break;

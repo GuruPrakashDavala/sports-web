@@ -197,7 +197,7 @@ export const menuOverlayStyles: ThemeUICSSObject = {
   zIndex: 1098,
   visibility: "hidden",
   opacity: 0,
-  transition: "all 0.5s ease",
+  transition: "all 0.3s ease",
 };
 
 const menuOverlayActiveStyles: ThemeUICSSObject = {
@@ -295,7 +295,7 @@ export const smSubMenuStyles = {
   overflowY: "auto",
   zIndex: 500,
   backgroundColor: "white",
-  transition: "all 0.5s ease",
+  transition: "all 0.3s ease",
   "> .list-item > ul > li > a": {
     display: "block",
     paddingY: 1,
@@ -329,7 +329,7 @@ export const mobileMenuStyles: ThemeUICSSObject = {
   height: "100%",
   overflow: "hidden",
   transform: "translate(-100%)",
-  transition: "all 0.5s ease",
+  transition: "all 0.3s ease",
   zIndex: "1099",
   "> ul > li": {
     lineHeight: 1,
