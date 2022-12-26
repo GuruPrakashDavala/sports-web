@@ -31,8 +31,6 @@ const MenuListItem = (props: any) => {
 
   // Desktop: on Mouse Hover
   const openSubMenu = () => {
-    console.log("onMouseHover");
-    console.log(menuItemRef?.current?.classList);
     if (
       menuItemRef.current &&
       !menuItemRef.current.classList.contains("active")
@@ -53,7 +51,7 @@ const MenuListItem = (props: any) => {
       onMouseOver={bp > 2 ? openSubMenu : undefined}
       onMouseOut={bp > 2 ? closeMenu : undefined}
     >
-      <a onClick={() => showSubMenu(subMenuRef, title)}>
+      <a onClick={bp > 2 ? undefined : () => showSubMenu(subMenuRef, title)}>
         <span className="menu-category-title">{title}</span>
         <span className="icon">
           <FaAngleDown />

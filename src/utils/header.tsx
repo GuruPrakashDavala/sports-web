@@ -73,10 +73,10 @@ const subMenuListStyles = {
   display: "block",
   "> a": {
     display: "inline-block",
-    paddingY: "5px",
+    paddingY: 1,
     border: "none",
     color: colors.gray100,
-    variant: "text.body4",
+    variant: "text.heading4",
     "&:hover": {
       border: "none",
       textDecoration: "underline",
@@ -116,6 +116,8 @@ export const desktopMenuStyles: ThemeUICSSObject = {
     "> .sub-menu.mega-menu": {
       left: "50%",
       transform: "translateX(-50%)",
+      maxHeight: "600px",
+      overflowY: "auto",
       "> .list-item": {
         "> ul > li": subMenuListStyles,
       },
