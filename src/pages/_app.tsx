@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import App from "next/app";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { theme } from "../styles/theme/index";
@@ -11,10 +12,13 @@ import { QueryClientProvider, QueryClient } from "react-query";
 
 // Global stylesheet
 import "../components/Header/Header.css";
+import { fetchStrapiAPI } from "../lib/strapi";
 
 const queryClient = new QueryClient();
 
-function MyApp({ Component, pageProps }: AppProps) {
+type MyAppProps = AppProps & { globals: any };
+
+function MyApp({ Component, pageProps, globals }: MyAppProps) {
   useProgressBar();
   return (
     <ThemeProvider theme={theme}>
@@ -24,12 +28,24 @@ function MyApp({ Component, pageProps }: AppProps) {
           <RobotoFontFace />
           <ProgressBarStyles />
         </Head>
-        <Layout>
+        <Layout globals={globals}>
           <Component {...pageProps} />
         </Layout>
       </QueryClientProvider>
     </ThemeProvider>
   );
 }
+
+MyApp.getInitialProps = async (context: any) => {
+  const pageProps = await App.getInitialProps(context); // Retrieves page's `getInitialProps`
+  const globals = await fetchStrapiAPI("/global", {
+    populate: "deep, 7",
+  });
+
+  return {
+    ...pageProps,
+    globals,
+  };
+};
 
 export default MyApp;

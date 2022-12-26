@@ -19,10 +19,15 @@ import {
   mobileHeaderStyles,
   mobileHeaderItemsLeftAndRight,
   smHeaderItemsCenter,
+  AppHeader,
 } from "../../utils/header";
 import { FaAngleDown } from "react-icons/fa";
 
-const Header = () => {
+const Header = (props: { appHeader: AppHeader }) => {
+  const { appHeader } = props;
+  console.log(appHeader);
+  const fixtureAndResults = appHeader.HeaderItems[1];
+
   const bp = useBreakpointIndex();
   // DOM Refs
   const menuRef = createRef<HTMLDivElement>();
@@ -77,7 +82,7 @@ const Header = () => {
       case 1: {
         setActiveSubMenu(subMenuRefOne.current);
         subMenuRefOne.current.classList.add("active");
-        subMenuRefOne.current.style.animation = "slideLeft 0.5s ease forwards";
+        subMenuRefOne.current.style.animation = "slideLeft 0.2s ease forwards";
         setSubMenuTitle("News");
         mobileMenuHeadRef.current.classList.add("active");
         break;
@@ -85,7 +90,7 @@ const Header = () => {
       case 2: {
         setActiveSubMenu(subMenuRefTwo.current);
         subMenuRefTwo.current.classList.add("active");
-        subMenuRefTwo.current.style.animation = "slideLeft 0.5s ease forwards";
+        subMenuRefTwo.current.style.animation = "slideLeft 0.2s ease forwards";
         setSubMenuTitle("Multiple categories");
         mobileMenuHeadRef.current.classList.add("active");
         break;
@@ -139,7 +144,6 @@ const Header = () => {
     bp > 2 ? desktopHeaderItemsLeft : mobileHeaderItemsLeftAndRight;
   const itemCenterCSS = bp > 2 ? desktopHeaderItemsCenter : smHeaderItemsCenter;
   const menuCSS = bp > 2 ? desktopMenuStyles : mobileMenuStyles;
-  //  const itemRightCSS = bp > 2 ? itemRight : smItemRight;
 
   /*
   Notes:
@@ -224,6 +228,8 @@ const Header = () => {
                 <MenuItem
                   menuItemRef={subMenuRefTwo}
                   showSubMenu={showSubMenu}
+                  name={fixtureAndResults.name}
+                  menuCategory={fixtureAndResults.menucategory}
                 />
               </ul>
             </nav>

@@ -8,12 +8,14 @@ import Link from "../Primitives/Link";
 
 type LayoutProps = {
   children: JSX.Element;
+  globals?: any;
 };
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children, globals }: LayoutProps) => {
+  const appHeader = globals.data.attributes.AppHeader;
+  console.log(appHeader);
   return (
     <div>
-      {/* <Navbar /> */}
       <div
         sx={{
           padding: 2,
@@ -33,7 +35,7 @@ const Layout = ({ children }: LayoutProps) => {
           <>Follow all the news and live action now...</>
         </Link>
       </div>
-      <Header />
+      <Header appHeader={appHeader} />
       <main>{children}</main>
       <Footer />
     </div>
