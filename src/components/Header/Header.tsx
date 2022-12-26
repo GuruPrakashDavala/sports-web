@@ -22,6 +22,7 @@ import {
   AppHeader,
 } from "../../utils/header";
 import { FaAngleDown } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 const Header = (props: { appHeader: AppHeader }) => {
   const { appHeader } = props;
@@ -47,6 +48,8 @@ const Header = (props: { appHeader: AppHeader }) => {
   const [activeSubMenu, setActiveSubMenu] = useState<undefined | HTMLElement>(
     undefined
   );
+
+  const router = useRouter();
 
   // Mobile utils for opening the sidebar
   const toggleMenu = (): void => {
@@ -112,18 +115,22 @@ const Header = (props: { appHeader: AppHeader }) => {
     }
   };
 
+  const hideMainMenu = (): void => {
+    if (menu && menu.classList.contains("active")) {
+      menu.classList.remove("active");
+    }
+
+    if (
+      menuOverlayRef.current &&
+      menuOverlayRef.current.classList.contains("active")
+    ) {
+      menuOverlayRef.current.classList.remove("active");
+    }
+  };
+
   useEffect(() => {
     if (bp > 2) {
-      if (menu && menu.classList.contains("active")) {
-        menu.classList.remove("active");
-      }
-
-      if (
-        menuOverlayRef.current &&
-        menuOverlayRef.current.classList.contains("active")
-      ) {
-        menuOverlayRef.current.classList.remove("active");
-      }
+      hideMainMenu();
     }
   }, [bp]);
 
@@ -138,6 +145,13 @@ const Header = (props: { appHeader: AppHeader }) => {
       setMenu(menuRef.current);
     }
   }, [menuRef]);
+
+  useEffect(() => {
+    if (router.asPath) {
+      console.log(router);
+      hideMainMenu();
+    }
+  }, [router.asPath]);
 
   const headerCSS = bp > 2 ? desktopHeaderStyles : mobileHeaderStyles;
   const itemLeftCSS =

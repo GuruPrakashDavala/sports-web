@@ -13,9 +13,9 @@ type LinkProps = {
 const linkStyles: ThemeUICSSObject = { textDecoration: "none" };
 
 const Link = (props: LinkProps): JSX.Element => {
-  const { href, children, styles = {} } = props;
+  const { href, children, onClick, styles = {} } = props;
   return (
-    <NextLink href={href}>
+    <NextLink href={href} onClick={onClick}>
       <a href={href} sx={{ ...linkStyles, ...styles }}>
         {children}
       </a>
