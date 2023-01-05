@@ -47,7 +47,7 @@ const Layout = ({ children, globals }: LayoutProps) => {
         </Link>
       </div>
 
-      <Sticky enabled={sticky} innerZ={1000}>
+      <Sticky enabled={sticky} innerZ={1000} enableTransforms={false}>
         <Header
           appHeader={appHeader}
           className={`${sticky ? "sticky" : "unSticky"}`}
