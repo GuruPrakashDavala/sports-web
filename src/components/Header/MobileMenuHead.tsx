@@ -1,16 +1,26 @@
 /** @jsxImportSource theme-ui */
 
+import { RefObject } from "react";
 import { FaAngleLeft } from "react-icons/fa";
 
-const MobileMenuHead = (props) => {
-  const { hideSubMenu, toggleMenu, title, mobileMenuHeadRef } = props;
+type MobileMenuHeadProps = {
+  hideSubMenu: () => void;
+  toggleMenu: () => void;
+  mobileMenuHeadRef: RefObject<HTMLDivElement>;
+  subMenuTitle?: string;
+};
+
+const MobileMenuHead = (props: MobileMenuHeadProps) => {
+  const { hideSubMenu, toggleMenu, subMenuTitle, mobileMenuHeadRef } = props;
   return (
     <div className="mobile-menu-head" ref={mobileMenuHeadRef}>
       <div className="go-back" onClick={hideSubMenu}>
         <FaAngleLeft />
       </div>
+
       <div className="current-menu-title">
-        {title ?? (
+        {subMenuTitle ?? (
+          // Here the logo should be in blue variant
           <img
             src="/assets/bat_logo.png"
             alt="cricfanatic"
@@ -18,6 +28,7 @@ const MobileMenuHead = (props) => {
           />
         )}
       </div>
+
       <div className="mobile-menu-close" onClick={toggleMenu}>
         &times;
       </div>

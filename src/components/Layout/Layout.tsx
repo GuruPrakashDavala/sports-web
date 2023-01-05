@@ -1,10 +1,12 @@
 /** @jsxImportSource theme-ui */
 
+import { useState } from "react";
 import { colors } from "../../styles/theme";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
-import Navbar from "../Header/Navbar";
 import Link from "../Primitives/Link";
+import Sticky from "react-stickynode";
+import { Waypoint } from "react-waypoint";
 
 type LayoutProps = {
   children: JSX.Element;
@@ -12,8 +14,17 @@ type LayoutProps = {
 };
 
 const Layout = ({ children, globals }: LayoutProps) => {
+  const [sticky, setSticky] = useState<boolean>(false);
+  const onWaypointPositionChange = ({ currentPosition, waypointTop }: any) => {
+    if (currentPosition === "above") {
+      setSticky(true);
+    }
+    if (currentPosition === "inside") {
+      setSticky(false);
+    }
+  };
+
   const appHeader = globals.data.attributes.AppHeader;
-  console.log(appHeader);
   return (
     <div>
       <div
@@ -35,7 +46,18 @@ const Layout = ({ children, globals }: LayoutProps) => {
           <>Follow all the news and live action now...</>
         </Link>
       </div>
-      <Header appHeader={appHeader} />
+
+      <Sticky enabled={sticky} innerZ={1000}>
+        <Header
+          appHeader={appHeader}
+          className={`${sticky ? "sticky" : "unSticky"}`}
+        />
+      </Sticky>
+
+      <Waypoint
+        onEnter={() => setSticky(false)}
+        onPositionChange={onWaypointPositionChange}
+      />
       <main>{children}</main>
       <Footer />
     </div>

@@ -61,9 +61,9 @@ const subMenuStyles = {
   "> .list-item > ul": {
     marginBottom: 3,
   },
-  "> .single-column-menu": {
-    minWidth: "280px",
-    maxWidth: "350px",
+  // should be revised when we render multiple category_list in a single column (flexBasis)
+  "> .list-item > ul:last-child": {
+    marginBottom: 0,
   },
 };
 
@@ -81,6 +81,22 @@ const subMenuListStyles = {
       border: "none",
       textDecoration: "underline",
     },
+  },
+};
+
+const subMenuListItemStyles: ThemeUICSSObject = {
+  paddingX: 2,
+  "> .title": {
+    color: colors.experimental.blue150,
+    paddingY: 1,
+    variant: "text.subheading4",
+    margin: 0,
+  },
+  "> a img": {
+    maxWidth: "100%",
+    width: "100%",
+    verticalAlign: "middle",
+    marginTop: "10px",
   },
 };
 
@@ -123,6 +139,41 @@ export const desktopMenuStyles: ThemeUICSSObject = {
       },
     },
 
+    "> .sub-menu.mega-menu-column-1": {
+      minWidth: "250px",
+      maxWidth: "325px",
+      paddingX: 3,
+      paddingY: 4,
+      "> .list-item": {
+        "> ul > li": subMenuListStyles,
+      },
+    },
+    "> .sub-menu.mega-menu-column-2": {
+      maxWidth: "450px",
+      width: "100%",
+      display: "flex",
+      flexWrap: "wrap",
+      paddingX: 3,
+      paddingY: 4,
+      "> .list-item": {
+        ...subMenuListItemStyles,
+        flex: "0 0 50%",
+        paddingX: 1,
+      },
+    },
+    "> .sub-menu.mega-menu-column-3": {
+      maxWidth: "675px",
+      width: "100%",
+      display: "flex",
+      flexWrap: "wrap",
+      paddingX: 3,
+      paddingY: 4,
+      "> .list-item": {
+        ...subMenuListItemStyles,
+        flex: "0 0 33.33%",
+        paddingX: 1,
+      },
+    },
     "> .sub-menu.mega-menu-column-4": {
       maxWidth: "900px",
       width: "100%",
@@ -131,23 +182,12 @@ export const desktopMenuStyles: ThemeUICSSObject = {
       paddingX: 3,
       paddingY: 4,
       "> .list-item": {
+        ...subMenuListItemStyles,
         flex: "0 0 25%",
-        paddingX: 2,
-        "> .title": {
-          color: colors.experimental.blue150,
-          paddingY: 1,
-          variant: "text.subheading4",
-          margin: 0,
-        },
-        "> a img": {
-          maxWidth: "100%",
-          width: "100%",
-          verticalAlign: "middle",
-          marginTop: "10px",
-        },
       },
     },
   } as ThemeUICSSObject,
+
   "> ul li:first-of-type": {
     marginLeft: 5,
   },
@@ -372,7 +412,7 @@ export const mobileMenuStyles: ThemeUICSSObject = {
     ".sub-menu.active": {
       display: "block",
     },
-    ".sub-menu.mega-menu-column-4 > .list-item > .title": {
+    ".sub-menu > .list-item > .title": {
       paddingY: 1,
       margin: 0,
       color: colors.experimental.blue150,
@@ -455,15 +495,15 @@ type Subcategory = {
   logo: { data: ImageType | null };
 };
 
-type CategoryImage = {
+export type CategoryImage = {
   id: number;
   name: string;
   href: string;
   type: "image";
-  image: ImageType;
+  image: { data: ImageType };
 };
 
-type CategoryList = {
+export type CategoryList = {
   id: number;
   name: string;
   type: "list";

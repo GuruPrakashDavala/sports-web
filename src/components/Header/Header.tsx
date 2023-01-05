@@ -26,24 +26,20 @@ import {
   smHeaderItemsCenter,
   AppHeader,
 } from "../../utils/header";
-import { useRouter } from "next/router";
 import MenuListItem from "./MenuListItem";
 
-const Header = (props: { appHeader: AppHeader }) => {
-  const { appHeader } = props;
-  console.log(appHeader);
+const Header = (props: { appHeader: AppHeader; className: string }) => {
+  const { appHeader, className } = props;
   const headerItems = appHeader.HeaderItems;
 
-  const elementsRef = useRef(headerItems.map(() => createRef()));
-  console.log("elementsRef");
-  console.log(elementsRef);
+  const elementsRef = useRef(
+    headerItems.map(() => createRef<HTMLDivElement>())
+  );
 
   const bp = useBreakpointIndex();
   // DOM Refs
   const menuRef = createRef<HTMLDivElement>();
   const menuOverlayRef = createRef<HTMLDivElement>();
-  const subMenuRefOne = createRef<HTMLDivElement>();
-  const subMenuRefTwo = createRef<HTMLDivElement>();
   const mobileMenuHeadRef = createRef<HTMLDivElement>();
 
   // State variables
@@ -57,8 +53,6 @@ const Header = (props: { appHeader: AppHeader }) => {
   const [activeSubMenu, setActiveSubMenu] = useState<undefined | HTMLElement>(
     undefined
   );
-
-  const router = useRouter();
 
   // Mobile utils for opening the sidebar
   const toggleMenu = (): void => {
@@ -146,17 +140,13 @@ const Header = (props: { appHeader: AppHeader }) => {
   const itemCenterCSS = bp > 2 ? desktopHeaderItemsCenter : smHeaderItemsCenter;
   const menuCSS = bp > 2 ? desktopMenuStyles : mobileMenuStyles;
 
-  /*
-  Notes:
-  1. span tag inside .mobile-menu-trigger is used to place hamburger icon via vanilla CSS 
-  */
-
   return (
-    <header sx={headerCSS}>
+    <header sx={headerCSS} className={className}>
       <div sx={container}>
         <div sx={{ ...row, ...vCenter }}>
           <div sx={itemLeftCSS}>
             <div className="mobile-menu-trigger" onClick={toggleMenu}>
+              {/* span used to present hamburger icon via CSS */}
               <span></span>
             </div>
 
@@ -185,7 +175,7 @@ const Header = (props: { appHeader: AppHeader }) => {
                 hideSubMenu={hideSubMenu}
                 toggleMenu={toggleMenu}
                 mobileMenuHeadRef={mobileMenuHeadRef}
-                title={subMenuTitle}
+                subMenuTitle={subMenuTitle}
               />
 
               {/* Menu items */}
@@ -195,7 +185,9 @@ const Header = (props: { appHeader: AppHeader }) => {
                     headerItem.menucategory.data?.attributes.category_items;
                   return (
                     <Fragment key={headerItem.id}>
-                      {headerItem.menucategory.data && listItems ? (
+                      {headerItem.menucategory.data &&
+                      listItems &&
+                      listItems.length > 0 ? (
                         <MenuListItem
                           subMenuRef={elementsRef.current[index]}
                           showSubMenu={showSubMenu}
@@ -216,43 +208,6 @@ const Header = (props: { appHeader: AppHeader }) => {
                     </Fragment>
                   );
                 })}
-
-                {/* <li className="menu-item-has-children">
-                  <a onClick={() => showSubMenu(1)}>
-                    <span className="menu-category-title">News</span>
-                    <span className="icon">
-                      <FaAngleDown />
-                    </span>
-                  </a>
-
-                  <div
-                    className="sub-menu mega-menu mega-menu-column-4"
-                    ref={subMenuRefOne}
-                  >
-                    <div className="list-item">
-                      <ListItemCard />
-                    </div>
-
-                    <div className="list-item">
-                      <ListItemCard />
-                    </div>
-
-                    <div className="list-item">
-                      <ListItemCard />
-                    </div>
-
-                    <div className="list-item">
-                      <ListItemCard />
-                    </div>
-                  </div>
-                </li>
-
-                <MenuItem
-                  menuItemRef={subMenuRefTwo}
-                  showSubMenu={showSubMenu}
-                  name={fixtureAndResults.name}
-                  menuCategory={fixtureAndResults.menucategory}
-                /> */}
               </ul>
             </nav>
           </div>

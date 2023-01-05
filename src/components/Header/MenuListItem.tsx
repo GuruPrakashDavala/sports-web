@@ -1,11 +1,23 @@
 /** @jsxImportSource theme-ui */
 
+import { RefObject } from "react";
 import { FaAngleDown } from "react-icons/fa";
 import Link from "../Primitives/Link";
 import { createRef, useEffect } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
+import { CategoryImage, CategoryList } from "../../utils/header";
+import ListItemCard from "./ListItemCard";
 
-const MenuListItem = (props: any) => {
+type MenuListItemProps = {
+  showSubMenu: (subMenuRef: RefObject<HTMLDivElement>, title: string) => void;
+  hideSubMenu: () => void;
+  hideMainMenu: () => void;
+  subMenuRef: RefObject<HTMLDivElement>;
+  listItems: (CategoryImage | CategoryList)[];
+  title: string;
+};
+
+const MenuListItem = (props: MenuListItemProps) => {
   const {
     showSubMenu,
     hideSubMenu,
@@ -14,8 +26,8 @@ const MenuListItem = (props: any) => {
     listItems,
     title,
   } = props;
-  const menuItemRef = createRef<HTMLLIElement>();
 
+  const menuItemRef = createRef<HTMLLIElement>();
   const closeMenu = () => {
     // Below if condition is only for desktop
     if (
@@ -44,6 +56,17 @@ const MenuListItem = (props: any) => {
     closeMenu();
   }, [bp]);
 
+  const subMenuClass =
+    listItems.length === 4
+      ? `mega-menu mega-menu-column-4`
+      : listItems.length === 3
+      ? `mega-menu mega-menu-column-3`
+      : listItems.length === 2
+      ? `mega-menu mega-menu-column-2`
+      : listItems.length === 1
+      ? `mega-menu-column-1`
+      : null;
+
   return (
     <li
       className="menu-item-has-children"
@@ -58,39 +81,30 @@ const MenuListItem = (props: any) => {
         </span>
       </a>
 
-      <div className="sub-menu mega-menu mega-menu-column-4" ref={subMenuRef}>
-        {/* <div className="list-item">
-          <ListItemCard />
-        </div>
-
-        <div className="list-item">
-          <ListItemCard />
-        </div>
-
-        <div className="list-item">
-          <ListItemCard />
-        </div>
-
-        <div className="list-item">
-          <ListItemCard />
-        </div> */}
-
-        {listItems.map((category: any) => {
-          return (
-            category.type === "list" && (
-              <div className="list-item" key={category.id}>
-                <h4 className="title">{category.name}</h4>
-                <ul>
-                  {category.subcategory.map((category: any) => (
-                    <li key={category.id} onClick={closeMenu}>
-                      <Link href={category.href}>
-                        <>{category.name} </>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
+      <div className={`sub-menu ${subMenuClass}`} ref={subMenuRef}>
+        {listItems.map((category, index) => {
+          return category.type === "list" ? (
+            <div className="list-item" key={index}>
+              <h4 className="title">{category.name}</h4>
+              <ul>
+                {category.subcategory.map((category: any) => (
+                  <li key={category.id} onClick={closeMenu}>
+                    <Link href={category.href}>
+                      <>{category.name} </>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="list-item" key={index}>
+              <ListItemCard
+                image={category.image}
+                name={category.name}
+                href={category.href}
+                closeMenu={closeMenu}
+              />
+            </div>
           );
         })}
       </div>
