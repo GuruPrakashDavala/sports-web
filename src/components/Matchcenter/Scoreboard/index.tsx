@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import { useBreakpointIndex } from "@theme-ui/match-media";
 import Image from "next/image";
 import { Fragment, useState, useEffect } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
@@ -99,6 +100,7 @@ const Scoreboard = (props: ScoreboardProps) => {
   } = props;
 
   const [tabIndex, setTabIndex] = useState(0);
+  const bp = useBreakpointIndex();
 
   const scoreboardTabStyles: ThemeUICSSObject = {
     ...tabStyles,
@@ -120,7 +122,11 @@ const Scoreboard = (props: ScoreboardProps) => {
         <Tab>
           <div sx={tabItemStyles}>
             <Image src={s1Team.image} width={24} height={24} />
-            <p sx={{ marginLeft: 1 }}>{s1Team.name}</p>
+            <p
+              sx={{ marginLeft: 1, variant: bp < 2 ? "text.body4" : undefined }}
+            >
+              {s1Team.name}
+            </p>
             {fixture.status === "1st Innings" && <LivePulse />}
           </div>
         </Tab>
@@ -129,7 +135,14 @@ const Scoreboard = (props: ScoreboardProps) => {
           <Tab>
             <div sx={tabItemStyles}>
               <Image src={s2Team.image} width={24} height={24} />
-              <p sx={{ marginLeft: 1 }}>{s2Team.name}</p>
+              <p
+                sx={{
+                  marginLeft: 1,
+                  variant: bp < 2 ? "text.body4" : undefined,
+                }}
+              >
+                {s2Team.name}
+              </p>
               {fixture.status === "2nd Innings" && <LivePulse />}
             </div>
           </Tab>

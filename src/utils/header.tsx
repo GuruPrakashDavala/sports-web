@@ -481,5 +481,7 @@ export const mobileMenuStyles: ThemeUICSSObject = {
     height: "100%",
     overflowX: "hidden",
     overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
   },
 };

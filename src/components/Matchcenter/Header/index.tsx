@@ -47,6 +47,17 @@ const Header = (props: HeaderProps) => {
     : `Live`;
 
   const matchStartingDate = new Date(fixture.starting_at);
+  const highlightFirstInningsTeam = !isLive
+    ? 1
+    : isLive && firstInningsInPlay
+    ? 1
+    : 0.65;
+  const highlightSecondInningsTeam = !isLive
+    ? 1
+    : isLive && secondInningsInPlay
+    ? 1
+    : 0.65;
+
   return (
     <div
       sx={{
@@ -149,6 +160,7 @@ const Header = (props: HeaderProps) => {
               flexDirection: "row",
               gridColumn: "span 5/span 5",
               color: colors.white,
+              opacity: highlightFirstInningsTeam,
             }}
           >
             <div
@@ -163,13 +175,13 @@ const Header = (props: HeaderProps) => {
                   variant: bp > 1 ? undefined : "text.body4",
                 }}
               >
-                {s1Team.name}
+                {bp > 1 ? s1Team.name : s1Team.code}
               </span>
 
               {fixture.status !== FixtureStatus.NotStarted && (
                 <span
                   sx={{
-                    variant: bp > 1 ? "text.subheading3" : "text.subheading5",
+                    variant: bp > 1 ? "text.subheading3" : "text.subheading4",
                   }}
                 >
                   {getScore(fixture.scoreboards, "S1", fixture.status)}
@@ -221,14 +233,15 @@ const Header = (props: HeaderProps) => {
               </div>
 
               {isLive ? (
-                <>
-                  {/* <Pill
+                bp < 2 ? (
+                  <LivePulse />
+                ) : (
+                  <Pill
                     label={`Live`}
                     theme={ColorTheme.DARK}
                     styles={{ marginY: 1 }}
-                  /> */}
-                  <LivePulse />
-                </>
+                  />
+                )
               ) : (
                 <div
                   sx={{
@@ -260,6 +273,8 @@ const Header = (props: HeaderProps) => {
               justifySelf: "start",
               flexDirection: "row",
               gridColumn: "span 5/span 5",
+              color: colors.white,
+              opacity: highlightSecondInningsTeam,
             }}
           >
             <div
@@ -275,13 +290,13 @@ const Header = (props: HeaderProps) => {
                   variant: bp > 1 ? undefined : "text.body4",
                 }}
               >
-                {s2Team.name}
+                {bp > 1 ? s2Team.name : s2Team.code}
               </span>
 
               {fixture.status !== FixtureStatus.NotStarted && (
                 <span
                   sx={{
-                    variant: bp > 1 ? "text.subheading3" : "text.subheading5",
+                    variant: bp > 1 ? "text.subheading3" : "text.subheading4",
                   }}
                 >
                   {getScore(fixture.scoreboards, "S2", fixture.status)}

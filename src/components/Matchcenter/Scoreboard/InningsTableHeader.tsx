@@ -6,11 +6,7 @@ import { Fragment } from "react";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
 import { TeamInfo } from "../../../types/matchcenter";
 import { ThemeUICSSObject } from "theme-ui";
-
-const battingTableHeaderListItemStyles: ThemeUICSSObject = {
-  variant: "text.subheading3",
-  color: "rgba(12, 12, 12, 0.3)",
-};
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 const InningsTableHeader = (props: {
   fixture: FixtureT;
@@ -19,6 +15,13 @@ const InningsTableHeader = (props: {
 }) => {
   const { fixture, teamInfo, innings } = props;
   const teamName = teamInfo.name;
+  const bp = useBreakpointIndex();
+  const headerTextVariant = bp < 2 ? "text.subheading4" : "text.subheading3";
+
+  const battingTableHeaderListItemStyles: ThemeUICSSObject = {
+    variant: headerTextVariant,
+    color: "rgba(12, 12, 12, 0.3)",
+  };
   return (
     <Fragment>
       <ul
@@ -33,7 +36,7 @@ const InningsTableHeader = (props: {
       >
         <li
           sx={{
-            variant: "text.subheading3",
+            variant: headerTextVariant,
             color: colors.black,
             display: "flex",
             justifyContent: "center",
@@ -43,7 +46,7 @@ const InningsTableHeader = (props: {
           {teamName} Batting
         </li>
 
-        <li sx={{ variant: "text.subheading3", color: colors.black }}>
+        <li sx={{ variant: headerTextVariant, color: colors.black }}>
           {getScore(fixture.scoreboards, innings, fixture.status)}
         </li>
       </ul>
