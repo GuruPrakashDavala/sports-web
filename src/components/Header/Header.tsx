@@ -155,10 +155,13 @@ const Header = (props: { appHeader: AppHeader; className: string }) => {
                 <img
                   src="/assets/bat_logo.png"
                   alt="cricfanatic"
-                  sx={{ height: "45px", width: "auto" }}
+                  sx={{ height: ["32px", "45px"], width: "auto" }}
                 />
               </Link>
             </div>
+
+            {/* <LogoIcon styles={{ width: "24px", height: "24px" }} /> */}
+            {/* <StadiumIcon /> */}
           </div>
 
           {/* Menu starts here */}
