@@ -143,13 +143,13 @@ const Header = (props: HeaderProps) => {
           flexDirection: "column",
           borderBottom: "1.5px solid",
           borderColor: "rgba(229,231,235, .4)",
-          paddingBottom: 1,
+          paddingBottom: [1, 2, 3],
         }}
       >
         <div
           sx={{
             display: "grid",
-            paddingTop: [3, 4],
+            paddingTop: [3, 5],
             paddingBottom: [1, 2],
             justifyContent: "center",
             gridTemplateColumns: "repeat(12,minmax(0,1fr))",

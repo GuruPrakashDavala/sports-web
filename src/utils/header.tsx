@@ -23,7 +23,7 @@ export const desktopHeaderStyles: ThemeUICSSObject = {
   width: "100%",
   position: "relative",
   zIndex: "99",
-  borderBottom: "1px solid rgba(0,0,0,.2)",
+  // borderBottom: "1px solid rgba(0,0,0,.2)",
   padding: 1,
   background: colors.experimental.blue150,
   "> .mobile-menu-trigger": {
