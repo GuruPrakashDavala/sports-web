@@ -5,14 +5,18 @@ import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { FixtureStatus } from "../../../types/matchcenter";
-import { ColorTheme } from "../../../types/modifier";
+import { ColorTheme, ColorThemeFrontend } from "../../../types/modifier";
 import {
   Fixture as FixtureT,
   Scoreboard as ScoreboardT,
 } from "../../../types/sportmonks";
-import { isMatchLive, isMatchFinished } from "../../../utils/matchcenter";
-import Link from "../../Primitives/Link";
+import {
+  isMatchLive,
+  isMatchFinished,
+  getS1AndS2TeamInfo,
+} from "../../../utils/matchcenter";
 import Pill from "../../Primitives/Pill";
+import CTAButton from "../../Primitives/LinkButton";
 
 export const getScore = (
   scoreboards: [] | ScoreboardT[],
@@ -34,23 +38,6 @@ export const getScore = (
     : fixtureStatus;
 };
 
-// Only returns the team details by searching through the scoreboards
-export const getTeamDetails = (scoreboards: ScoreboardT[], innings: string) => {
-  const scoreboard = scoreboards.find((item) =>
-    item.scoreboard === innings ? item : null
-  );
-
-  const teamDetails = scoreboard
-    ? {
-        name: scoreboard.team.name,
-        code: scoreboard.team.code,
-        image: scoreboard.team.image_path,
-        id: scoreboard.team_id,
-      }
-    : {};
-  return teamDetails;
-};
-
 const FixtureCard = (props: {
   fixture: FixtureT;
   includeStageName?: boolean;
@@ -58,54 +45,25 @@ const FixtureCard = (props: {
 }): JSX.Element => {
   const { fixture, includeStageName, styles = {} } = props;
   const bp = useBreakpointIndex();
-  const s1TeamDetails =
-    fixture.runs.length === 0
-      ? {
-          name: fixture.localteam.name,
-          code: fixture.localteam.code,
-          image: fixture.localteam.image_path,
-          id: fixture.localteam.id,
-        }
-      : getTeamDetails(fixture.scoreboards, "S1");
-
-  const s2TeamDetails =
-    fixture.runs.length === 0
-      ? {
-          name: fixture.visitorteam.name,
-          code: fixture.visitorteam.code,
-          image: fixture.visitorteam.image_path,
-          id: fixture.visitorteam.id,
-        }
-      : fixture.status === "1st Innings" || fixture.status === "Innings Break"
-      ? (() => {
-          const s2Team = [fixture.localteam, fixture.visitorteam]
-            .filter((team) => s1TeamDetails.code !== team.code)
-            .map((team) => {
-              return {
-                name: team.name,
-                code: team.code,
-                image: team.image_path,
-                id: team.id,
-              };
-            });
-
-          return s2Team[0];
-        })()
-      : getTeamDetails(fixture.scoreboards, "S2");
-
+  const teamDetails = getS1AndS2TeamInfo(fixture);
+  const s1TeamDetails = teamDetails.s1Team;
+  const s2TeamDetails = teamDetails.s2Team;
   const s1TeamName = bp > 3 ? s1TeamDetails.name : s1TeamDetails.code;
-  const s1TeamImage = s1TeamDetails.image;
   const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.code;
-  const s2TeamImage = s2TeamDetails.image;
-  const fixtureStartingDate = new Date(fixture.starting_at);
 
+  const fixtureStartingDate = new Date(fixture.starting_at);
   const isLive = isMatchLive(fixture.status);
   const isMatchOver = isMatchFinished(fixture.status);
 
-  const seoUrl = `${fixture.visitorteam.code}-vs-${
+  const seoURL = `${fixture.visitorteam.code}-vs-${
     fixture.localteam.code
   }-${format(fixtureStartingDate, "dd-y")}`;
-  const showMatchcenterCta = true;
+  const showCTA = true;
+  const ctaLabel = isMatchOver
+    ? `View scorecard`
+    : isLive
+    ? `Follow live scores`
+    : `View match facts`;
 
   return (
     <div
@@ -207,7 +165,7 @@ const FixtureCard = (props: {
             }}
           >
             <img
-              src={s1TeamImage}
+              src={s1TeamDetails.image}
               sx={{ height: ["32px", "44px"], width: ["32px", "44px"] }}
             />
             <p sx={{ marginLeft: 2 }}>{s1TeamName}</p>
@@ -244,7 +202,7 @@ const FixtureCard = (props: {
             }}
           >
             <img
-              src={s2TeamImage}
+              src={s2TeamDetails.image}
               sx={{ height: ["32px", "44px"], width: ["32px", "44px"] }}
             />
             <p sx={{ marginLeft: 2 }}>{s2TeamName}</p>
@@ -286,23 +244,12 @@ const FixtureCard = (props: {
           </p>
         )}
 
-        {showMatchcenterCta && (
-          <Link
-            href={`/matchcenter/${fixture.id}/${seoUrl}`}
-            styles={{
-              padding: 2,
-              background: isLive ? colors.red200 : colors.black,
-              marginTop: "auto",
-            }}
-          >
-            <p sx={{ variant: "text.subheading4", color: colors.white }}>
-              {isMatchOver
-                ? `View scorecard`
-                : isLive
-                ? `Follow live scores`
-                : `View match facts`}
-            </p>
-          </Link>
+        {showCTA && (
+          <CTAButton
+            href={`/matchcenter/${fixture.id}/${seoURL}`}
+            ctaLabel={ctaLabel}
+            variant={isLive ? ColorThemeFrontend.RED : ColorThemeFrontend.BLACK}
+          ></CTAButton>
         )}
       </div>
     </div>

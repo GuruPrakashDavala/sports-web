@@ -24,8 +24,8 @@ import {
   mobileHeaderStyles,
   mobileHeaderItemsLeftAndRight,
   smHeaderItemsCenter,
-  AppHeader,
 } from "../../utils/header";
+import { AppHeader } from "../../types/header";
 import MenuListItem from "./MenuListItem";
 
 const Header = (props: { appHeader: AppHeader; className: string }) => {

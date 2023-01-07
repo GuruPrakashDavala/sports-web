@@ -18,7 +18,6 @@ import {
   Fixture as FixtureT,
   Scoreboard as ScoreboardT,
   Player as PlayerT,
-  Team as TeamT,
 } from "../../types/sportmonks";
 import { ArticleType } from "../../types/article";
 import { Extras, FixtureStatus, TeamInfo } from "../../types/matchcenter";
@@ -31,6 +30,7 @@ import {
   isMatchLive,
   isMatchFinished,
   fixtureBaseFields,
+  getS1AndS2TeamInfo,
 } from "../../utils/matchcenter";
 import Matchinfo from "../../components/Matchcenter/MatchInfo/Matchinfo";
 import { differenceInMinutes, isToday } from "date-fns";
@@ -100,7 +100,6 @@ export const tabStyles: ThemeUICSSObject = {
 };
 
 const MatchCenter = (props: MatchCenterProps): JSX.Element => {
-  console.log(props);
   const bp = useBreakpointIndex();
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
 
@@ -119,77 +118,6 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   const tabLists = bp > 0 ? mdTabLists : smTabLists;
   const isLive = isMatchLive(fixture.status);
   const isFinished = isMatchFinished(fixture.status);
-
-  // Util to get the opposite team info (toss lost team - 2nd Innings)
-  const getOppositeTeamInfo = (tosswonTeam: TeamT): TeamInfo => {
-    const teamInfo = [fixture.localteam, fixture.visitorteam]
-      .filter((team) => tosswonTeam.code !== team.code)
-      .map((team) => {
-        return {
-          name: team.name,
-          code: team.code,
-          image: team.image_path,
-          id: team.id,
-        };
-      });
-    // The above will always contain only one team (item)
-    return teamInfo[0];
-  };
-
-  const setS1AndS2TeamInfo = (): void => {
-    const tosswonTeam = fixture.tosswon;
-
-    if (!tosswonTeam) {
-      setS1Team({
-        name: fixture.localteam.name,
-        code: fixture.localteam.code,
-        image: fixture.localteam.image_path,
-        id: fixture.localteam.id,
-      });
-      setS2Team({
-        name: fixture.visitorteam.name,
-        code: fixture.visitorteam.code,
-        image: fixture.visitorteam.image_path,
-        id: fixture.visitorteam.id,
-      });
-      return;
-    }
-
-    switch (fixture.elected) {
-      case "bowling":
-        setS2Team({
-          name: tosswonTeam.name,
-          code: tosswonTeam.code,
-          image: tosswonTeam.image_path,
-          id: tosswonTeam.id,
-        });
-        setS1Team(getOppositeTeamInfo(tosswonTeam));
-        break;
-      case "batting":
-        setS1Team({
-          name: tosswonTeam.name,
-          code: tosswonTeam.code,
-          image: tosswonTeam.image_path,
-          id: tosswonTeam.id,
-        });
-        setS2Team(getOppositeTeamInfo(tosswonTeam));
-        break;
-      default:
-        setS1Team({
-          name: fixture.localteam.name,
-          code: fixture.localteam.code,
-          image: fixture.localteam.image_path,
-          id: fixture.localteam.id,
-        });
-        setS2Team({
-          name: fixture.visitorteam.name,
-          code: fixture.visitorteam.code,
-          image: fixture.visitorteam.image_path,
-          id: fixture.visitorteam.id,
-        });
-        break;
-    }
-  };
 
   // State variables
   const [s1Team, setS1Team] = useState<TeamInfo | undefined>(undefined);
@@ -252,12 +180,14 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   useEffect(() => {
     /* 
     The below function does the following:
-    1. Sets the first batting team info in s1Team
-    2. Sets the second batting team info in the s2Team
+    1. Gets the first batting team info in s1Team
+    2. Gets the second batting team info in the s2Team
     See method internals to understand the implementation logics
     */
     if (fixture.resource === "fixtures") {
-      setS1AndS2TeamInfo();
+      const teamDetails = getS1AndS2TeamInfo(fixture);
+      setS1Team(teamDetails.s1Team);
+      setS2Team(teamDetails.s2Team);
     }
   }, [fixture]);
 

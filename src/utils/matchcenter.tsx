@@ -2,12 +2,14 @@
 
 import { Fragment } from "react";
 import { getYear } from "date-fns";
-import { FixtureStatus } from "../types/matchcenter";
+import { FixtureStatus, TeamInfo } from "../types/matchcenter";
 import {
   Ball as BallT,
   Batting as BattingT,
   Player as PlayerT,
   Scores as ScoresT,
+  Team as TeamT,
+  Fixture as FixtureT,
 } from "../types/sportmonks";
 import BallInfoCircle from "../components/Matchcenter/Livecommentary/utils/BallInfoCircle";
 import { colors } from "../styles/theme";
@@ -410,5 +412,73 @@ export const getDatesForSelectedTab = (value: number) => {
     }
     default:
       return startAndEndDateRange;
+  }
+};
+
+// Util to get the opposite team info (toss lost team - 2nd Innings)
+export const getOppositeTeamInfo = (
+  tosswonTeam: TeamT,
+  fixture: FixtureT
+): TeamInfo => {
+  const teamInfo = [fixture.localteam, fixture.visitorteam]
+    .filter((team) => tosswonTeam.code !== team.code)
+    .map((team) => {
+      return {
+        name: team.name,
+        code: team.code,
+        image: team.image_path,
+        id: team.id,
+      };
+    });
+  // The above will always contain only one team (item)
+  return teamInfo[0];
+};
+
+export const getS1AndS2TeamInfo = (fixture: FixtureT) => {
+  const tosswonTeam = fixture.tosswon;
+  const defaultTeamDetails = {
+    s1Team: {
+      name: fixture.localteam.name,
+      code: fixture.localteam.code,
+      image: fixture.localteam.image_path,
+      id: fixture.localteam.id,
+    },
+    s2Team: {
+      name: fixture.visitorteam.name,
+      code: fixture.visitorteam.code,
+      image: fixture.visitorteam.image_path,
+      id: fixture.visitorteam.id,
+    },
+  };
+
+  if (!tosswonTeam) {
+    return defaultTeamDetails;
+  }
+
+  switch (fixture.elected) {
+    case "bowling": {
+      const s2Team = {
+        name: tosswonTeam.name,
+        code: tosswonTeam.code,
+        image: tosswonTeam.image_path,
+        id: tosswonTeam.id,
+      };
+      const s1Team = getOppositeTeamInfo(tosswonTeam, fixture);
+      return { s1Team, s2Team };
+    }
+
+    case "batting": {
+      const s1Team = {
+        name: tosswonTeam.name,
+        code: tosswonTeam.code,
+        image: tosswonTeam.image_path,
+        id: tosswonTeam.id,
+      };
+      const s2Team = getOppositeTeamInfo(tosswonTeam, fixture);
+      return { s1Team, s2Team };
+    }
+
+    default:
+      return defaultTeamDetails;
   }
 };

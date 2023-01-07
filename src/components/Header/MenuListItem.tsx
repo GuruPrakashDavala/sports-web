@@ -5,8 +5,8 @@ import { FaAngleDown } from "react-icons/fa";
 import Link from "../Primitives/Link";
 import { createRef, useEffect } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import { CategoryImage, CategoryList } from "../../utils/header";
-import ListItemCard from "./ListItemCard";
+import { CategoryImage, CategoryList } from "../../types/header";
+import ListItemImageCard from "./ListItemImageCard";
 
 type MenuListItemProps = {
   showSubMenu: (subMenuRef: RefObject<HTMLDivElement>, title: string) => void;
@@ -98,7 +98,7 @@ const MenuListItem = (props: MenuListItemProps) => {
             </div>
           ) : (
             <div className="list-item" key={index}>
-              <ListItemCard
+              <ListItemImageCard
                 image={category.image}
                 name={category.name}
                 href={category.href}

@@ -37,6 +37,8 @@ const infoText: ThemeUICSSObject = {
   color: colors.black,
 };
 
+// !Component not in use
+
 const LeagacyHeader = (props: HeaderProps) => {
   const { fixture, s1Team, s2Team, isLive } = props;
   const isMatchFinished = fixture.status === "Finished";

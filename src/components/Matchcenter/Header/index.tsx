@@ -13,6 +13,7 @@ import { ColorTheme } from "../../../types/modifier";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
 import { getScore } from "../../Cards/FixtureCard";
 import CalendarIcon from "../../Icons/CalendarIcon";
+import LivePulse from "../../Icons/LivePulse";
 import StadiumIcon from "../../Icons/Stadium";
 import Pill from "../../Primitives/Pill";
 
@@ -137,6 +138,7 @@ const Header = (props: HeaderProps) => {
             paddingBottom: [1, 2],
             justifyContent: "center",
             gridTemplateColumns: "repeat(12,minmax(0,1fr))",
+            width: "100%",
           }}
         >
           <div
@@ -158,7 +160,7 @@ const Header = (props: HeaderProps) => {
             >
               <span
                 sx={{
-                  variant: bp > 1 ? "" : "text.body4",
+                  variant: bp > 1 ? undefined : "text.body4",
                 }}
               >
                 {s1Team.name}
@@ -167,7 +169,7 @@ const Header = (props: HeaderProps) => {
               {fixture.status !== FixtureStatus.NotStarted && (
                 <span
                   sx={{
-                    variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                    variant: bp > 1 ? "text.subheading3" : "text.subheading5",
                   }}
                 >
                   {getScore(fixture.scoreboards, "S1", fixture.status)}
@@ -219,11 +221,14 @@ const Header = (props: HeaderProps) => {
               </div>
 
               {isLive ? (
-                <Pill
-                  label={`Live`}
-                  theme={ColorTheme.DARK}
-                  styles={{ marginY: 1 }}
-                />
+                <>
+                  {/* <Pill
+                    label={`Live`}
+                    theme={ColorTheme.DARK}
+                    styles={{ marginY: 1 }}
+                  /> */}
+                  <LivePulse />
+                </>
               ) : (
                 <div
                   sx={{
@@ -267,7 +272,7 @@ const Header = (props: HeaderProps) => {
             >
               <span
                 sx={{
-                  variant: bp > 1 ? "" : "text.body4",
+                  variant: bp > 1 ? undefined : "text.body4",
                 }}
               >
                 {s2Team.name}
@@ -276,7 +281,7 @@ const Header = (props: HeaderProps) => {
               {fixture.status !== FixtureStatus.NotStarted && (
                 <span
                   sx={{
-                    variant: bp > 1 ? "text.subheading3" : "text.subheading4",
+                    variant: bp > 1 ? "text.subheading3" : "text.subheading5",
                   }}
                 >
                   {getScore(fixture.scoreboards, "S2", fixture.status)}

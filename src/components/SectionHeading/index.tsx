@@ -42,11 +42,6 @@ const SectionHeading = ({
         <div sx={{ ...wrapperStyles, ...styles }}>
           <Pill label={title} theme={theme} />
           {link && (
-            // <Button
-            //   {...link}
-            //   variant={ButtonVariants.TERTIARY}
-            //   theme={ColorTheme.LIGHT}
-            // />
             <Link
               href={link.href}
               styles={{

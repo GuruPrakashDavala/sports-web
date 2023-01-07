@@ -368,7 +368,8 @@ const LiveCommentary = (props: {
         <PostMatchInfo manofmatch={manofmatch} note={note} />
       )}
 
-      {status === FixtureStatus.InningsBreak && <div>Innings break </div>}
+      {/* Innings break div */}
+      {/* {status === FixtureStatus.InningsBreak && <div>Innings break </div>} */}
 
       {/* Ball by ball commentary infinite scroll */}
 

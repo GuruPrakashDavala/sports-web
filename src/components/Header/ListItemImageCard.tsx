@@ -7,7 +7,7 @@ import { ImageType as ImageT } from "../../types/article";
 import { renderImage } from "../../utils/util";
 import Link from "../Primitives/Link";
 
-const listItemCardStyles: ThemeUICSSObject = {
+const listItemImageCardStyles: ThemeUICSSObject = {
   display: "flex",
   flexWrap: "wrap",
   width: "100%",
@@ -28,12 +28,13 @@ type ListItemCardProps = {
   closeMenu: () => void;
 };
 
-const ListItemCard = (props: ListItemCardProps) => {
+const ListItemImageCard = (props: ListItemCardProps) => {
   const { image, href, name, closeMenu } = props;
 
   return (
-    <Link href={href} styles={listItemCardStyles}>
+    <Link href={href} styles={listItemImageCardStyles}>
       <Fragment>
+        {/* Click event should be moved to the wrapper */}
         <img src={renderImage(image.data)} alt={name} onClick={closeMenu} />
         <h4 className="title">{name}</h4>
       </Fragment>
@@ -41,4 +42,4 @@ const ListItemCard = (props: ListItemCardProps) => {
   );
 };
 
-export default ListItemCard;
+export default ListItemImageCard;
