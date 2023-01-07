@@ -147,7 +147,8 @@ export const desktopMenuStyles: ThemeUICSSObject = {
       },
     },
     "> .sub-menu.mega-menu-column-2": {
-      maxWidth: "450px",
+      minWidth: "450px",
+      maxWidth: "550px",
       width: "100%",
       display: "flex",
       flexWrap: "wrap",

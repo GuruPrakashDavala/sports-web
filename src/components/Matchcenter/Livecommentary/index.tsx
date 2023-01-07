@@ -369,6 +369,7 @@ const LiveCommentary = (props: {
       )}
 
       {/* Innings break div */}
+
       {/* {status === FixtureStatus.InningsBreak && <div>Innings break </div>} */}
 
       {/* Ball by ball commentary infinite scroll */}

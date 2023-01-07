@@ -26,8 +26,8 @@ const PostMatchInfo = (props: {
             alignItems: "center",
           }}
         >
-          <p sx={{ variant: "text.subheading3" }}>Man of the match:&nbsp;</p>
-          <p sx={{ variant: "text.subheading3" }}>{manofmatch.fullname}</p>
+          <p sx={{ variant: "text.subheading4" }}>Man of the match:&nbsp;</p>
+          <p sx={{ variant: "text.subheading4" }}>{manofmatch.fullname}</p>
         </div>
       )}
 

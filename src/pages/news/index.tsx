@@ -33,11 +33,11 @@ export type InfiniteArticlesResponseType = {
   pageParams: any;
 };
 
-const headerContainerStyles: ThemeUICSSObject = {
+const headerTitleContainerStyles: ThemeUICSSObject = {
   display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
+  flexDirection: ["column", "row"],
+  justifyContent: [null, "space-between"],
+  alignItems: [null, "center"],
   paddingRight: [null, 2, null, 3],
 };
 
@@ -124,7 +124,7 @@ const NewsPage = (props: {
 
   return (
     <SectionWrapper styles={{ paddingY: 2 }}>
-      <div sx={headerContainerStyles}>
+      <div sx={headerTitleContainerStyles}>
         <SectionHeading
           title={`News`}
           theme={ColorTheme.LIGHT}
@@ -133,7 +133,7 @@ const NewsPage = (props: {
 
         <select
           name="category"
-          sx={{ ...selectBtnStyles, marginBottom: 0, width: "fit-content" }}
+          sx={{ ...selectBtnStyles, marginBottom: 1 }}
           onChange={categoryChanged}
           value={selectedCategory}
         >

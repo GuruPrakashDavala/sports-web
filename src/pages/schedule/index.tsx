@@ -110,7 +110,7 @@ export const selectBtnStyles: ThemeUICSSObject = {
   padding: 1,
   paddingRight: 3,
   marginBottom: [null, 1],
-  border: "1px solid #003049",
+  border: "2px solid #003049",
   background: colors.gray300,
   width: [null, "fit-content"],
   "> option": { background: colors.white },
