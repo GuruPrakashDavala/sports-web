@@ -62,7 +62,10 @@ const Header = (props: HeaderProps) => {
     <div
       sx={{
         // background: `radial-gradient(circle, ${colors.red150} 0,${colors.red300} 100%)`,
-        background: `radial-gradient(circle, #343353 0, #010028 100%)`,
+        // background: `radial-gradient(circle, #343353 0, #010028 100%)`,
+
+        // background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,29,61,1) 36%)`,
+        background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,48,73,1) 36%)`,
         color: colors.white,
         paddingY: 2,
       }}

@@ -22,6 +22,7 @@ const InningsTableHeader = (props: {
     variant: headerTextVariant,
     color: "rgba(12, 12, 12, 0.3)",
   };
+
   return (
     <Fragment>
       <ul
