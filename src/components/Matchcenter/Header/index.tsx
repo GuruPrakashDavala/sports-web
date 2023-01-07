@@ -65,7 +65,8 @@ const Header = (props: HeaderProps) => {
         // background: `radial-gradient(circle, #343353 0, #010028 100%)`,
 
         // background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,29,61,1) 36%)`,
-        background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,48,73,1) 36%)`,
+        // background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,48,73,1) 36%)`,
+        background: `radial-gradient(circle, rgba(113,115,120,1) 0%, rgba(0,48,73,1) 0%)`,
         color: colors.white,
         paddingY: 2,
       }}

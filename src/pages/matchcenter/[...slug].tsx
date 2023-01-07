@@ -71,9 +71,13 @@ export const tabStyles: ThemeUICSSObject = {
     paddingY: 2,
     cursor: "pointer",
     "&:hover": {
-      "> p": {
+      "> p, > div > p": {
         color: colors.black,
       },
+    },
+    // For scoreboard tabs as it is contained inside a flexbox with image and teamname
+    "> div > p": {
+      color: "rgba(12, 12, 12, 0.3)",
     },
     "> p": {
       variant: "text.subheading4",
@@ -87,7 +91,7 @@ export const tabStyles: ThemeUICSSObject = {
     background: colors.white,
     borderBottom: "2px solid",
     borderColor: colors.red100,
-    "> p": {
+    "> p, > div > p": {
       color: colors.black,
     },
   },

@@ -123,7 +123,10 @@ const Scoreboard = (props: ScoreboardProps) => {
           <div sx={tabItemStyles}>
             <Image src={s1Team.image} width={24} height={24} />
             <p
-              sx={{ marginLeft: 1, variant: bp < 2 ? "text.body4" : undefined }}
+              sx={{
+                marginLeft: 1,
+                variant: bp < 2 ? "text.subheading5" : undefined,
+              }}
             >
               {s1Team.name}
             </p>
@@ -138,7 +141,7 @@ const Scoreboard = (props: ScoreboardProps) => {
               <p
                 sx={{
                   marginLeft: 1,
-                  variant: bp < 2 ? "text.body4" : undefined,
+                  variant: bp < 2 ? "text.subheading5" : undefined,
                 }}
               >
                 {s2Team.name}

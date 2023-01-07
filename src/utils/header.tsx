@@ -445,7 +445,7 @@ export const mobileMenuStyles: ThemeUICSSObject = {
       borderRight: "1px solid rgba(0, 0, 0, 0.1)",
       cursor: "pointer",
       color: "#000000",
-      fontSize: "16px",
+      fontSize: "18px",
       height: "100%",
       padding: "20px",
       alignItems: "center",
