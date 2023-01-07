@@ -153,9 +153,9 @@ const Header = (props: { appHeader: AppHeader; className: string }) => {
             <div id="logo">
               <Link href="/" styles={logoLink}>
                 <img
-                  src="/assets/bat_logo.png"
+                  src="/assets/logo_text.png"
                   alt="cricfanatic"
-                  sx={{ height: ["32px", "45px"], width: "auto" }}
+                  sx={{ height: ["14px", "18px"], width: "auto" }}
                 />
               </Link>
             </div>
