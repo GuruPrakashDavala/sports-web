@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { useTable, useExpanded } from "react-table";
-import TABLE_MOCK_DATA from "../tableData.json";
 import { COLUMNS_SM, COLUMNS_MD, COLUMNS_LG } from "./columns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useStandingsTable } from "../../../utils/queries";
