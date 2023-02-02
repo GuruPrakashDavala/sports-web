@@ -1,7 +1,5 @@
 // util -> switch() - returns column prop array
 
-import { FormIcon } from "./FormIcon";
-
 // Large
 export const COLUMNS_LG = [
   {
