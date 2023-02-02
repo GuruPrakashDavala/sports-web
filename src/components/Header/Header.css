@@ -21,3 +21,29 @@
     }
   }
 }
+
+.ion-toolbar-color {
+  --background: #003049;
+  --color: white;
+}
+
+.ion-back-button {
+  --color: white;
+}
+
+.ion-tab-bar-styles {
+  --background: #001d3d;
+  --color: white;
+  --color-selected: white;
+  --opacity: 0.6;
+}
+
+ion-tab-button > ion-icon {
+  opacity: 0.5;
+  font-size: 24px;
+}
+
+.tab-selected > ion-icon {
+  opacity: 1;
+  font-size: 26px;
+}

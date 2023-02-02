@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ComponentVariant } from "../../../types/modifier";
+import { newspageBaseURL } from "../../../utils/pages";
 import Link from "../../Primitives/Link";
 
 type SnackNewsType = {
@@ -114,7 +115,10 @@ const SnackNews = (props: SnackNewsType) => {
 
   return (
     <div sx={containerStyles}>
-      <Link href={`news/${slug}`} styles={getWrapperStyles(variant)}>
+      <Link
+        href={`${newspageBaseURL}/${slug}`}
+        styles={getWrapperStyles(variant)}
+      >
         <div sx={{ display: "flex", alignItems: "center" }}>
           <div sx={imageWrapperStyles}>
             <Image

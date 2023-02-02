@@ -19,7 +19,7 @@ const CTAButton = (props: CTAButtonProps) => {
 
   return (
     <Link
-      href={props.href}
+      href={href}
       styles={{
         padding: 2,
         background: ctaBackgroundColor,

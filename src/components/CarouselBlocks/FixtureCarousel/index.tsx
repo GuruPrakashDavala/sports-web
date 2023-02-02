@@ -1,5 +1,6 @@
 import { ColorTheme } from "../../../types/modifier";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
+import { schedulepageBaseURL } from "../../../utils/pages";
 import FixtureCard from "../../Cards/FixtureCard";
 import Carousel from "../../Carousel";
 import SectionHeading from "../../SectionHeading";
@@ -14,7 +15,7 @@ const FixtureCarousel = (props: { fixtures: FixtureT[] }) => {
         theme={ColorTheme.LIGHT}
         styles={{ px: [0, 1] }}
         link={{
-          href: `/schedule`,
+          href: `/${schedulepageBaseURL}`,
           external: false,
           label: `all schedule`,
         }}

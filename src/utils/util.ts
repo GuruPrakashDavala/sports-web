@@ -1,7 +1,7 @@
 import { differenceInHours, format } from "date-fns";
 import { ImageType } from "../types/article";
 
-export const fixturesRestAPI =
+export const apiBaseURL =
   process.env.NEXT_PUBLIC_REST_API ?? `http://localhost:3000/api`;
 
 const getArticleFormattedDate = (articleDate: string | Date) => {

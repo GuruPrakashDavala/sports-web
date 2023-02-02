@@ -17,6 +17,7 @@ import {
 } from "../../../utils/matchcenter";
 import Pill from "../../Primitives/Pill";
 import CTAButton from "../../Primitives/LinkButton";
+import { matchcenterPageBaseURL } from "../../../utils/pages";
 
 export const getScore = (
   scoreboards: [] | ScoreboardT[],
@@ -246,7 +247,7 @@ const FixtureCard = (props: {
 
         {showCTA && (
           <CTAButton
-            href={`/matchcenter/${fixture.id}/${seoURL}`}
+            href={`/${matchcenterPageBaseURL}/${fixture.id}/${seoURL}`}
             ctaLabel={ctaLabel}
             variant={isLive ? ColorThemeFrontend.RED : ColorThemeFrontend.BLACK}
           ></CTAButton>

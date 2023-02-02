@@ -23,6 +23,7 @@ import PostMatchInfo from "./PostMatchInfo";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import WicketBallInfo from "./utils/WicketBallInfo";
 import BallInfo from "./utils/BallInfo";
+import { IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react";
 
 export const PlayerBattingDetails = (props: {
   batsman: PlayerT;
@@ -286,6 +287,8 @@ const LiveCommentary = (props: {
     reversedOrder.slice(0, ballsLimit)
   );
 
+  console.log(reversedOrder);
+
   // reversedOrder contails the balls in reverse order. Example overs from 19.6 to 0.1
   // Balls data
   const recentBall = reversedOrder[0];
@@ -342,14 +345,22 @@ const LiveCommentary = (props: {
     setFourthInningsOversSummary(fourthInningsOversSummary);
   }, [balls]);
 
-  const getMoreBalls = () => {
-    setBallsLimit((prev) => prev + 25);
+  const getMoreBalls = (ev: any) => {
+    console.log("getMoreBallsTrigger");
+    if (ballsLimit < reversedOrder.length) {
+      setBallsLimit((prev) => prev + 25);
+    }
+    ev.target.complete();
   };
 
   const trackOvers: string[] = [];
 
   return (
-    <div sx={{ paddingY: [2, 3] }}>
+    <div
+      sx={{
+        paddingY: [2, 3],
+      }}
+    >
       <div sx={tableWrapperStyles}>
         {!isCurrentInningsAllOut ? (
           <LiveBatting fullBattingList={batting} recentBall={recentBall} />
@@ -374,12 +385,7 @@ const LiveCommentary = (props: {
 
       {/* Ball by ball commentary infinite scroll */}
 
-      <InfiniteScroll
-        dataLength={ballsInList.length}
-        next={getMoreBalls}
-        hasMore={ballsLimit > reversedOrder.length ? false : true}
-        loader={<h4>Loading live commentary...</h4>}
-      >
+      <div>
         {ballsInList &&
           ballsInList.map((ball) => {
             const isLastBallOfTheOver =
@@ -423,7 +429,11 @@ const LiveCommentary = (props: {
               </Fragment>
             );
           })}
-      </InfiniteScroll>
+      </div>
+
+      <IonInfiniteScroll onIonInfinite={getMoreBalls}>
+        <IonInfiniteScrollContent></IonInfiniteScrollContent>
+      </IonInfiniteScroll>
     </div>
   );
 };

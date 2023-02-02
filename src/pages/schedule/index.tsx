@@ -1,6 +1,13 @@
 /** @jsxImportSource theme-ui */
 
-import { Fragment, useEffect, useState, useMemo } from "react";
+import {
+  Fragment,
+  useEffect,
+  useState,
+  useMemo,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import FixtureCard from "../../components/Cards/FixtureCard";
 import SectionWrapper from "../../components/Wrappers/SectionWrapper";
 import { ThemeUICSSObject } from "theme-ui";
@@ -110,7 +117,7 @@ export const selectBtnStyles: ThemeUICSSObject = {
   padding: 1,
   paddingRight: 3,
   marginBottom: [null, 1],
-  border: "2px solid #003049",
+  border: "1px solid #003049",
   background: colors.gray300,
   width: [null, "fit-content"],
   "> option": { background: colors.white },
@@ -162,91 +169,33 @@ export type CMSFixtures = {
   code: string;
 };
 
-const Schedule = (props: {
+export const SchedulePageContent = (props: {
+  setDateRange: Dispatch<SetStateAction<string>>;
+  stageChanged: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  selectedStage: string;
   series: [] | CMSFixtures[];
-  seriesIds: string;
+  fixtures?: InfiniteFixturesResponseType;
+  hasNextPage?: boolean;
+  loadMore: () => void;
+  isFetching: boolean;
 }): JSX.Element => {
-  const [refetchInterval, setRefetchInterval] = useState<number>(0);
-  const [seriesIds, setSeriesIds] = useState<string>(props.seriesIds);
-
-  const now = new Date();
-  const startDate = format(now, "yyyy-MM-d");
-  const endDate = format(add(now, { days: 1 }), "yyyy-MM-d");
-  const startAndEndDateRange = `${startDate}, ${endDate}`;
-
-  // Default date is for a day
-  const [dateRange, setDateRange] = useState<string>(startAndEndDateRange);
-
+  const bp = useBreakpointIndex();
   const {
-    data: fixturesData,
-    isLoading: fixturesLoading,
+    setDateRange,
+    stageChanged,
+    selectedStage,
+    series,
+    fixtures,
     hasNextPage,
-    fetchNextPage,
+    loadMore,
     isFetching,
-  } = useInfiniteFixtures({
-    seriesIds: seriesIds,
-    dateRange,
-    refetchInterval,
-  });
-
-  const loadMore = () => {
-    fetchNextPage();
-  };
-
-  const fixturesFromQuery =
-    fixturesData as unknown as InfiniteFixturesResponseType;
-
-  const fixtures =
-    !fixturesLoading && fixturesData ? fixturesFromQuery : undefined;
-
-  const [selectedStage, setSelectedStage] = useState<string>("All");
+  } = props;
 
   const tabLists = [
     { id: "0", name: "today" },
     { id: "1", name: "upcoming" },
     { id: "2", name: "recent" },
   ];
-
-  const bp = useBreakpointIndex();
-  const router = useRouter();
-
-  useMemo(() => {
-    if (fixtures) {
-      const isLive = fixtures.pages.filter((page) =>
-        page.data.find((fixture) => isMatchLive(fixture.status))
-      );
-
-      isLive && isLive.length > 0
-        ? setRefetchInterval(20000) // 2 mins polling for live fixtures
-        : setRefetchInterval(1000 * 300); // 5 mins polling;
-    }
-  }, [fixtures]);
-
-  useEffect(() => {
-    // selectedStage contains the series code
-    if (selectedStage) {
-      router.query.series
-        ? setSelectedStage(router.query.series as string)
-        : setSelectedStage("All");
-
-      setSeriesIds(
-        selectedStage === "All"
-          ? props.seriesIds
-          : getSelectedSeriesStageIds(
-              selectedStage,
-              props.series,
-              props.seriesIds
-            )
-      );
-    }
-  }, [router.query.series, selectedStage]);
-
-  const stageChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    event.preventDefault();
-    router.push({
-      query: { series: event.target.value },
-    });
-  };
 
   return (
     <SectionWrapper styles={{ paddingX: [2, 3, 5, null, 7], paddingY: 1 }}>
@@ -278,7 +227,8 @@ const Schedule = (props: {
             value={selectedStage}
           >
             <option value="All">All series</option>
-            {props.series.map((series) => (
+
+            {series.map((series) => (
               <option value={series.code} key={series.code}>
                 {series.seriesName}
               </option>
@@ -311,6 +261,8 @@ const Schedule = (props: {
           />
         </TabPanel>
       </Tabs>
+
+      {/* Load more button */}
 
       {fixtures && fixtures.pages[0].data.length > 0 && (
         <div
@@ -352,6 +304,99 @@ const Schedule = (props: {
         </div>
       )}
     </SectionWrapper>
+  );
+};
+
+const Schedule = (props: {
+  series: [] | CMSFixtures[];
+  seriesIds: string;
+}): JSX.Element => {
+  const [refetchInterval, setRefetchInterval] = useState<number>(0);
+  const [seriesIds, setSeriesIds] = useState<string>(props.seriesIds);
+
+  const now = new Date();
+  const startDate = format(now, "yyyy-MM-d");
+  const endDate = format(add(now, { days: 1 }), "yyyy-MM-d");
+  const startAndEndDateRange = `${startDate}, ${endDate}`;
+
+  // Default date is for a day
+  const [dateRange, setDateRange] = useState<string>(startAndEndDateRange);
+
+  const {
+    data: fixturesData,
+    isLoading: fixturesLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetching,
+  } = useInfiniteFixtures({
+    seriesIds: seriesIds,
+    dateRange,
+    refetchInterval,
+  });
+
+  const loadMore = () => {
+    fetchNextPage();
+  };
+
+  const fixturesFromQuery =
+    fixturesData as unknown as InfiniteFixturesResponseType;
+
+  const fixtures =
+    !fixturesLoading && fixturesData ? fixturesFromQuery : undefined;
+
+  const [selectedStage, setSelectedStage] = useState<string>("All");
+
+  const router = useRouter();
+
+  useMemo(() => {
+    if (fixtures) {
+      const isLive = fixtures.pages.filter((page) =>
+        page.data.find((fixture) => isMatchLive(fixture.status))
+      );
+
+      isLive && isLive.length > 0
+        ? setRefetchInterval(20000) // 2 mins polling for live fixtures
+        : setRefetchInterval(1000 * 300); // 5 mins polling;
+    }
+  }, [fixtures]);
+
+  useEffect(() => {
+    // selectedStage contains the series code
+    if (selectedStage) {
+      router.query.series
+        ? setSelectedStage(router.query.series as string)
+        : setSelectedStage("All");
+
+      setSeriesIds(
+        selectedStage === "All"
+          ? props.seriesIds
+          : getSelectedSeriesStageIds(
+              selectedStage,
+              props.series,
+              props.seriesIds
+            )
+      );
+    }
+  }, [router.query.series, selectedStage]);
+
+  const stageChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    router.push({
+      query: { series: event.target.value },
+    });
+  };
+
+  return (
+    <SchedulePageContent
+      setDateRange={setDateRange}
+      stageChanged={stageChanged}
+      selectedStage={selectedStage}
+      series={props.series}
+      fixtures={fixtures}
+      hasNextPage={hasNextPage}
+      loadMore={loadMore}
+      isFetching={isFetching}
+    />
   );
 };
 

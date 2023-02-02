@@ -44,7 +44,7 @@ import LivecommentarySkeleton from "../../components/Loaders/Matchcenter/Livecom
 
 type MatchCenterProps = {
   fixture: FixtureT;
-  recentArticles: ArticleType[];
+  recentArticles?: ArticleType[];
   fixtureId: string;
 };
 
@@ -103,25 +103,18 @@ export const tabStyles: ThemeUICSSObject = {
   },
 };
 
-const MatchCenter = (props: MatchCenterProps): JSX.Element => {
+type MatchCenterContentProps = {
+  fixture: FixtureT;
+  recentArticles?: ArticleType[];
+  isLive: boolean;
+  isFinished: boolean;
+};
+
+export const MatchCenterContent = (props: MatchCenterContentProps) => {
+  const { fixture, recentArticles, isLive, isFinished } = props;
+
   const bp = useBreakpointIndex();
-  const [refetchInterval, setRefetchInterval] = useState<number>(0);
-
-  const { isLoading: fixtureLoading, data: fixtureResponse } =
-    useFixtureDetails(props.fixtureId, refetchInterval);
-
-  const fixture =
-    !fixtureLoading && fixtureResponse ? fixtureResponse.data : props.fixture;
-
-  const { isLoading: recentArticlesLoading, data: articles } =
-    useRecentArticles();
-
-  const recentArticles =
-    !recentArticlesLoading && articles ? articles.data : props.recentArticles;
-
   const tabLists = bp > 0 ? mdTabLists : smTabLists;
-  const isLive = isMatchLive(fixture.status);
-  const isFinished = isMatchFinished(fixture.status);
 
   // State variables
   const [s1Team, setS1Team] = useState<TeamInfo | undefined>(undefined);
@@ -153,31 +146,6 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   const [s2FallOfWickets, setS2FallOfWickets] = useState<
     undefined | BattingT[]
   >(undefined);
-
-  // API polling memo
-  useMemo(() => {
-    const differenceInMins = differenceInMinutes(
-      new Date(fixture.starting_at),
-      now
-    );
-
-    const isFixtureStartsToday = isToday(new Date(fixture.starting_at));
-
-    const doesGameStartsInLessThanSixtyMins =
-      differenceInMins > 0 && differenceInMins < 60;
-
-    if (isLive) {
-      setRefetchInterval(15000); // 1.5 mins polling
-    } else {
-      isFinished
-        ? setRefetchInterval(0)
-        : doesGameStartsInLessThanSixtyMins
-        ? setRefetchInterval(1000 * 300) // 5 mins polling
-        : isFixtureStartsToday
-        ? setRefetchInterval(1000 * 1200) // 20 mins polling
-        : setRefetchInterval(0);
-    }
-  }, [fixtureResponse]);
 
   // UseEffect calls
   // First useEffect to fetch both S1 and S2 team details
@@ -380,7 +348,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
 
                   <TabPanel id="livecommentary">
                     {fixture.status !== FixtureStatus.NotStarted &&
-                    !fixtureLoading &&
+                    fixture.balls &&
                     fixture.balls.length > 0 &&
                     s1Team &&
                     s2Team ? (
@@ -393,7 +361,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
                         manofmatch={fixture.manofmatch}
                         scoreboards={fixture.scoreboards}
                       />
-                    ) : fixtureLoading ? (
+                    ) : !fixture.balls ? (
                       <LivecommentarySkeleton />
                     ) : (
                       <Abandoned
@@ -430,7 +398,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
             )}
           </div>
 
-          {bp > 2 && (
+          {bp > 2 && recentArticles && recentArticles.length > 0 && (
             <div sx={{ paddingX: [0, 3], paddingTop: 5 }}>
               <AdBlock variant={AdBlockVariant.SQUARE} />
               <RelatedArticles recentArticles={recentArticles} />
@@ -442,6 +410,78 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
   );
 };
 
+const MatchCenter = (props: MatchCenterProps): JSX.Element => {
+  console.log("Matchcenter props");
+  console.log(props);
+  const [refetchInterval, setRefetchInterval] = useState<number>(0);
+  const fixtureId = props.fixtureId;
+
+  const { isLoading: fixtureLoading, data: fixtureResponse } =
+    useFixtureDetails(fixtureId, refetchInterval);
+
+  const fixture =
+    !fixtureLoading && fixtureResponse ? fixtureResponse.data : props.fixture;
+
+  const { isLoading: recentArticlesLoading, data: articles } =
+    useRecentArticles();
+
+  const recentArticles =
+    !recentArticlesLoading && articles ? articles.data : props.recentArticles;
+
+  const [isLive, setIsLive] = useState<boolean>(false);
+  const [isFinished, setIsFinished] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (fixture) {
+      setIsLive(isMatchLive(fixture.status));
+      setIsFinished(isMatchFinished(fixture.status));
+    }
+  }, [fixture]);
+
+  // API polling memo
+  useMemo(() => {
+    if (fixture) {
+      const differenceInMins = differenceInMinutes(
+        new Date(fixture.starting_at),
+        now
+      );
+
+      const isFixtureStartsToday = isToday(new Date(fixture.starting_at));
+
+      const doesGameStartsInLessThanSixtyMins =
+        differenceInMins > 0 && differenceInMins < 60;
+
+      if (isLive) {
+        setRefetchInterval(15000); // 1.5 mins polling
+      } else {
+        isFinished
+          ? setRefetchInterval(0)
+          : doesGameStartsInLessThanSixtyMins
+          ? setRefetchInterval(1000 * 300) // 5 mins polling
+          : isFixtureStartsToday
+          ? setRefetchInterval(1000 * 1200) // 20 mins polling
+          : setRefetchInterval(0);
+      }
+    }
+  }, [fixtureResponse, isLive, isFinished]);
+
+  return (
+    <Fragment>
+      {fixture && (
+        <MatchCenterContent
+          fixture={fixture}
+          recentArticles={recentArticles}
+          isLive={isLive}
+          isFinished={isFinished}
+        />
+      )}
+    </Fragment>
+  );
+};
+
+export default MatchCenter;
+
+// #!if isWeb === "true"
 export async function getServerSideProps(
   context: any
 ): Promise<MatchCenterProps | {}> {
@@ -476,5 +516,4 @@ export async function getServerSideProps(
     return {};
   }
 }
-
-export default MatchCenter;
+// #!endif

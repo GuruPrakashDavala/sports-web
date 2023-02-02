@@ -6,6 +6,9 @@ import SectionHeading from "../../SectionHeading";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { ThemeUICSSObject } from "theme-ui";
 import { renderImage } from "../../../utils/util";
+import { newspageBaseURL } from "../../../utils/pages";
+import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
+import BasicArticleCard from "../../Cards/BasicArticalCard";
 
 type ArticleCarouselProps = {
   block: ArticleCarousel;
@@ -24,7 +27,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   const categoryLink =
     categorySlug && categoryName
       ? {
-          href: `/news?category=${categorySlug}`,
+          href: `/${newspageBaseURL}?category=${categorySlug}`,
           external: false,
           label: categoryName,
         }
@@ -32,7 +35,19 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
 
   const carouselItems: CarouselItem[] = block.articles.data.map((article) => {
     return {
-      content: (
+      content: isNativeMobileApp ? (
+        <BasicArticleCard
+          label={article.attributes.title}
+          imageSrc={renderImage(article.attributes.coverimage.data)}
+          date={article.attributes.createdAt}
+          variant={ArticleVariant.SMALL}
+          badge={article.attributes.badge?.data?.attributes.name}
+          type={article.attributes.type}
+          category={article.attributes.category}
+          slug={article.attributes.slug}
+          theme={theme}
+        />
+      ) : (
         <ArticleCard
           label={article.attributes.title}
           imageSrc={renderImage(article.attributes.coverimage.data)}

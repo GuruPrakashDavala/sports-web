@@ -16,7 +16,7 @@ type Link = {
 
 type SectionHeadingProps = {
   title?: string;
-  theme: ColorTheme;
+  theme?: ColorTheme;
   link?: Link;
   styles?: ThemeUICSSObject;
 };
@@ -32,7 +32,7 @@ const wrapperStyles: ThemeUICSSObject = {
 
 const SectionHeading = ({
   title,
-  theme,
+  theme = ColorTheme.LIGHT,
   link,
   styles = {},
 }: SectionHeadingProps) => {

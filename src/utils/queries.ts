@@ -10,8 +10,9 @@ import { fetchStrapiAPI } from "../lib/strapi";
 import { ArticleType } from "../types/article";
 import { fixtureBallFields, fixtureBaseFields } from "./matchcenter";
 import { HomePageProps } from "../pages";
-import { fixturesRestAPI } from "./util";
+import { apiBaseURL } from "./util";
 import { InfiniteArticlesResponseType } from "../pages/news";
+import { FixturesList, StandingsList } from "./fixtures";
 
 export const recentArticlesStrapiAPI =
   "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=createdAt:desc";
@@ -32,6 +33,14 @@ type ArticleQueryResponse = {
   data: ArticleType[];
 };
 
+type FixturesListQueryResponse = {
+  data: FixturesList;
+};
+
+type StandingsListQueryResponse = {
+  data: StandingsList;
+};
+
 const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   const fixtureId = queryKey[1];
   const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
@@ -44,15 +53,20 @@ const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
 const getCurrentFixtures = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
   const { data: fixtures } = await axios.get<FixturesAPIResponse>(
-    `${fixturesRestAPI}/fixtures/current-fixtures?seriesIds=${seriesIds}`
+    `${apiBaseURL}/fixtures/current-fixtures?seriesIds=${seriesIds}`
   );
   return fixtures.data;
 };
 
 const getFixtureSchedule = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
+  return axios.get(`${apiBaseURL}/fixtures/schedule?seriesIds=${seriesIds}`);
+};
+
+const getStandingsTableForStageId = async ({ queryKey }: { queryKey: any }) => {
+  const stageId = queryKey[1];
   return axios.get(
-    `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}`
+    `${apiBaseURL}/fixtures/standings?stageId=${stageId}&include=team`
   );
 };
 
@@ -93,15 +107,51 @@ export const useRecentArticles = (): UseQueryResult<
   );
 };
 
+export const useFixturesDefinedInCMS = (): UseQueryResult<
+  FixturesListQueryResponse,
+  Error
+> => {
+  const APIURL = `/fixtures-list?populate=deep,3`;
+  return useQuery("fixturesDefinedInCMS", () => fetchStrapiAPI(APIURL), {
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useStandingsDefinedInCMS = (): UseQueryResult<
+  StandingsListQueryResponse,
+  Error
+> => {
+  const APIURL = `/standings-table?populate=deep,3`;
+  return useQuery("standingsDefinedInCMS", () => fetchStrapiAPI(APIURL), {
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useCurrentFixtures = ({
   seriesIds,
   refetchInterval,
+  queryEnabled = true,
 }: {
   seriesIds: string;
   refetchInterval?: number;
+  queryEnabled?: boolean;
 }) => {
   return useQuery(["currentFixtures", seriesIds], getCurrentFixtures, {
     refetchInterval: refetchInterval ?? 0,
+    enabled: queryEnabled,
+  });
+};
+
+export const useStandingsTable = ({
+  stageId,
+  queryEnabled = true,
+}: {
+  stageId: string;
+  queryEnabled?: boolean;
+}) => {
+  return useQuery(["standingsTable", stageId], getStandingsTableForStageId, {
+    refetchOnWindowFocus: false,
+    enabled: queryEnabled,
   });
 };
 
@@ -198,7 +248,7 @@ const getInfiniteFixtures = async ({
   const dateRange = queryKey[2];
 
   const { data: fixturesRes } = await axios.get<{ data: FixtureResponse }>(
-    `${fixturesRestAPI}/fixtures/schedule?seriesIds=${seriesIds}&starts_between=${dateRange}&page=${pageParam}`
+    `${apiBaseURL}/fixtures/schedule?seriesIds=${seriesIds}&starts_between=${dateRange}&page=${pageParam}`
   );
 
   return fixturesRes.data;
@@ -227,11 +277,13 @@ export const useInfiniteFixtures = ({
   dateRange,
   refetchInterval,
   initialData,
+  queryEnabled = true,
 }: {
   seriesIds: string;
   dateRange: string;
   initialData?: any;
   refetchInterval?: number;
+  queryEnabled?: boolean;
 }): UseInfiniteQueryResult<InfiniteFixturesResponseType, Error> => {
   return useInfiniteQuery(
     ["infiniteFixtures", seriesIds, dateRange],
@@ -253,6 +305,7 @@ export const useInfiniteFixtures = ({
       refetchInterval,
       initialData: initialData,
       keepPreviousData: false,
+      enabled: queryEnabled,
     }
   );
 };

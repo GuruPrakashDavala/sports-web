@@ -9,6 +9,7 @@ import ForwardArrow from "../../Icons/ForwardArrow";
 import { SnackQuoteComponent } from "../../../types/blocks";
 import Link from "../../Primitives/Link";
 import { renderImage } from "../../../utils/util";
+import { newspageBaseURL } from "../../../utils/pages";
 
 type SnackQuoteProps = {
   block: SnackQuoteComponent;
@@ -116,7 +117,7 @@ const SnackQuote = (props: SnackQuoteProps) => {
       >
         <q sx={getQuoteStyles(variant)}>
           <Link
-            href={`news/${title_article.data.attributes.slug}`}
+            href={`${newspageBaseURL}/${title_article.data.attributes.slug}`}
             styles={quoteAnchorStyles}
           >
             <Fragment>

@@ -10,6 +10,7 @@ import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
 import getArticleFormattedDate from "../../../utils/util";
 import { useBreakpointIndex } from "@theme-ui/match-media";
+import { newspageBaseURL } from "../../../utils/pages";
 
 const cardHoverStyles: ThemeUICSSObject = {
   backgroundColor: colors.experimental.blue150,
@@ -183,7 +184,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
       : {}),
   };
 
-  const path = `news/${slug}`;
+  const path = `${newspageBaseURL}/${slug}`;
 
   return (
     <Link href={path}>
@@ -194,7 +195,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
               src={imageSrc}
               layout="responsive"
               objectFit="cover"
-              alt="image"
+              alt={label}
               height={articleVariantImageSize}
               width={"100%"}
             />

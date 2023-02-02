@@ -4,17 +4,10 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
-import { ComponentVariant } from "../../../types/modifier";
+import { newspageBaseURL } from "../../../utils/pages";
 import getArticleFormattedDate from "../../../utils/util";
-import PlayIcon from "../../Icons/Play";
 import Link from "../../Primitives/Link";
-import Pill from "../../Primitives/Pill";
-import {
-  ArticleVariant,
-  getPillColor,
-  imageIconStyles,
-  NewscardProps,
-} from "../ArticleCard";
+import { ArticleVariant, NewscardProps } from "../ArticleCard";
 
 const cardHoverStyles: ThemeUICSSObject = {
   transition:
@@ -62,7 +55,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
       ? 64
       : 96;
 
-  const path = `news/${slug}`;
+  const path = `${newspageBaseURL}/${slug}`;
 
   const cardWrapperStyles: ThemeUICSSObject = {
     display: "flex",

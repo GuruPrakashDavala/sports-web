@@ -20,6 +20,8 @@ const FixtureSkeleton = (props: SkeletonProps) => {
       >
         <ArticleCardSkeleton styles={{ padding: [0, 2, 3] }} />
         <ArticleCardSkeleton styles={{ padding: [0, 2, 3] }} />
+        <ArticleCardSkeleton styles={{ padding: [0, 2, 3] }} />
+        <ArticleCardSkeleton styles={{ padding: [0, 2, 3] }} />
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { renderImage } from "../../../utils/util";
 import ArticleMicroCard from "../../Cards/ArticleMicroCard";
 import { useBreakpointIndex } from "@theme-ui/match-media";
+import { newspageBaseURL } from "../../../utils/pages";
 
 type ArticleGridProps = { articleGrid: ArticleGrid; theme?: ColorTheme };
 
@@ -23,7 +24,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
           theme={ColorTheme.LIGHT}
           styles={{ px: [0, 1] }}
           link={{
-            href: `/news`,
+            href: `/${newspageBaseURL}`,
             external: false,
             label: `View all news`,
           }}

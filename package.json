@@ -6,11 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "static": "next build && next export",
+    "build-mobile": "next build && next export && npx cap sync"
   },
   "dependencies": {
+    "@capacitor/android": "^4.6.1",
+    "@capacitor/app": "^4.1.1",
+    "@capacitor/core": "^4.6.1",
+    "@capacitor/haptics": "^4.1.0",
+    "@capacitor/ios": "^4.6.1",
+    "@capacitor/network": "^4.1.0",
+    "@capacitor/splash-screen": "^4.1.3",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@ionic/react": "^6.4.1",
+    "@ionic/react-router": "^6.0.0",
     "@theme-ui/color": "^0.15.3",
     "@theme-ui/match-media": "^0.15.3",
     "axios": "^1.2.0",
@@ -19,6 +30,7 @@
     "framer-motion": "^7.3.2",
     "marked": "^4.0.18",
     "next": "^12.2.4-canary.9",
+    "next-transpile-modules": "^10.0.0",
     "nprogress": "^0.2.0",
     "qs": "^6.10.5",
     "react": "18.2.0",
@@ -26,8 +38,10 @@
     "react-icons": "^4.4.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-query": "^3.39.2",
+    "react-router-dom": "^5.2.0",
     "react-simple-image-viewer": "^1.2.2",
     "react-stickynode": "^4.1.0",
+    "react-table": "^7.8.0",
     "react-tabs": "^5.1.0",
     "react-twitter-embed": "^4.0.4",
     "react-waypoint": "^10.3.0",
@@ -36,6 +50,8 @@
     "xss": "^1.0.13"
   },
   "devDependencies": {
+    "@capacitor/assets": "^2.0.4",
+    "@capacitor/cli": "^4.6.1",
     "@types/cors": "^2.8.12",
     "@types/marked": "^4.0.7",
     "@types/node": "18.6.0",
@@ -43,9 +59,26 @@
     "@types/qs": "^6.9.7",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
+    "@types/react-router": "^5.1.11",
+    "@types/react-router-dom": "^5.1.7",
     "@types/react-stickynode": "^4.0.0",
+    "@types/react-table": "^7.7.14",
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.3",
-    "typescript": "^4.7.4"
+    "react-scripts": "^5.0.0",
+    "typescript": "^4.7.4",
+    "webpack-preprocessor-loader": "^1.2.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

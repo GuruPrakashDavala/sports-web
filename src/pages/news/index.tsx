@@ -20,6 +20,7 @@ import { colors } from "../../styles/theme";
 import RightArrowIcon from "../../components/Icons/RightArrow";
 import ArticleCardSkeleton from "../../components/Loaders/Cards/ArticleCard";
 import { ThemeUICSSObject } from "theme-ui";
+import { Capacitor } from "@capacitor/core";
 
 type ArticleCategories = {
   attributes: {
@@ -70,13 +71,15 @@ export const loadMoreBtnStyles = (hasNextPage?: boolean): ThemeUICSSObject => {
   };
 };
 
-const NewsPage = (props: {
+export const NewsPageContent = (props: {
   articles: ArticleType[];
   categories: ArticleCategories[];
+  onCategoryChangeEvent: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  selectedCategory: string;
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const { selectedCategory, onCategoryChangeEvent } = props;
   const bp = useBreakpointIndex();
-  const router = useRouter();
+
   const newsCategories = props.categories.filter(
     (category) => category.attributes.slug !== "All"
   );
@@ -103,16 +106,7 @@ const NewsPage = (props: {
     ? (articlesData as unknown as InfiniteArticlesResponseType)
     : initialData;
 
-  useEffect(() => {
-    if (router.query.category) {
-      setSelectedCategory(router.query.category as string);
-    }
-  }, [router.query.category]);
-
-  const categoryChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    event.preventDefault();
-    router.push({ query: { category: event.target.value } });
-  };
+  const isNativeApp = Capacitor.isNativePlatform();
 
   const loadMore = () => {
     fetchNextPage();
@@ -125,16 +119,18 @@ const NewsPage = (props: {
   return (
     <SectionWrapper styles={{ paddingY: 2 }}>
       <div sx={headerTitleContainerStyles}>
-        <SectionHeading
-          title={`News`}
-          theme={ColorTheme.LIGHT}
-          styles={{ px: [0, 1] }}
-        />
+        {!isNativeApp && (
+          <SectionHeading
+            title={`News`}
+            theme={ColorTheme.LIGHT}
+            styles={{ px: [0, 1] }}
+          />
+        )}
 
         <select
           name="category"
           sx={{ ...selectBtnStyles, marginBottom: 1 }}
-          onChange={categoryChanged}
+          onChange={onCategoryChangeEvent}
           value={selectedCategory}
         >
           <option value="All">All topics</option>
@@ -280,6 +276,34 @@ const NewsPage = (props: {
         </div>
       )}
     </SectionWrapper>
+  );
+};
+
+const NewsPage = (props: {
+  articles: ArticleType[];
+  categories: ArticleCategories[];
+}) => {
+  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  const categoryChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    router.push({ query: { category: event.target.value } });
+  };
+
+  useEffect(() => {
+    if (router.query.category) {
+      setSelectedCategory(router.query.category as string);
+    }
+  }, [router.query.category]);
+
+  return (
+    <NewsPageContent
+      articles={props.articles}
+      categories={props.categories}
+      onCategoryChangeEvent={categoryChanged}
+      selectedCategory={selectedCategory}
+    />
   );
 };
 

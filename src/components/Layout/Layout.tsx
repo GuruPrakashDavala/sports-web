@@ -1,10 +1,10 @@
 /** @jsxImportSource theme-ui */
 
-import { useState } from "react";
-import Footer from "../Footer/Footer";
+import { Fragment, useState } from "react";
 import Header from "../Header/Header";
 import Sticky from "react-stickynode";
 import { Waypoint } from "react-waypoint";
+import { isNativeMobileApp } from "../Ionic/utils/capacitor";
 
 type LayoutProps = {
   children: JSX.Element;
@@ -25,19 +25,22 @@ const Layout = ({ children, globals }: LayoutProps) => {
   const appHeader = globals.data.attributes.AppHeader;
   return (
     <div>
-      <Sticky enabled={isSticky} innerZ={1000} enableTransforms={false}>
-        <Header
-          appHeader={appHeader}
-          className={`${isSticky ? "sticky" : "unSticky"}`}
-        />
-      </Sticky>
+      {!isNativeMobileApp && (
+        <Fragment>
+          <Sticky enabled={isSticky} innerZ={1000} enableTransforms={false}>
+            <Header
+              appHeader={appHeader}
+              className={`${isSticky ? "sticky" : "unSticky"}`}
+            />
+          </Sticky>
+          <Waypoint
+            onEnter={() => setSticky(false)}
+            onPositionChange={onWaypointPositionChange}
+          />
+        </Fragment>
+      )}
 
-      <Waypoint
-        onEnter={() => setSticky(false)}
-        onPositionChange={onWaypointPositionChange}
-      />
       <main>{children}</main>
-      <Footer />
     </div>
   );
 };

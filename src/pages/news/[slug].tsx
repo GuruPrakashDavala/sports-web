@@ -9,7 +9,6 @@ import NewsHeader from "../../components/News/Header";
 import AuthorInfoBlock from "../../components/News/AuthorInfoBlock";
 import PublishInfo from "../../components/News/PublishInfo";
 import ArticleGrid from "../../components/Grids/ArticleGrid";
-import { fetchStrapiAPI } from "../../lib/strapi";
 import { ArticleBlocks, ArticleType } from "../../types/article";
 import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
 import { renderImage } from "../../utils/util";
@@ -20,7 +19,14 @@ import ImageCarousel from "../../components/CarouselBlocks/ImageCarousel";
 import ArticleImage from "../../components/ArticlePrimitives/Image";
 import ArticleQuote from "../../components/ArticlePrimitives/Quote";
 import RichText from "../../components/ArticlePrimitives/RichText/Index";
-import { recentArticlesStrapiAPI, useArticle } from "../../utils/queries";
+import {
+  recentArticlesStrapiAPI,
+  useArticle,
+  useRecentArticles,
+} from "../../utils/queries";
+import { useRouter } from "next/router";
+import { fetchStrapiAPI } from "../../lib/strapi";
+import { isNativeMobileApp } from "../../components/Ionic/utils/capacitor";
 
 const articleContainerStyles: ThemeUICSSObject = {
   paddingX: [2, null, null, 7],
@@ -45,8 +51,8 @@ const sideAdBlock: ThemeUICSSObject = {
 };
 
 type ArticlePageProps = {
-  article: ArticleType;
-  recentArticles: ArticleType[];
+  article?: ArticleType;
+  recentArticles?: ArticleType[];
   slug: string;
   articleId: string;
   styles?: ThemeUICSSObject;
@@ -122,10 +128,16 @@ const BlockPicker = ({
   }
 };
 
-const ArticlePage = (props: ArticlePageProps) => {
-  const { recentArticles, slug, styles = {} } = props;
-  const { data: articleData, isLoading: articleLoading } = useArticle(slug);
-  const article = articleData ? articleData.data[0] : props.article;
+type ArticleDetailPageContentProps = {
+  article: ArticleType;
+  recentArticles?: ArticleType[];
+  styles?: ThemeUICSSObject;
+};
+
+export const ArticleDetailPageContent = (
+  props: ArticleDetailPageContentProps
+): JSX.Element => {
+  const { article, recentArticles, styles } = props;
 
   return (
     <Fragment>
@@ -181,7 +193,7 @@ const ArticlePage = (props: ArticlePageProps) => {
 
           <div sx={sideAdBlock}>
             {/* <AdBlock variant={AdBlockVariant.SQUARE} height={60} />
-            <AdBlock variant={AdBlockVariant.SQUARE} height={60} /> */}
+                <AdBlock variant={AdBlockVariant.SQUARE} height={60} /> */}
 
             {/* <RelatedArticles recentArticles={recentArticles} /> */}
           </div>
@@ -196,21 +208,49 @@ const ArticlePage = (props: ArticlePageProps) => {
 
       {/* Recent articles */}
 
-      <ArticleGrid
-        articleGrid={{
-          articles: { data: recentArticles },
-          id: 1,
-          title: `Recent articles`,
-          type: `articlegrid`,
-        }}
-        theme={ColorTheme.GRAY}
-      />
+      {recentArticles && !isNativeMobileApp && (
+        <ArticleGrid
+          articleGrid={{
+            articles: { data: recentArticles },
+            id: 1,
+            title: `Recent articles`,
+            type: `articlegrid`,
+          }}
+          theme={ColorTheme.GRAY}
+        />
+      )}
+    </Fragment>
+  );
+};
+
+const ArticlePage = (props: ArticlePageProps) => {
+  const { slug, styles = {} } = props;
+
+  const { data: articleData, isLoading: articleLoading } = useArticle(slug);
+
+  const { isLoading: recentArticlesLoading, data: articles } =
+    useRecentArticles();
+
+  const recentArticles =
+    !recentArticlesLoading && articles ? articles.data : props.recentArticles;
+
+  const article = articleData ? articleData.data[0] : props.article;
+
+  return (
+    <Fragment>
+      {article && (
+        <ArticleDetailPageContent
+          article={article}
+          recentArticles={recentArticles}
+        />
+      )}
     </Fragment>
   );
 };
 
 export default ArticlePage;
 
+// #!if isWeb === "true"
 export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
@@ -235,3 +275,4 @@ export async function getServerSideProps(context: any) {
     },
   };
 }
+// #!endif

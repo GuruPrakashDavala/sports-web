@@ -51,12 +51,12 @@ const Header = (props: HeaderProps) => {
     ? 1
     : isLive && firstInningsInPlay
     ? 1
-    : 0.65;
+    : 0.8;
   const highlightSecondInningsTeam = !isLive
     ? 1
     : isLive && secondInningsInPlay
     ? 1
-    : 0.65;
+    : 0.8;
 
   return (
     <div
@@ -113,10 +113,10 @@ const Header = (props: HeaderProps) => {
             <div
               sx={{
                 color: colors.white,
-                variant: bp > 1 ? "text.heading4" : "text.label1",
+                variant: bp > 1 ? "text.heading4" : "text.subheading4",
               }}
             >
-              {fixture.league.code}
+              {fixture.league.name}
             </div>
 
             <div
@@ -143,14 +143,14 @@ const Header = (props: HeaderProps) => {
           flexDirection: "column",
           borderBottom: "1.5px solid",
           borderColor: "rgba(229,231,235, .4)",
-          paddingBottom: [1, 2, 3],
+          paddingBottom: [2, 3],
         }}
       >
         <div
           sx={{
             display: "grid",
-            paddingTop: [3, 5],
-            paddingBottom: [1, 2],
+            paddingTop: [4, 6],
+            paddingBottom: [3],
             justifyContent: "center",
             gridTemplateColumns: "repeat(12,minmax(0,1fr))",
             width: "100%",
@@ -249,7 +249,7 @@ const Header = (props: HeaderProps) => {
               ) : (
                 <div
                   sx={{
-                    background: "#010028", // design system colour
+                    background: colors.experimental.blue100,
                     borderRadius: "999px",
                     marginY: "5px",
                     paddingX: [1, 3],
