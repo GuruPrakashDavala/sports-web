@@ -41,6 +41,7 @@ import {
 import RelatedArticles from "../../components/Matchcenter/RelatedArticles";
 import LivecommentarySkeleton from "../../components/Loaders/Matchcenter/Livecommentary";
 import Head from "next/head";
+import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
 
 type MatchCenterProps = {
   fixture: FixtureT;
@@ -319,7 +320,7 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
             gridTemplateColumns: ["100%", null, null, "16.66% 58.3% 25%"],
           }}
         >
-          {/* {bp > 2 && <AdBlock variant={AdBlockVariant.VERTICAL} />} */}
+          {bp > 2 && <AdBlock variant={AdBlockVariant.VERTICAL} />}
 
           <div>
             {s1Team && s2Team && fixture && (

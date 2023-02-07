@@ -26,7 +26,7 @@ const HeaderPromo = (props: HeaderPromoProps) => {
       }}
     >
       <Link
-        href={href}
+        href={href ?? ``}
         external={external}
         styles={{
           variant: "text.subheading4",

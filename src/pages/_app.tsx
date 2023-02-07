@@ -25,12 +25,13 @@ import { TabBarProvider } from "../components/Ionic/contexts/tabBarContext";
 import Script from "next/script";
 import { isNativeMobileApp } from "../components/Ionic/utils/capacitor";
 import WebAnalytics from "../components/GoogleAnalytics/WebAnalytics";
+import { Globals } from "../types/header";
 
 setupIonicReact();
 
 const queryClient = new QueryClient();
 
-type MyAppProps = AppProps & { globals: any };
+type MyAppProps = AppProps & { globals: Globals };
 
 function MyApp({ Component, pageProps, globals }: MyAppProps) {
   useProgressBar();
