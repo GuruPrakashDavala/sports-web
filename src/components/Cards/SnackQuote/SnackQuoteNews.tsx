@@ -27,7 +27,7 @@ const containerStyles: ThemeUICSSObject = {
 };
 
 const wrapperStyles: ThemeUICSSObject = {
-  // marginX: -1,
+  //// marginX: -1,
   transition: "background-color 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
   willChange: "background-color",
   textDecoration: "none",
@@ -98,7 +98,7 @@ const imageWrapperStyles: ThemeUICSSObject = {
   width: ["120px", null, "160px"],
 };
 
-const SnackNews = (props: SnackNewsType) => {
+const SnackQuoteNews = (props: SnackNewsType) => {
   const {
     imageSrc,
     description,
@@ -161,4 +161,4 @@ const SnackNews = (props: SnackNewsType) => {
   );
 };
 
-export default SnackNews;
+export default SnackQuoteNews;

@@ -12,7 +12,7 @@ import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import { useRouter } from "next/router";
 import { useIonRouter } from "@ionic/react";
 import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
-import SnackNews from "./SnackNews";
+import SnackQuoteNews from "./SnackQuoteNews";
 
 type SnackQuoteProps = {
   block: SnackQuoteComponent;
@@ -144,7 +144,7 @@ const SnackQuote = (props: SnackQuoteProps) => {
           </Link>
         </q>
 
-        <SnackNews
+        <SnackQuoteNews
           imageSrc={renderImage(
             description_article.data.attributes.coverimage.data
           )}
