@@ -51,9 +51,8 @@ const PostMatchInfo = (props: {
 
       <div sx={{ marginY: 2, marginX: [0, 1] }}>
         <p>
-          Well that&apos;s a wrap. Check the points table here. Hope you have a
-          good day. Stay connected with us - install the app. See you in the
-          next game. Until then bye. Take care. Team cricfanatic
+          OK folks that&apos;s a wrap. See you in the next game. Take care. Team
+          cricfanatic.
         </p>
       </div>
     </Fragment>

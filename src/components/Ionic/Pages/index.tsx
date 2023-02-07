@@ -100,7 +100,7 @@ const IonHomePage = () => {
         {promo && (
           <HeaderPromo
             promoDescription={promo.promo_description}
-            href={promo.href}
+            href={promo.mobile_href}
             external={promo.external}
           />
         )}

@@ -76,6 +76,7 @@ export type CategoryImageType = {
 export type HeaderPromo = {
   id: number;
   promo_description: string;
-  href: string;
+  mobile_href: string;
+  web_href: string;
   external: boolean;
 };

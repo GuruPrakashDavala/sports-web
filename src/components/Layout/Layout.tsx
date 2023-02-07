@@ -38,7 +38,7 @@ const Layout = ({ children, globals }: LayoutProps) => {
         <Fragment>
           <HeaderPromo
             promoDescription={promo.promo_description}
-            href={promo.href}
+            href={promo.web_href}
             external={promo.external}
           />
 
