@@ -7,19 +7,22 @@ import PublishInfo from "./PublishInfo";
 import SocialIcons from "./SocialIcons";
 
 type AuthorInfoBlockProps = {
+  quote: string;
+  shareURL: string;
   createdAt: string | Date;
   writer?: WriterType;
   styles?: ThemeUICSSObject;
 };
 
 const AuthorInfoBlock = (props: AuthorInfoBlockProps): JSX.Element => {
-  const { createdAt, writer, styles } = props;
+  const { createdAt, writer, quote, shareURL, styles } = props;
+
   return (
     <div sx={{ display: "flex", flexDirection: "column" }}>
       <PublishInfo date={createdAt} />
       {writer?.data && <AuthorInfo name={writer.data.attributes.name} />}
 
-      <SocialIcons />
+      <SocialIcons quote={quote} shareURL={shareURL} />
     </div>
   );
 };

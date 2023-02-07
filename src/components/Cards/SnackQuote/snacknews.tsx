@@ -1,10 +1,13 @@
 /** @jsxImportSource theme-ui */
 
+import { useIonRouter } from "@ionic/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ComponentVariant } from "../../../types/modifier";
-import { newspageBaseURL } from "../../../utils/pages";
+import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
+import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 import Link from "../../Primitives/Link";
 
 type SnackNewsType = {
@@ -99,7 +102,6 @@ const SnackNews = (props: SnackNewsType) => {
   const {
     imageSrc,
     description,
-    description_uri,
     slug,
     category,
     styles = {},
@@ -113,10 +115,25 @@ const SnackNews = (props: SnackNewsType) => {
       ? 64
       : 96;
 
+  const router = useRouter();
+  const ionRouter = useIonRouter();
+  const newspageSlug = isNativeMobileApp ? `/newspage/` : `/news/`;
+  const currentPageURL = isNativeMobileApp
+    ? ionRouter.routeInfo.pathname
+    : router.route;
+
+  const isNewsPage = currentPageURL.startsWith(newspageSlug);
+
+  const descriptionArticleSlug = slug;
+
+  const descriptionArticleRoute = isNewsPage
+    ? `${descriptionArticleSlug}`
+    : `${NEWSPAGE_BASE_URL}/${descriptionArticleSlug}`;
+
   return (
     <div sx={containerStyles}>
       <Link
-        href={`${newspageBaseURL}/${slug}`}
+        href={`${descriptionArticleRoute}`}
         styles={getWrapperStyles(variant)}
       >
         <div sx={{ display: "flex", alignItems: "center" }}>

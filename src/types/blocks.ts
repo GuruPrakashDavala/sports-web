@@ -1,4 +1,11 @@
-import { ArticleType, CategoryType, ImageType, Video } from "./article";
+import {
+  ArticleType,
+  CategoryType,
+  ImageType,
+  RetailProduct,
+  Video,
+} from "./article";
+import { ColorTheme } from "./modifier";
 
 export enum BlockType {
   ARTICLE = "article",
@@ -24,11 +31,19 @@ export type SnackQuoteComponent = {
 export type ContentGrid = ArticleBlock | SnackQuoteComponent;
 
 export type ArticleCarousel = {
-  articles: { data: ArticleType[] };
-  category: CategoryType;
   id: number;
+  category: CategoryType;
   title: string;
   type: "articlecarousel";
+  articles: { data: ArticleType[] };
+};
+
+export type RetailCarousel = {
+  id: number;
+  title: string;
+  type: "retailcarousel";
+  theme: ColorTheme.DARK | ColorTheme.LIGHT;
+  retail_products: { data: RetailProduct[] };
 };
 
 export type TweetEmbed = {
@@ -73,7 +88,12 @@ export type ArticlePageBlock = {
   type: "article";
 };
 
-export type HomeBlocks = ArticleCarousel | VideoCarousel | ArticleGrid | Quote;
+export type HomeBlocks =
+  | ArticleCarousel
+  | VideoCarousel
+  | ArticleGrid
+  | Quote
+  | RetailCarousel;
 
 export type ImageCarousel = {
   id: number;

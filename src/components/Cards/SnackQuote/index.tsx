@@ -4,12 +4,15 @@ import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ComponentVariant } from "../../../types/modifier";
-import SnackNews from "./snacknews";
+import SnackNews from "./SnackNews";
 import ForwardArrow from "../../Icons/ForwardArrow";
 import { SnackQuoteComponent } from "../../../types/blocks";
 import Link from "../../Primitives/Link";
 import { renderImage } from "../../../utils/util";
-import { newspageBaseURL } from "../../../utils/pages";
+import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
+import { useRouter } from "next/router";
+import { useIonRouter } from "@ionic/react";
+import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 
 type SnackQuoteProps = {
   block: SnackQuoteComponent;
@@ -102,6 +105,21 @@ const SnackQuote = (props: SnackQuoteProps) => {
   const { block, styles = {}, variant = ComponentVariant.LARGE } = props;
   const { title_article, description_article } = block;
 
+  const router = useRouter();
+  const ionRouter = useIonRouter();
+  const newspageSlug = isNativeMobileApp ? `/newspage/` : `/news/`;
+  const currentPageURL = isNativeMobileApp
+    ? ionRouter.routeInfo.pathname
+    : router.route;
+  const isNewsPage = currentPageURL.startsWith(newspageSlug);
+
+  const titleArticleSlug = title_article.data.attributes.slug;
+  const descriptionArticleSlug = description_article.data.attributes.slug;
+
+  const titleArticleRoute = isNewsPage
+    ? `${titleArticleSlug}`
+    : `${NEWSPAGE_BASE_URL}/${titleArticleSlug}`;
+
   return (
     <div sx={{ ...containerStyles, ...styles }}>
       <div
@@ -116,10 +134,7 @@ const SnackQuote = (props: SnackQuoteProps) => {
         }}
       >
         <q sx={getQuoteStyles(variant)}>
-          <Link
-            href={`${newspageBaseURL}/${title_article.data.attributes.slug}`}
-            styles={quoteAnchorStyles}
-          >
+          <Link href={`${titleArticleRoute}`} styles={quoteAnchorStyles}>
             <Fragment>
               {title_article.data.attributes.title}
               <span sx={iconContainerStyles}>
@@ -128,6 +143,7 @@ const SnackQuote = (props: SnackQuoteProps) => {
             </Fragment>
           </Link>
         </q>
+
         <SnackNews
           imageSrc={renderImage(
             description_article.data.attributes.coverimage.data

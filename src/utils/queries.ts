@@ -10,9 +10,10 @@ import { fetchStrapiAPI } from "../lib/strapi";
 import { ArticleType } from "../types/article";
 import { fixtureBallFields, fixtureBaseFields } from "./matchcenter";
 import { HomePageProps } from "../pages";
-import { apiBaseURL } from "./util";
+import { API_BASE_URL } from "./util";
 import { InfiniteArticlesResponseType } from "../pages/news";
 import { FixturesList, StandingsList } from "./fixtures";
+import { Globals } from "../types/header";
 
 export const recentArticlesStrapiAPI =
   "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=createdAt:desc";
@@ -53,20 +54,20 @@ const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
 const getCurrentFixtures = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
   const { data: fixtures } = await axios.get<FixturesAPIResponse>(
-    `${apiBaseURL}/fixtures/current-fixtures?seriesIds=${seriesIds}`
+    `${API_BASE_URL}/fixtures/current-fixtures?seriesIds=${seriesIds}`
   );
   return fixtures.data;
 };
 
 const getFixtureSchedule = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
-  return axios.get(`${apiBaseURL}/fixtures/schedule?seriesIds=${seriesIds}`);
+  return axios.get(`${API_BASE_URL}/fixtures/schedule?seriesIds=${seriesIds}`);
 };
 
 const getStandingsTableForStageId = async ({ queryKey }: { queryKey: any }) => {
   const stageId = queryKey[1];
   return axios.get(
-    `${apiBaseURL}/fixtures/standings?stageId=${stageId}&include=team`
+    `${API_BASE_URL}/fixtures/standings?stageId=${stageId}&include=team`
   );
 };
 
@@ -166,6 +167,14 @@ export const useFixtureSchedule = (
   });
 };
 
+export const useGlobals = (): UseQueryResult<Globals, Error> => {
+  return useQuery("appGlobals", () =>
+    fetchStrapiAPI("/global", {
+      populate: "deep, 7",
+    })
+  );
+};
+
 export const useHomepage = (): UseQueryResult<
   { data: HomePageProps },
   Error
@@ -248,7 +257,7 @@ const getInfiniteFixtures = async ({
   const dateRange = queryKey[2];
 
   const { data: fixturesRes } = await axios.get<{ data: FixtureResponse }>(
-    `${apiBaseURL}/fixtures/schedule?seriesIds=${seriesIds}&starts_between=${dateRange}&page=${pageParam}`
+    `${API_BASE_URL}/fixtures/schedule?seriesIds=${seriesIds}&starts_between=${dateRange}&page=${pageParam}`
   );
 
   return fixturesRes.data;

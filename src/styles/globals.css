@@ -85,6 +85,7 @@ ion-card-header.ios {
   /* padding: 0.6em 0.6em; */
   padding-top: 15px;
   padding-bottom: 15px;
+  justify-content: center;
 }
 
 .Rtable--2cols > .Rtable-cell {
@@ -256,6 +257,7 @@ ion-card-header.ios {
   border-bottom: none;
   padding-top: 15px;
   padding-bottom: 15px;
+  /* justify-content: center; */
 }
 
 .team-table-logo {

@@ -1,7 +1,9 @@
 import { differenceInHours, format } from "date-fns";
 import { ImageType } from "../types/article";
 
-export const apiBaseURL =
+export const APPLICATION_DOMAIN_URL = `https://cricfanatic.com`;
+
+export const API_BASE_URL =
   process.env.NEXT_PUBLIC_REST_API ?? `http://localhost:3000/api`;
 
 const getArticleFormattedDate = (articleDate: string | Date) => {

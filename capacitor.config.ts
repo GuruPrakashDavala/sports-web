@@ -5,13 +5,11 @@ const config: CapacitorConfig = {
   appName: "cricfanatic",
   webDir: "out",
   bundledWebRuntime: false,
-  android: {
-    backgroundColor: "#001d3d",
-  },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 5000,
       launchAutoHide: true,
+      splashFullScreen: true,
+      splashImmersive: true,
     },
   },
 };

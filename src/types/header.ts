@@ -1,6 +1,53 @@
 import { ImageType } from "../types/article";
 
-// AppHeader types
+export type Globals = {
+  data: {
+    id: number;
+    attributes: {
+      siteName: string;
+      createdAt: string;
+      updatedAt: string;
+      defaultSeo: {
+        id: number;
+        metaTitle: string;
+        metaDescription: string;
+        shareImage: { data: ImageType };
+      };
+      favicon: {
+        data: ImageType;
+      };
+      AppHeader: AppHeader;
+      Promo: HeaderPromo;
+    };
+  };
+  meta: any;
+};
+
+export type AppHeader = {
+  id: number;
+  HeaderItems: HeaderItem[];
+};
+
+type HeaderItem = {
+  id: number;
+  name: string;
+  href: string | null;
+  menucategory: MenuCategory | null;
+};
+
+type MenuCategory = {
+  data: {
+    id: number;
+    attributes: {
+      title: string;
+      slug: string;
+      createdAt: string;
+      updatedAt: string;
+      publishedAt: string;
+      category_items: (CategoryListItemType | CategoryImageType)[];
+    };
+  };
+};
 
 type Subcategory = {
   id: number;
@@ -9,49 +56,26 @@ type Subcategory = {
   logo: { data: ImageType | null };
 };
 
-export type CategoryImage = {
-  id: number;
-  name: string;
-  href: string;
-  type: "image";
-  image: { data: ImageType };
-};
-
-export type CategoryList = {
+export type CategoryListItemType = {
   id: number;
   name: string;
   type: "list";
   subcategory: Subcategory[];
 };
 
-export type MenuCategory = {
+export type CategoryImageType = {
   id: number;
-  data: {
-    attributes: {
-      createdAt: string;
-      publishedAt: string;
-      slug: string;
-      title: string;
-      updatedAt: string;
-      category_items: (CategoryImage | CategoryList)[];
-    };
-  } | null;
-};
-
-type HeaderItem = {
-  id: number;
+  type: "image";
+  href: string;
   name: string;
-  href: string | null;
-  menucategory: MenuCategory;
+  image: {
+    data: ImageType;
+  };
 };
 
-export type AppHeader = {
-  id: number;
-  HeaderItems: HeaderItem[];
-};
-
-type HeaderPromo = {
+export type HeaderPromo = {
   id: number;
   promo_description: string;
   href: string;
+  external: boolean;
 };

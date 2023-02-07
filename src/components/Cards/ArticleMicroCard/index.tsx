@@ -4,7 +4,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
-import { newspageBaseURL } from "../../../utils/pages";
+import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import getArticleFormattedDate from "../../../utils/util";
 import Link from "../../Primitives/Link";
 import { ArticleVariant, NewscardProps } from "../ArticleCard";
@@ -42,6 +42,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
     badge,
     type,
     category,
+    isNewsPage,
     styles = {},
   } = props;
 
@@ -55,7 +56,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
       ? 64
       : 96;
 
-  const path = `${newspageBaseURL}/${slug}`;
+  const path = isNewsPage ? `${slug}` : `${NEWSPAGE_BASE_URL}/${slug}`;
 
   const cardWrapperStyles: ThemeUICSSObject = {
     display: "flex",

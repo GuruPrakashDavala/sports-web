@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useMemo, Fragment } from "react";
 import { useTable, useExpanded } from "react-table";
 import { COLUMNS_SM, COLUMNS_MD, COLUMNS_LG } from "./columns";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useStandingsTable } from "../../../utils/queries";
+import PageLoader from "../../Loaders/PageLoader/PageLoader";
 
 export const Standings = (props: { stageId: string }) => {
   /* TODO:
@@ -37,8 +38,6 @@ export const Standings = (props: { stageId: string }) => {
 
   const data = useMemo(() => {
     const rankings = standingsTable ?? [];
-    console.log("standings rankings");
-    console.log(rankings);
     return rankings;
   }, [standingsTable]);
 
@@ -48,9 +47,9 @@ export const Standings = (props: { stageId: string }) => {
     tableInstance;
 
   return (
-    <section>
+    <Fragment>
       {/* React Table */}
-      {standingsTable && (
+      {standingsTable ? (
         <div
           {...getTableProps()}
           className="Rtable-container"
@@ -122,7 +121,9 @@ export const Standings = (props: { stageId: string }) => {
             })}
           </div>
         </div>
+      ) : (
+        <PageLoader />
       )}
-    </section>
+    </Fragment>
   );
 };

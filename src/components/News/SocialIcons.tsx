@@ -6,6 +6,13 @@ import { ComponentVariant } from "../../types/modifier";
 import FacebookIcon from "../Icons/Facebook";
 import MailIcon from "../Icons/Mail";
 import TwitterIcon from "../Icons/Twitter";
+import { Share } from "@capacitor/share";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  EmailShareButton,
+} from "react-share";
+import { isNativeMobileApp } from "../Ionic/utils/capacitor";
 
 const iconContainerStyles: ThemeUICSSObject = {
   display: "flex",
@@ -36,17 +43,69 @@ const iconStyles: ThemeUICSSObject = {
   cursor: "pointer",
 };
 
-const SocialIcons = (): JSX.Element => {
+const SocialIcons = (props: {
+  quote: string;
+  shareURL: string;
+}): JSX.Element => {
+  const { quote, shareURL } = props;
+  const hashtag = `#cricfanatic #cricket #playstore`;
+  const hashtags = ["#cricfanatic", "#cricket", "#playstore"];
+
+  const nativeAppShare = async () => {
+    await Share.share({
+      title: "🚀🔥 Cricfanatic trending news",
+      text: `${quote}`,
+      url: shareURL,
+      dialogTitle: "🚀🔥 Cricfanatic trending news",
+    });
+  };
+
   return (
     <ul sx={iconContainerStyles}>
-      <li sx={iconWrapperStyles}>
-        <FacebookIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+      <li
+        sx={iconWrapperStyles}
+        onClick={isNativeMobileApp ? nativeAppShare : undefined}
+      >
+        {isNativeMobileApp ? (
+          <FacebookIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+        ) : (
+          <FacebookShareButton url={shareURL} quote={quote} hashtag={hashtag}>
+            <FacebookIcon
+              variant={ComponentVariant.SMALL}
+              styles={iconStyles}
+            />
+          </FacebookShareButton>
+        )}
       </li>
-      <li sx={iconWrapperStyles}>
-        <TwitterIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+
+      <li
+        sx={iconWrapperStyles}
+        onClick={isNativeMobileApp ? nativeAppShare : undefined}
+      >
+        {isNativeMobileApp ? (
+          <TwitterIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+        ) : (
+          <TwitterShareButton url={shareURL} title={quote} hashtags={hashtags}>
+            <TwitterIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+          </TwitterShareButton>
+        )}
       </li>
-      <li sx={iconWrapperStyles}>
-        <MailIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+
+      <li
+        sx={iconWrapperStyles}
+        onClick={isNativeMobileApp ? nativeAppShare : undefined}
+      >
+        {isNativeMobileApp ? (
+          <MailIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+        ) : (
+          <EmailShareButton
+            url={shareURL}
+            subject={quote}
+            body={`${quote} ${hashtag}`}
+          >
+            <MailIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
+          </EmailShareButton>
+        )}
       </li>
     </ul>
   );

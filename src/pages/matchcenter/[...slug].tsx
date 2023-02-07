@@ -11,7 +11,6 @@ import Abandoned from "../../components/Matchcenter/Util/Adandoned";
 import Scoreboard from "../../components/Matchcenter/Scoreboard";
 import Header from "../../components/Matchcenter/Header";
 import { articleBodyWrapperStyles } from "../news/[slug]";
-import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
 import { fetchStrapiAPI } from "../../lib/strapi";
 import {
   Batting as BattingT,
@@ -41,6 +40,7 @@ import {
 } from "../../utils/queries";
 import RelatedArticles from "../../components/Matchcenter/RelatedArticles";
 import LivecommentarySkeleton from "../../components/Loaders/Matchcenter/Livecommentary";
+import Head from "next/head";
 
 type MatchCenterProps = {
   fixture: FixtureT;
@@ -296,6 +296,11 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
 
   return (
     <Fragment>
+      <Head>
+        <title>{`${fixture.localteam.name} vs ${fixture.visitorteam.name}`}</title>
+        <meta name="description" content="cricket live scores" />
+      </Head>
+
       {bp < 2 && s1Team && s2Team && fixture && (
         <Header
           fixture={fixture}
@@ -314,7 +319,7 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
             gridTemplateColumns: ["100%", null, null, "16.66% 58.3% 25%"],
           }}
         >
-          {bp > 2 && <AdBlock variant={AdBlockVariant.VERTICAL} />}
+          {/* {bp > 2 && <AdBlock variant={AdBlockVariant.VERTICAL} />} */}
 
           <div>
             {s1Team && s2Team && fixture && (
@@ -400,7 +405,7 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
 
           {bp > 2 && recentArticles && recentArticles.length > 0 && (
             <div sx={{ paddingX: [0, 3], paddingTop: 5 }}>
-              <AdBlock variant={AdBlockVariant.SQUARE} />
+              {/* <AdBlock variant={AdBlockVariant.SQUARE} /> */}
               <RelatedArticles recentArticles={recentArticles} />
             </div>
           )}
@@ -411,8 +416,6 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
 };
 
 const MatchCenter = (props: MatchCenterProps): JSX.Element => {
-  console.log("Matchcenter props");
-  console.log(props);
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const fixtureId = props.fixtureId;
 

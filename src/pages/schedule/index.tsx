@@ -30,6 +30,7 @@ import {
 import FixtureSkeleton from "../../components/Loaders/Matchcenter/FixtureSkeleton";
 import { loadMoreBtnStyles } from "../news";
 import RightArrowIcon from "../../components/Icons/RightArrow";
+import Head from "next/head";
 
 const FixturesContent = (props: {
   selectedStage: string;
@@ -198,112 +199,118 @@ export const SchedulePageContent = (props: {
   ];
 
   return (
-    <SectionWrapper styles={{ paddingX: [2, 3, 5, null, 7], paddingY: 1 }}>
-      <Tabs
-        defaultIndex={0}
-        sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
-        onSelect={(index) => setDateRange(getDatesForSelectedTab(index))}
-      >
-        <TabList>
+    <Fragment>
+      <Head>
+        <title>Cricket match schedule</title>
+        <meta name="description" content="Cricket match schedule" />
+      </Head>
+      <SectionWrapper styles={{ paddingX: [2, 3, 5, null, 7], paddingY: 1 }}>
+        <Tabs
+          defaultIndex={0}
+          sx={{ ...tabStyles, ...fixtureTabStyles, width: "100%" }}
+          onSelect={(index) => setDateRange(getDatesForSelectedTab(index))}
+        >
+          <TabList>
+            <div
+              sx={{
+                display: "flex",
+                ...(bp < 1
+                  ? { borderBottom: "1px solid", borderColor: [colors.gray200] }
+                  : {}),
+              }}
+            >
+              {tabLists.map((tab) => (
+                <Tab tabIndex={tab.id} key={tab.id}>
+                  <p>{tab.name}</p>
+                </Tab>
+              ))}
+            </div>
+
+            <select
+              name="series"
+              sx={selectBtnStyles}
+              onChange={stageChanged}
+              value={selectedStage}
+            >
+              <option value="All">All series</option>
+
+              {series.map((series) => (
+                <option value={series.code} key={series.code}>
+                  {series.seriesName}
+                </option>
+              ))}
+            </select>
+          </TabList>
+
+          <TabPanel id="todayfixtures">
+            <FixturesContent
+              selectedStage={selectedStage}
+              series={props.series}
+              fixtures={fixtures}
+            />
+          </TabPanel>
+
+          <TabPanel id="upcomingfixtures">
+            <FixturesContent
+              selectedStage={selectedStage}
+              series={props.series}
+              fixtures={fixtures}
+            />
+          </TabPanel>
+
+          <TabPanel id="recentfixtures">
+            <FixturesContent
+              selectedStage={selectedStage}
+              series={props.series}
+              fixtures={fixtures}
+              isRecentTab={true}
+            />
+          </TabPanel>
+        </Tabs>
+
+        {/* TODO: Button refactor use single component across app */}
+        {/* Load more button */}
+        {fixtures && fixtures.pages[0].data.length > 0 && (
           <div
             sx={{
               display: "flex",
-              ...(bp < 1
-                ? { borderBottom: "1px solid", borderColor: [colors.gray200] }
-                : {}),
+              justifyContent: "center",
+              alignItems: "center",
+              paddingY: 2,
             }}
           >
-            {tabLists.map((tab) => (
-              <Tab tabIndex={tab.id} key={tab.id}>
-                <p>{tab.name}</p>
-              </Tab>
-            ))}
-          </div>
-
-          <select
-            name="series"
-            sx={selectBtnStyles}
-            onChange={stageChanged}
-            value={selectedStage}
-          >
-            <option value="All">All series</option>
-
-            {series.map((series) => (
-              <option value={series.code} key={series.code}>
-                {series.seriesName}
-              </option>
-            ))}
-          </select>
-        </TabList>
-
-        <TabPanel id="todayfixtures">
-          <FixturesContent
-            selectedStage={selectedStage}
-            series={props.series}
-            fixtures={fixtures}
-          />
-        </TabPanel>
-
-        <TabPanel id="upcomingfixtures">
-          <FixturesContent
-            selectedStage={selectedStage}
-            series={props.series}
-            fixtures={fixtures}
-          />
-        </TabPanel>
-
-        <TabPanel id="recentfixtures">
-          <FixturesContent
-            selectedStage={selectedStage}
-            series={props.series}
-            fixtures={fixtures}
-            isRecentTab={true}
-          />
-        </TabPanel>
-      </Tabs>
-
-      {/* Load more button */}
-
-      {fixtures && fixtures.pages[0].data.length > 0 && (
-        <div
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingY: 2,
-          }}
-        >
-          <button
-            type="button"
-            sx={loadMoreBtnStyles(hasNextPage)}
-            onClick={loadMore}
-            disabled={!hasNextPage}
-          >
-            <p
-              sx={{
-                variant: "text.subheading4",
-                color: !hasNextPage ? colors.black : colors.white,
-              }}
+            <button
+              type="button"
+              sx={loadMoreBtnStyles(hasNextPage)}
+              onClick={loadMore}
+              disabled={!hasNextPage}
             >
-              {!hasNextPage
-                ? `All caught up!`
-                : isFetching
-                ? `Loading`
-                : `Load more`}
-            </p>
-
-            {hasNextPage && (
-              <RightArrowIcon
-                styles={{
-                  color: colors.white,
-                  alignItems: "center",
+              <p
+                sx={{
+                  variant: "text.subheading4",
+                  color: !hasNextPage ? colors.black : colors.white,
                 }}
-              />
-            )}
-          </button>
-        </div>
-      )}
-    </SectionWrapper>
+              >
+                {!hasNextPage
+                  ? `All caught up!`
+                  : isFetching
+                  ? `Loading`
+                  : `Load more`}
+              </p>
+
+              {hasNextPage && (
+                <RightArrowIcon
+                  styles={{
+                    color: colors.white,
+                    alignItems: "center",
+                  }}
+                />
+              )}
+            </button>
+          </div>
+        )}
+      </SectionWrapper>
+    </Fragment>
   );
 };
 

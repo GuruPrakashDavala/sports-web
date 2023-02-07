@@ -11,7 +11,7 @@ import PublishInfo from "../../components/News/PublishInfo";
 import ArticleGrid from "../../components/Grids/ArticleGrid";
 import { ArticleBlocks, ArticleType } from "../../types/article";
 import TwitterTweetEmbed from "../../components/SocialEmbeds/TwitterTweetEmbed";
-import { renderImage } from "../../utils/util";
+import { APPLICATION_DOMAIN_URL, renderImage } from "../../utils/util";
 import ArticleCard from "../../components/Cards/ArticleCard";
 import { ColorTheme, ComponentVariant } from "../../types/modifier";
 import SnackQuote from "../../components/Cards/SnackQuote";
@@ -27,6 +27,10 @@ import {
 import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
 import { isNativeMobileApp } from "../../components/Ionic/utils/capacitor";
+import PageLoader from "../../components/Loaders/PageLoader/PageLoader";
+import { useIonRouter } from "@ionic/react";
+import { NEWSPAGE_BASE_URL } from "../../utils/pages";
+import Head from "next/head";
 
 const articleContainerStyles: ThemeUICSSObject = {
   paddingX: [2, null, null, 7],
@@ -61,12 +65,14 @@ type ArticlePageProps = {
 type BlockPickerProps = {
   block: ArticleBlocks;
   index?: number;
+  isNewsPage?: boolean;
   isLastBlock?: boolean;
 };
 
 const BlockPicker = ({
   block,
   index,
+  isNewsPage = false,
   isLastBlock,
 }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
@@ -99,6 +105,7 @@ const BlockPicker = ({
             slug={block.article.data.attributes.slug}
             badge={block.article.data.attributes.badge?.data?.attributes.name}
             category={block.article.data.attributes.category}
+            isNewsPage={isNewsPage}
             theme={ColorTheme.DARK}
             styles={{ paddingX: [2, null] }}
           />
@@ -138,9 +145,23 @@ export const ArticleDetailPageContent = (
   props: ArticleDetailPageContentProps
 ): JSX.Element => {
   const { article, recentArticles, styles } = props;
+  const shareURL = `${APPLICATION_DOMAIN_URL}/news/${article.attributes.slug}`;
+
+  const router = useRouter();
+  const ionRouter = useIonRouter();
+  const newspageSlug = `/${NEWSPAGE_BASE_URL}/`;
+  const currentPageURL = isNativeMobileApp
+    ? ionRouter.routeInfo.pathname
+    : router.route;
+  const isNewsPage = currentPageURL.startsWith(newspageSlug);
 
   return (
     <Fragment>
+      <Head>
+        <title>{article.attributes.title}</title>
+        <meta name="description" content="Cricfanatic superfast cricket news" />
+      </Head>
+
       <NewsHeader
         title={article.attributes.title}
         category={article.attributes.category?.data?.attributes.name}
@@ -150,7 +171,11 @@ export const ArticleDetailPageContent = (
       <div sx={articleContainerStyles}>
         <div sx={articleBodyWrapperStyles}>
           {/* Article author info block */}
-          <AuthorInfoBlock createdAt={article.attributes.createdAt} />
+          <AuthorInfoBlock
+            createdAt={article.attributes.createdAt}
+            shareURL={shareURL}
+            quote={article.attributes.title}
+          />
 
           {/* Article m ads */}
           <div></div>
@@ -159,7 +184,7 @@ export const ArticleDetailPageContent = (
 
           <div>
             {/* Create a block picker which can hand pick the components and render inside the body */}
-            <AdBlock variant={AdBlockVariant.HORIZONTAL} />
+            {/* <AdBlock variant={AdBlockVariant.HORIZONTAL} /> */}
 
             {article.attributes.blocks?.map((block, i) => {
               const isLastBlock = article.attributes.blocks?.length === i;
@@ -169,6 +194,7 @@ export const ArticleDetailPageContent = (
                     block={block}
                     index={i}
                     isLastBlock={isLastBlock}
+                    isNewsPage={isNewsPage}
                   />
                 </Fragment>
               );
@@ -185,7 +211,10 @@ export const ArticleDetailPageContent = (
                   paddingTop: 4,
                 }}
               />
-              <SocialIcons />
+              <SocialIcons
+                shareURL={shareURL}
+                quote={article.attributes.title}
+              />
             </div>
           </div>
 
@@ -199,11 +228,11 @@ export const ArticleDetailPageContent = (
           </div>
         </div>
 
-        <AdBlock
+        {/* <AdBlock
           variant={AdBlockVariant.HORIZONTAL}
           path={`/assets/big_ad.gif`}
           height={12}
-        />
+        /> */}
       </div>
 
       {/* Recent articles */}
@@ -238,11 +267,13 @@ const ArticlePage = (props: ArticlePageProps) => {
 
   return (
     <Fragment>
-      {article && (
+      {article ? (
         <ArticleDetailPageContent
           article={article}
           recentArticles={recentArticles}
         />
+      ) : (
+        <PageLoader />
       )}
     </Fragment>
   );

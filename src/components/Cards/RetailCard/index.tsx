@@ -4,13 +4,10 @@ import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ColorTheme, ColorThemeAll } from "../../../types/modifier";
-import { CategoryType } from "../../../types/article";
 import PlayIcon from "../../Icons/Play";
-import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
-import getArticleFormattedDate from "../../../utils/util";
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
+import { Browser } from "@capacitor/browser";
 
 const cardHoverStyles: ThemeUICSSObject = {
   backgroundColor: colors.experimental.blue150,
@@ -70,18 +67,21 @@ export enum ArticleVariant {
   LARGE = "large",
 }
 
-export type NewscardProps = {
+export type RetailCardProps = {
   label: string;
   imageSrc: string;
   date: Date | string;
   slug: string;
-  isNewsPage?: boolean;
+  href: string;
+  currentPrice: number;
+  mrpPrice?: number;
   theme?: ColorThemeAll;
   variant?: ArticleVariant;
   styles?: ThemeUICSSObject;
   badge?: string;
   type?: string;
-  category?: CategoryType;
+  category?: string;
+  discountedProduct?: boolean;
 };
 
 export const getPillColor = (pillText: string) => {
@@ -95,7 +95,7 @@ export const getPillColor = (pillText: string) => {
   }
 };
 
-const ArticleCard = (props: NewscardProps): JSX.Element => {
+const RetailCard = (props: RetailCardProps): JSX.Element => {
   const {
     theme = ColorTheme.LIGHT,
     variant = ArticleVariant.SMALL,
@@ -107,8 +107,15 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
     type,
     date,
     category,
-    isNewsPage,
+    href,
+    currentPrice,
+    mrpPrice,
+    discountedProduct,
   } = props;
+
+  const openRetailSite = async () => {
+    await Browser.open({ url: href });
+  };
 
   const bp = useBreakpointIndex();
 
@@ -124,8 +131,6 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
     paddingTop: 2,
     "&:hover": bp > 1 ? cardHoverStyles : null,
   };
-
-  const articlePublishedDate = getArticleFormattedDate(date);
 
   const articleVariantImageSize =
     variant === ArticleVariant.SMALL
@@ -186,10 +191,8 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
       : {}),
   };
 
-  const path = isNewsPage ? `${slug}` : `${NEWSPAGE_BASE_URL}/${slug}`;
-
   return (
-    <Link href={path}>
+    <a onClick={openRetailSite} sx={{ textDecoration: "none" }}>
       <div sx={cardContainer}>
         <div sx={{ ...cardStyles, ...cardBorderColor }}>
           <div className="imageWrapper" sx={imageWrapper}>
@@ -224,7 +227,19 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
           <div sx={cardInfo}>
             <div className="info" sx={cardInfoTransition}>
               <div sx={cardInfoColor}>
-                <p sx={{ variant: "text.label2" }}>{articlePublishedDate}</p>
+                {discountedProduct && (
+                  <p
+                    sx={{
+                      variant: "text.subheading3",
+                      textDecoration: "line-through",
+                    }}
+                  >
+                    Rs. {mrpPrice}
+                  </p>
+                )}
+
+                <p sx={{ variant: "text.subheading2" }}>Rs. {currentPrice}</p>
+
                 <h2>
                   <span
                     sx={{
@@ -234,9 +249,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
                       variant: "text.subheading4",
                     }}
                   >
-                    {category?.data?.attributes.name && (
-                      <>{category.data.attributes.name}</>
-                    )}
+                    {category && <>{category}</>}
                   </span>
                   <span sx={{ variant: "text.heading5" }}>{label}</span>
                 </h2>
@@ -245,8 +258,8 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
           </div>
         </div>
       </div>
-    </Link>
+    </a>
   );
 };
 
-export default ArticleCard;
+export default RetailCard;

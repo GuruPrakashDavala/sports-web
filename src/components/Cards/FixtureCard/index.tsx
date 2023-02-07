@@ -1,7 +1,8 @@
 /** @jsxImportSource theme-ui */
 
+import { Fragment } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import { format } from "date-fns";
+import { differenceInHours, format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { FixtureStatus } from "../../../types/matchcenter";
@@ -17,7 +18,8 @@ import {
 } from "../../../utils/matchcenter";
 import Pill from "../../Primitives/Pill";
 import CTAButton from "../../Primitives/LinkButton";
-import { matchcenterPageBaseURL } from "../../../utils/pages";
+import { MATCHCENTER_PAGE_BASE_URL } from "../../../utils/pages";
+import Countdown from "../../Countdown";
 
 export const getScore = (
   scoreboards: [] | ScoreboardT[],
@@ -55,6 +57,7 @@ const FixtureCard = (props: {
   const fixtureStartingDate = new Date(fixture.starting_at);
   const isLive = isMatchLive(fixture.status);
   const isMatchOver = isMatchFinished(fixture.status);
+  const matchStartsInHours = differenceInHours(fixtureStartingDate, new Date());
 
   const seoURL = `${fixture.visitorteam.code}-vs-${
     fixture.localteam.code
@@ -239,15 +242,21 @@ const FixtureCard = (props: {
             sx={{ variant: "text.label3", paddingY: 1, color: colors.red300 }}
           >{`${fixture.tosswon?.name} elected to ${fixture.elected} first`}</p>
         ) : (
-          <p sx={{ variant: "text.label3", paddingY: 1 }}>
-            {"Match starts at "}
-            {format(fixtureStartingDate, "iii d MMM - p")}
-          </p>
+          <Fragment>
+            {matchStartsInHours < 48 ? (
+              <Countdown date={fixtureStartingDate} />
+            ) : (
+              <p sx={{ variant: "text.label3", paddingY: 1 }}>
+                {"Match starts at "}
+                {format(fixtureStartingDate, "iii d MMM - p")}
+              </p>
+            )}
+          </Fragment>
         )}
 
         {showCTA && (
           <CTAButton
-            href={`/${matchcenterPageBaseURL}/${fixture.id}/${seoURL}`}
+            href={`/${MATCHCENTER_PAGE_BASE_URL}/${fixture.id}/${seoURL}`}
             ctaLabel={ctaLabel}
             variant={isLive ? ColorThemeFrontend.RED : ColorThemeFrontend.BLACK}
           ></CTAButton>

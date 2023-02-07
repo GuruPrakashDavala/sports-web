@@ -134,6 +134,24 @@ export type ArticleType = {
   id: number;
 };
 
+export type RetailProduct = {
+  attributes: {
+    title: string;
+    status: string;
+    mrp_price: number;
+    current_price: number;
+    url: string;
+    category: string;
+    createdAt: string;
+    publishedAt: string;
+    slug: string;
+    type: string;
+    updatedAt: string;
+    image: { data: ImageType };
+  };
+  id: number;
+};
+
 export type ArticleBlocks =
   | ArticleCarousel
   | VideoCarousel

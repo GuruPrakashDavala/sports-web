@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
   useCurrentFixtures,
   useFixturesDefinedInCMS,
+  useGlobals,
   useHomepage,
 } from "../../../utils/queries";
 import {
@@ -14,7 +15,6 @@ import {
   useIonViewDidEnter,
   IonButtons,
   useIonViewWillLeave,
-  useIonRouter,
 } from "@ionic/react";
 import { isMatchLive } from "../../../utils/matchcenter";
 import { HomePageContent } from "../../../pages";
@@ -23,12 +23,14 @@ import PageLoader from "../../Loaders/PageLoader/PageLoader";
 import Link from "../../Primitives/Link";
 import { logoLink } from "../../../utils/header";
 import { App } from "@capacitor/app";
+import HeaderPromo from "../../Header/HeaderPromo";
 
 const IonHomePage = () => {
   const [value, setValue] = useState(0);
 
   // hardware back button
   const ionBackButton = useCallback(() => {
+    // showExitActionSheet();
     App.exitApp();
   }, []);
 
@@ -75,6 +77,9 @@ const IonHomePage = () => {
     }
   }, [currentFixtures]);
 
+  const { data: globals, isLoading: globalsLoading } = useGlobals();
+  const promo = globals?.data.attributes.Promo;
+
   return (
     <IonPage>
       <IonHeader>
@@ -88,13 +93,17 @@ const IonHomePage = () => {
               />
             </Link>
           </IonButtons>
-
-          {/* <IonTitle>Cricfanatic</IonTitle> */}
-          {/* <IonProgressBar type="indeterminate" color={"light"}></IonProgressBar> */}
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen>
+        {promo && (
+          <HeaderPromo
+            promoDescription={promo.promo_description}
+            href={promo.href}
+            external={promo.external}
+          />
+        )}
         {homepage && fixtures ? (
           <HomePageContent homepage={homepage} fixtures={fixtures} />
         ) : (

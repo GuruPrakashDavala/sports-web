@@ -185,12 +185,10 @@ const Header = (props: { appHeader: AppHeader; className: string }) => {
               <ul className="menu-main">
                 {headerItems.map((headerItem, index) => {
                   const listItems =
-                    headerItem.menucategory.data?.attributes.category_items;
+                    headerItem.menucategory?.data?.attributes.category_items;
                   return (
                     <Fragment key={headerItem.id}>
-                      {headerItem.menucategory.data &&
-                      listItems &&
-                      listItems.length > 0 ? (
+                      {listItems && listItems.length > 0 ? (
                         <MenuListItem
                           subMenuRef={elementsRef.current[index]}
                           showSubMenu={showSubMenu}

@@ -3,7 +3,7 @@
 import { IonCard, IonCardHeader, IonImg } from "@ionic/react";
 import { colors } from "../../../styles/theme";
 import { ColorTheme } from "../../../types/modifier";
-import { newspageBaseURL } from "../../../utils/pages";
+import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import getArticleFormattedDate from "../../../utils/util";
 import { ArticleVariant, NewscardProps } from "../ArticleCard";
 
@@ -22,7 +22,7 @@ const BasicArticleCard = (props: NewscardProps) => {
   } = props;
 
   const articlePublishedDate = getArticleFormattedDate(date);
-  const path = `${newspageBaseURL}/${slug}`;
+  const path = `${NEWSPAGE_BASE_URL}/${slug}`;
 
   return (
     <div sx={{ padding: "10px", height: "100%" }}>
@@ -35,7 +35,8 @@ const BasicArticleCard = (props: NewscardProps) => {
           boxShadow: "none",
           borderBottom: "1px solid",
           borderBottomColor: "rgba(12, 12, 12, 0.17)",
-          backgroundColor: "#F6F6F6",
+          backgroundColor:
+            theme === ColorTheme.GRAY ? colors.gray300 : colors.white,
           margin: 0,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
@@ -44,8 +45,8 @@ const BasicArticleCard = (props: NewscardProps) => {
         <IonImg
           src={imageSrc}
           alt={label}
-          style={{
-            height: "130px",
+          sx={{
+            height: ["140px", "160px", "210px"],
             maxWidth: "100%",
             objectFit: "cover",
           }}

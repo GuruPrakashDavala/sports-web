@@ -6,7 +6,7 @@ import SectionHeading from "../../SectionHeading";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { ThemeUICSSObject } from "theme-ui";
 import { renderImage } from "../../../utils/util";
-import { newspageBaseURL } from "../../../utils/pages";
+import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 import BasicArticleCard from "../../Cards/BasicArticalCard";
 
@@ -19,7 +19,7 @@ type ArticleCarouselProps = {
 const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   const { block, theme = ColorTheme.LIGHT, styles = {} } = props;
 
-  if (!block.articles.data) return <></>;
+  if (!block.articles.data || block.articles.data.length === 0) return <></>;
 
   const categorySlug = block.category.data?.attributes.slug;
   const categoryName = block.category.data?.attributes.name;
@@ -27,7 +27,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   const categoryLink =
     categorySlug && categoryName
       ? {
-          href: `/${newspageBaseURL}?category=${categorySlug}`,
+          href: `/${NEWSPAGE_BASE_URL}?category=${categorySlug}`,
           external: false,
           label: categoryName,
         }

@@ -12,9 +12,10 @@ import { NewsPageContent } from "../../../../pages/news/index";
 import { useEffect, useState, Fragment } from "react";
 import { fetchStrapiAPI } from "../../../../lib/strapi";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
-import { App } from "@capacitor/app";
+import { useHistory } from "react-router";
 
 const IonNewsPage = () => {
+  const history = useHistory();
   const [props, setProps] = useState<any>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
@@ -46,8 +47,10 @@ const IonNewsPage = () => {
     setSelectedCategory(event.target.value);
   };
 
-  const ionBackButton = useCallback(() => {
-    App.exitApp();
+  const ionBackButton = useCallback((ev: any) => {
+    ev.detail.register(10, () => {
+      history.replace(`/home`);
+    });
   }, []);
 
   useIonViewDidEnter(() => {

@@ -16,7 +16,7 @@ import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import TabBarContext, {
   TabBarContextProps,
 } from "../../contexts/tabBarContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 const NewsDetailPage = (): JSX.Element => {
   const { slug } = useParams<{ slug: string }>();

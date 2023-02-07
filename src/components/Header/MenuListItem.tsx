@@ -5,7 +5,10 @@ import { FaAngleDown } from "react-icons/fa";
 import Link from "../Primitives/Link";
 import { createRef, useEffect } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import { CategoryImage, CategoryList } from "../../types/header";
+import {
+  CategoryListItemType as CategoryListItemT,
+  CategoryImageType as CategoryImageT,
+} from "../../types/header";
 import ListItemImageCard from "./ListItemImageCard";
 
 type MenuListItemProps = {
@@ -13,7 +16,7 @@ type MenuListItemProps = {
   hideSubMenu: () => void;
   hideMainMenu: () => void;
   subMenuRef: RefObject<HTMLDivElement>;
-  listItems: (CategoryImage | CategoryList)[];
+  listItems: (CategoryImageT | CategoryListItemT)[];
   title: string;
 };
 

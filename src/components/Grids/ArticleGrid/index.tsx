@@ -9,13 +9,26 @@ import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { renderImage } from "../../../utils/util";
 import ArticleMicroCard from "../../Cards/ArticleMicroCard";
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import { newspageBaseURL } from "../../../utils/pages";
+import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
+import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
+import { useRouter } from "next/router";
+import { useIonRouter } from "@ionic/react";
 
 type ArticleGridProps = { articleGrid: ArticleGrid; theme?: ColorTheme };
 
 const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
   const { articles, title } = articleGrid;
   const bp = useBreakpointIndex();
+
+  const router = useRouter();
+  const ionRouter = useIonRouter();
+  const newspageSlug = isNativeMobileApp ? `/newspage/` : `/news/`;
+  const currentPageURL = isNativeMobileApp
+    ? ionRouter.routeInfo.pathname
+    : router.route;
+
+  const isNewsPage = currentPageURL.startsWith(newspageSlug);
+
   return (
     <SectionWrapper theme={theme}>
       {title && (
@@ -24,7 +37,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
           theme={ColorTheme.LIGHT}
           styles={{ px: [0, 1] }}
           link={{
-            href: `/${newspageBaseURL}`,
+            href: `/${NEWSPAGE_BASE_URL}`,
             external: false,
             label: `View all news`,
           }}
@@ -61,6 +74,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
                   type={block.attributes.type}
                   category={block.attributes.category}
                   slug={block.attributes.slug}
+                  isNewsPage={isNewsPage}
                   theme={theme}
                   styles={{ height: "100%" }}
                 />
@@ -83,6 +97,7 @@ const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
                 type={block.attributes.type}
                 category={block.attributes.category}
                 slug={block.attributes.slug}
+                isNewsPage={isNewsPage}
                 theme={theme}
                 styles={{ height: "100%" }}
               />

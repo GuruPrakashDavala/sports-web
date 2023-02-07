@@ -103,7 +103,7 @@ export const COLUMNS_SM = [
     accessor: "played",
   },
   {
-    Header: "Won",
+    Header: "W",
     accessor: "won",
   },
   {
@@ -115,8 +115,11 @@ export const COLUMNS_SM = [
     accessor: "lost",
   },
   {
-    Header: "Net RR",
+    Header: "NRR",
     accessor: "netto_run_rate",
+    Cell: ({ value, row }) => {
+      return value.toFixed(2);
+    },
   },
   {
     Header: "PTS",

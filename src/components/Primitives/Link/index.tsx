@@ -9,6 +9,7 @@ import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 type LinkProps = {
   children: JSX.Element;
   href: string;
+  external?: boolean;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
   styles?: ThemeUICSSObject;
 };
@@ -16,11 +17,15 @@ type LinkProps = {
 const linkStyles: ThemeUICSSObject = { textDecoration: "none" };
 
 const Link = (props: LinkProps): JSX.Element => {
-  const { href, children, onClick, styles = {} } = props;
+  const { href, children, external, onClick, styles = {} } = props;
 
   return (
     <Fragment>
-      {isNativeMobileApp ? (
+      {external ? (
+        <a href={href} onClick={onClick} sx={{ ...linkStyles, ...styles }}>
+          {children}
+        </a>
+      ) : isNativeMobileApp ? (
         <ReactLink to={href} sx={{ ...linkStyles, ...styles }}>
           {children}
         </ReactLink>

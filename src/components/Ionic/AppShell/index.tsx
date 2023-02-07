@@ -6,10 +6,9 @@ import {
   IonTabBar,
   IonTabButton,
   IonIcon,
-  useIonViewDidEnter,
 } from "@ionic/react";
 import { useContext, useEffect, useCallback } from "react";
-import { home, calendar, newspaper, analytics } from "ionicons/icons";
+import { home, calendar, newspaper, analytics, list } from "ionicons/icons";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
 import IonNewsPage from "../Pages/newspage";
@@ -23,12 +22,15 @@ import { setupIonicReact } from "@ionic/react";
 import TabBarContext, { TabBarContextProps } from "../contexts/tabBarContext";
 import { hapticsImpactMedium } from "../utils/capacitor";
 import { Network } from "@capacitor/network";
+import More from "../Pages/more";
+import MobileAnalytics from "../../GoogleAnalytics/MobileAnalytics";
 
 setupIonicReact();
 
 const NativeAppShell = () => {
   console.log("This is an Ionic native app");
   console.log("Nativeapp shell");
+
   const { showTabs } = useContext<TabBarContextProps>(TabBarContext);
   const tabBarStyles = showTabs ? undefined : { display: "none" };
 
@@ -53,6 +55,7 @@ const NativeAppShell = () => {
   return (
     <IonApp>
       <IonReactRouter>
+        <MobileAnalytics />
         <IonTabs>
           <IonRouterOutlet>
             <Route exact path="/home">
@@ -83,9 +86,10 @@ const NativeAppShell = () => {
               <StadingsPage />
             </Route>
 
-            {/* <Route exact path="/">
-              <IonHomePage />
-            </Route> */}
+            <Route exact path="/more">
+              <More />
+            </Route>
+
             <Redirect exact path="/" to="/home" />
           </IonRouterOutlet>
 
@@ -125,6 +129,11 @@ const NativeAppShell = () => {
               <IonIcon icon={analytics} />
               <IonLabel>Standings</IonLabel>
             </IonTabButton>
+
+            {/* <IonTabButton tab="tab5" href="/more" onClick={hapticsImpactMedium}>
+              <IonIcon icon={list} />
+              <IonLabel>More</IonLabel>
+            </IonTabButton> */}
           </IonTabBar>
         </IonTabs>
       </IonReactRouter>

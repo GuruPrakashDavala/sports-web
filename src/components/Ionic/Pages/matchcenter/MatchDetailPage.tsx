@@ -52,7 +52,6 @@ const MatchDetailPage = () => {
   const [isFinished, setIsFinished] = useState<boolean>(false);
 
   useIonViewWillEnter(() => {
-    console.log("DidEnter");
     setShowTabs(false);
   });
 

@@ -1,9 +1,8 @@
 /** @jsxImportSource theme-ui */
 
-import { useEffect } from "react";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import ArticleCard, {
   ArticleVariant,
 } from "../../components/Cards/ArticleCard";
@@ -21,6 +20,7 @@ import RightArrowIcon from "../../components/Icons/RightArrow";
 import ArticleCardSkeleton from "../../components/Loaders/Cards/ArticleCard";
 import { ThemeUICSSObject } from "theme-ui";
 import { Capacitor } from "@capacitor/core";
+import Head from "next/head";
 
 type ArticleCategories = {
   attributes: {
@@ -61,7 +61,7 @@ export const loadMoreBtnStyles = (hasNextPage?: boolean): ThemeUICSSObject => {
     alignItems: "center",
     ...(hasNextPage && {
       "&:hover": {
-        opacity: ".675",
+        // opacity: ".675",
         "> div": {
           transition: ".25s ease",
           transform: "translateX(10%)",
@@ -117,17 +117,24 @@ export const NewsPageContent = (props: {
   }
 
   return (
-    <SectionWrapper styles={{ paddingY: 2 }}>
-      <div sx={headerTitleContainerStyles}>
-        {!isNativeApp && (
-          <SectionHeading
-            title={`News`}
-            theme={ColorTheme.LIGHT}
-            styles={{ px: [0, 1] }}
-          />
-        )}
+    <Fragment>
+      <Head>
+        <title>Cricfanatic - Latest news</title>
+        <meta name="description" content="Cricfanatic superfast cricket news" />
+      </Head>
 
-        <select
+      <SectionWrapper styles={{ paddingY: 2 }}>
+        <div sx={headerTitleContainerStyles}>
+          {!isNativeApp && (
+            <SectionHeading
+              title={`News`}
+              theme={ColorTheme.LIGHT}
+              styles={{ px: [0, 1] }}
+            />
+          )}
+
+          {/* TODO: Enable the category filter later (to be reviewed) */}
+          {/* <select
           name="category"
           sx={{ ...selectBtnStyles, marginBottom: 1 }}
           onChange={onCategoryChangeEvent}
@@ -142,57 +149,83 @@ export const NewsPageContent = (props: {
               {category.attributes.name}
             </option>
           ))}
-        </select>
-      </div>
-
-      {/* Loading state */}
-      {!articles && isLoading && (
-        <div sx={loaderContainerStyles}>
-          {new Array(8).fill(0).map((_item, index) => (
-            <Fragment key={index}>
-              <ArticleCardSkeleton
-                styles={{
-                  flexBasis: ["100%", "calc(100% / 2)", "calc(100% / 3)"],
-                }}
-              />
-            </Fragment>
-          ))}
+        </select> */}
         </div>
-      )}
 
-      {/* Tablets/Desktop layout articles */}
+        {/* Loading state */}
+        {!articles && isLoading && (
+          <div sx={loaderContainerStyles}>
+            {new Array(8).fill(0).map((_item, index) => (
+              <Fragment key={index}>
+                <ArticleCardSkeleton
+                  styles={{
+                    flexBasis: ["100%", "calc(100% / 2)", "calc(100% / 3)"],
+                  }}
+                />
+              </Fragment>
+            ))}
+          </div>
+        )}
 
-      {bp > 0 && articles ? (
-        <div
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            flexDirection: "row",
-            margin: 0,
-            padding: 0,
-          }}
-        >
-          {articles.pages.map((group, index) => {
+        {/* Tablets/Desktop layout articles */}
+
+        {bp > 0 && articles ? (
+          <div
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              flexDirection: "row",
+              margin: 0,
+              padding: 0,
+            }}
+          >
+            {articles.pages.map((group, index) => {
+              return (
+                <Fragment key={index}>
+                  {group.data.map((article, index) => (
+                    <div
+                      sx={{
+                        // flexBasis:
+                        //   index < 2
+                        //     ? ["100%", null, "calc(100% / 2)"]
+                        //     : ["100%", null, "calc(100% / 2)", "calc(100% / 3)"],
+                        flexBasis: [
+                          "100%",
+                          null,
+                          "calc(100% / 2)",
+                          "calc(100% / 3)",
+                        ],
+                        marginBottom: [null, null, 2],
+                      }}
+                      key={article.attributes.slug}
+                    >
+                      <ArticleCard
+                        label={article.attributes.title}
+                        imageSrc={renderImage(
+                          article.attributes.coverimage.data
+                        )}
+                        variant={ArticleVariant.MEDIUM}
+                        date={article.attributes.createdAt}
+                        badge={article.attributes.badge?.data?.attributes.name}
+                        type={article.attributes.type}
+                        category={article.attributes.category}
+                        slug={article.attributes.slug}
+                        styles={{ height: "100%" }}
+                      />
+                    </div>
+                  ))}
+                </Fragment>
+              );
+            })}
+          </div>
+        ) : (
+          //  bp === 0: Mobile layout articles
+          articles.pages.map((group, index) => {
             return (
               <Fragment key={index}>
-                {group.data.map((article, index) => (
-                  <div
-                    sx={{
-                      // flexBasis:
-                      //   index < 2
-                      //     ? ["100%", null, "calc(100% / 2)"]
-                      //     : ["100%", null, "calc(100% / 2)", "calc(100% / 3)"],
-                      flexBasis: [
-                        "100%",
-                        null,
-                        "calc(100% / 2)",
-                        "calc(100% / 3)",
-                      ],
-                      marginBottom: [null, null, 2],
-                    }}
-                    key={article.attributes.slug}
-                  >
-                    <ArticleCard
+                {group.data.map((article) => (
+                  <Fragment key={article.attributes.slug}>
+                    <ArticleMicroCard
                       label={article.attributes.title}
                       imageSrc={renderImage(article.attributes.coverimage.data)}
                       variant={ArticleVariant.MEDIUM}
@@ -203,79 +236,59 @@ export const NewsPageContent = (props: {
                       slug={article.attributes.slug}
                       styles={{ height: "100%" }}
                     />
-                  </div>
+                  </Fragment>
                 ))}
               </Fragment>
             );
-          })}
-        </div>
-      ) : (
-        //  bp === 0: Mobile layout articles
-        articles.pages.map((group, index) => {
-          return (
-            <Fragment key={index}>
-              {group.data.map((article) => (
-                <Fragment key={article.attributes.slug}>
-                  <ArticleMicroCard
-                    label={article.attributes.title}
-                    imageSrc={renderImage(article.attributes.coverimage.data)}
-                    variant={ArticleVariant.MEDIUM}
-                    date={article.attributes.createdAt}
-                    badge={article.attributes.badge?.data?.attributes.name}
-                    type={article.attributes.type}
-                    category={article.attributes.category}
-                    slug={article.attributes.slug}
-                    styles={{ height: "100%" }}
-                  />
-                </Fragment>
-              ))}
-            </Fragment>
-          );
-        })
-      )}
+          })
+        )}
 
-      {/* Load more button component */}
+        {/* Load more button component */}
 
-      {articles && (
-        <div
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingY: 2,
-          }}
-        >
-          <button
-            type="button"
-            sx={loadMoreBtnStyles(hasNextPage)}
-            onClick={loadMore}
-            disabled={!hasNextPage}
+        {articles && (
+          <div
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingY: 2,
+            }}
           >
-            <p
+            <button
+              type="button"
               sx={{
-                variant: "text.subheading4",
-                color: !hasNextPage ? colors.black : colors.white,
+                ...loadMoreBtnStyles(hasNextPage),
+                ...(isFetching ? { opacity: ".675" } : {}),
               }}
+              onClick={loadMore}
+              disabled={!hasNextPage}
             >
-              {!hasNextPage
-                ? `All caught up!`
-                : isFetching
-                ? `Loading`
-                : `Load more`}
-            </p>
-
-            {hasNextPage && (
-              <RightArrowIcon
-                styles={{
-                  color: colors.white,
-                  alignItems: "center",
+              <p
+                sx={{
+                  variant: "text.subheading4",
+                  color: !hasNextPage ? colors.black : colors.white,
                 }}
-              />
-            )}
-          </button>
-        </div>
-      )}
-    </SectionWrapper>
+              >
+                {!hasNextPage
+                  ? `All caught up!`
+                  : isFetching
+                  ? `Loading`
+                  : `Load more`}
+              </p>
+
+              {hasNextPage && (
+                <RightArrowIcon
+                  styles={{
+                    color: colors.white,
+                    alignItems: "center",
+                  }}
+                />
+              )}
+            </button>
+          </div>
+        )}
+      </SectionWrapper>
+    </Fragment>
   );
 };
 

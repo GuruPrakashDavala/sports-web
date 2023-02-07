@@ -22,11 +22,9 @@ import {
   isMatchLive,
 } from "../../../../utils/matchcenter";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
-import { App } from "@capacitor/app";
+import { useHistory } from "react-router";
 
 const SchedulePage = () => {
-  // const location = useLocation();
-  // const queryParamSeries = new URLSearchParams(location.search).get("series");
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const { data: fixturesDefinedInCMS, isLoading: fixturesListLoading } =
     useFixturesDefinedInCMS();
@@ -42,6 +40,8 @@ const SchedulePage = () => {
       : undefined; // this length is used to enabled query
 
   const [seriesIds, setSeriesIds] = useState<string | undefined>(undefined);
+
+  const history = useHistory();
 
   const now = new Date();
   const startDate = format(now, "yyyy-MM-d");
@@ -107,8 +107,10 @@ const SchedulePage = () => {
     setSelectedStage(event.target.value);
   };
 
-  const ionBackButton = useCallback(() => {
-    App.exitApp();
+  const ionBackButton = useCallback((ev: any) => {
+    ev.detail.register(10, () => {
+      history.replace(`/home`);
+    });
   }, []);
 
   useIonViewDidEnter(() => {
@@ -123,9 +125,6 @@ const SchedulePage = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar className="ion-toolbar-color">
-          {/* <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" className="ion-back-button" />
-          </IonButtons> */}
           <IonTitle>Fixtures</IonTitle>
         </IonToolbar>
       </IonHeader>

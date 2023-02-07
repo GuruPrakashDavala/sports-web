@@ -12,7 +12,8 @@ type QuoteProps = {
 const quoteContainerStyles: ThemeUICSSObject = {
   paddingX: [2, null, null, 5, 6],
   paddingY: [6, null, null, 8],
-  background: colors.yellow,
+  // background: colors.yellow,
+  background: colors.experimental.blue150,
 };
 
 const quoteWrapperStyles: ThemeUICSSObject = {
@@ -23,7 +24,8 @@ const quoteWrapperStyles: ThemeUICSSObject = {
 
 const preStyles = {
   display: "inline-block",
-  color: colors.black,
+  // color: colors.black,
+  color: colors.white,
   variant: "text.subheading3",
 };
 
@@ -34,18 +36,21 @@ const quoteStyles = {
   marginY: [2],
   "> span": {
     backgroundSize: "2px 0",
-    color: colors.black,
+    // color: colors.black,
+    color: colors.white,
   },
 };
 
 const postStyles: ThemeUICSSObject = {
   display: "inline-block",
-  color: colors.black,
+  // color: colors.black,
+  color: colors.white,
   variant: "text.subheading2",
   float: "right",
   marginRight: [3, null, null, 6],
 };
 
+// TODO: restyle this component
 const Quote = (props: QuoteProps): JSX.Element => {
   const { pre, post, quote } = props;
   return (
