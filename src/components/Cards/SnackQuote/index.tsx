@@ -4,7 +4,6 @@ import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ComponentVariant } from "../../../types/modifier";
-import SnackNews from "./SnackNews";
 import ForwardArrow from "../../Icons/ForwardArrow";
 import { SnackQuoteComponent } from "../../../types/blocks";
 import Link from "../../Primitives/Link";
@@ -13,6 +12,7 @@ import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import { useRouter } from "next/router";
 import { useIonRouter } from "@ionic/react";
 import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
+import SnackNews from "./SnackNews";
 
 type SnackQuoteProps = {
   block: SnackQuoteComponent;
