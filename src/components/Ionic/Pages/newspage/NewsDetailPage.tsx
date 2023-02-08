@@ -64,7 +64,8 @@ const NewsDetailPage = (): JSX.Element => {
 
   const nativeAppShare = async () => {
     await Share.share({
-      title: "🚀🔥 Cricfanatic latest news",
+      title:
+        "🚀🔥 Cricfanatic latest news. Download cricfanatic app from playstore.",
       text: `${quote}`,
       url: shareURL,
       dialogTitle: "🚀🔥 Cricfanatic latest news",

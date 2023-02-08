@@ -78,12 +78,14 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
           <li sx={{ flexBasis: "70%" }}> {format(matchStartsAt, "p OOOO")}</li>
         </ul>
 
-        <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
-          <li sx={{ flexBasis: "30%" }}>Venue</li>
-          <li sx={{ flexBasis: "70%" }}>
-            {venue.name}, {venue.city}
-          </li>
-        </ul>
+        {venue && (
+          <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>
+            <li sx={{ flexBasis: "30%" }}>Venue</li>
+            <li sx={{ flexBasis: "70%" }}>
+              {venue.name}, {venue.city}
+            </li>
+          </ul>
+        )}
 
         {firstumpire && secondumpire && (
           <ul sx={{ display: "flex", paddingY: 2, paddingX: 1, width: "100%" }}>

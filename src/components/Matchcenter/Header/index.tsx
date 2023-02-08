@@ -382,14 +382,16 @@ const Header = (props: HeaderProps) => {
 
         <div sx={{ display: "flex", alignItems: "center" }}>
           <StadiumIcon styles={{ width: "24px", height: "24px" }} />
-          <div
-            sx={{
-              marginX: 1,
-              variant: bp > 1 ? "text.heading4" : "text.label2",
-            }}
-          >
-            {fixture.venue.name}
-          </div>
+          {fixture.venue && (
+            <div
+              sx={{
+                marginX: 1,
+                variant: bp > 1 ? "text.heading4" : "text.label2",
+              }}
+            >
+              {fixture.venue.name}
+            </div>
+          )}
         </div>
       </div>
     </div>
