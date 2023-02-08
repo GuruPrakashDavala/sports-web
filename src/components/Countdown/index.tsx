@@ -32,6 +32,7 @@ const renderer = ({ hours, minutes, seconds, completed }: any) => {
           justifyContent: "center",
           alignItems: "center",
           gap: 1,
+          marginBottom: 1,
         }}
       >
         {/* {hours}:{minutes}:{seconds} */}

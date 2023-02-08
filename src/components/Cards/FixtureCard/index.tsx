@@ -55,8 +55,8 @@ const FixtureCard = (props: {
   const teamDetails = getS1AndS2TeamInfo(fixture);
   const s1TeamDetails = teamDetails.s1Team;
   const s2TeamDetails = teamDetails.s2Team;
-  const s1TeamName = bp > 3 ? s1TeamDetails.name : s1TeamDetails.code;
-  const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.code;
+  const s1TeamName = bp > 3 ? s1TeamDetails.name : s1TeamDetails.name;
+  const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.name;
 
   const fixtureStartingDate = new Date(fixture.starting_at);
   const isLive = isMatchLive(fixture.status);
