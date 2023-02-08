@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 
-import { useBreakpointIndex } from "@theme-ui/match-media";
 import { default as ReactCountDown } from "react-countdown";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
@@ -11,7 +10,7 @@ const renderer = ({ hours, minutes, seconds, completed }: any) => {
 
   const timeBox: ThemeUICSSObject = {
     display: "flex",
-    paddingY: [1, 2, 3],
+    paddingY: [1, 2],
     paddingX: ["5px", 1],
     justifyContent: "center",
     alignItems: "center",

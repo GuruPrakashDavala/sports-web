@@ -19,7 +19,11 @@ import {
 import Pill from "../../Primitives/Pill";
 import CTAButton from "../../Primitives/LinkButton";
 import { MATCHCENTER_PAGE_BASE_URL } from "../../../utils/pages";
-import Countdown from "../../Countdown";
+import dynamic from "next/dynamic";
+
+const Countdown = dynamic(() => import(`../../Countdown`), {
+  ssr: false,
+});
 
 export const getScore = (
   scoreboards: [] | ScoreboardT[],
@@ -57,7 +61,8 @@ const FixtureCard = (props: {
   const fixtureStartingDate = new Date(fixture.starting_at);
   const isLive = isMatchLive(fixture.status);
   const isMatchOver = isMatchFinished(fixture.status);
-  const matchStartsInHours = differenceInHours(fixtureStartingDate, new Date());
+  const matchStartsInHours =
+    differenceInHours(fixtureStartingDate, new Date()) < 48;
 
   const seoURL = `${fixture.visitorteam.code}-vs-${
     fixture.localteam.code
@@ -243,7 +248,7 @@ const FixtureCard = (props: {
           >{`${fixture.tosswon?.name} elected to ${fixture.elected} first`}</p>
         ) : (
           <Fragment>
-            {matchStartsInHours < 48 ? (
+            {matchStartsInHours ? (
               <Countdown date={fixtureStartingDate} />
             ) : (
               <p sx={{ variant: "text.label3", paddingY: 1 }}>
