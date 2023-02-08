@@ -30,17 +30,19 @@ const Layout = ({ children, globals }: LayoutProps) => {
   };
 
   const appHeader = appGlobals.attributes.AppHeader;
-  const promo = appGlobals.attributes.Promo;
+  const promo = appGlobals.attributes.Web_Promo;
 
   return (
     <div>
       {!isNativeMobileApp && (
         <Fragment>
-          <HeaderPromo
-            promoDescription={promo.promo_description}
-            href={promo.web_href}
-            external={promo.external}
-          />
+          {promo && promo.active && (
+            <HeaderPromo
+              promoDescription={promo.promo_description}
+              href={promo.href}
+              external={promo.external}
+            />
+          )}
 
           <Sticky enabled={isSticky} innerZ={1000} enableTransforms={false}>
             <Header

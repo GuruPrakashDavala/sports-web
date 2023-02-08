@@ -7,6 +7,7 @@ type QuoteProps = {
   quote: string;
   pre?: string;
   post?: string;
+  theme?: string;
 };
 
 const quoteContainerStyles: ThemeUICSSObject = {

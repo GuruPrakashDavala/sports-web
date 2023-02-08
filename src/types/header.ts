@@ -17,7 +17,9 @@ export type Globals = {
         data: ImageType;
       };
       AppHeader: AppHeader;
-      Promo: HeaderPromo;
+      Web_Promo: HeaderPromo;
+      Mobile_Promo: HeaderPromo;
+      news_share_url?: string;
     };
   };
   meta: any;
@@ -76,7 +78,7 @@ export type CategoryImageType = {
 export type HeaderPromo = {
   id: number;
   promo_description: string;
-  mobile_href: string;
-  web_href: string;
-  external: boolean;
+  href: string;
+  external?: boolean;
+  active?: boolean;
 };

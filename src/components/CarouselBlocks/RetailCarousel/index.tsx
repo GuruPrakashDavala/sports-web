@@ -7,6 +7,7 @@ import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { ThemeUICSSObject } from "theme-ui";
 import { renderImage } from "../../../utils/util";
 import RetailCard from "../../Cards/RetailCard";
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 type RetailCarouselProps = {
   block: RetailCarousel;
@@ -16,6 +17,7 @@ type RetailCarouselProps = {
 
 const RetailCarousel = (props: RetailCarouselProps): JSX.Element => {
   const { block, theme = ColorTheme.LIGHT, styles = {} } = props;
+  const bp = useBreakpointIndex();
 
   if (!block.retail_products.data || block.retail_products.data.length === 0)
     return <></>;
@@ -41,7 +43,7 @@ const RetailCarousel = (props: RetailCarouselProps): JSX.Element => {
           category={product.attributes.category}
           mrpPrice={product.attributes.mrp_price}
           currentPrice={product.attributes.current_price}
-          variant={ArticleVariant.LARGE}
+          variant={bp > 1 ? ArticleVariant.LARGE : ArticleVariant.LARGE}
           theme={carouselTheme}
           discountedProduct={discountedProduct}
           styles={{ height: "100%", cursor: "grab", ...styles }}

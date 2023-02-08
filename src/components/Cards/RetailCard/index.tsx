@@ -238,7 +238,9 @@ const RetailCard = (props: RetailCardProps): JSX.Element => {
                   </p>
                 )}
 
-                <p sx={{ variant: "text.subheading2" }}>Rs. {currentPrice}</p>
+                <h3 sx={{ variant: "text.subheading2", color: colors.white }}>
+                  Rs. {currentPrice}
+                </h3>
 
                 <h2>
                   <span

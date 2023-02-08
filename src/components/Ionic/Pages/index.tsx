@@ -78,7 +78,7 @@ const IonHomePage = () => {
   }, [currentFixtures]);
 
   const { data: globals, isLoading: globalsLoading } = useGlobals();
-  const promo = globals?.data.attributes.Promo;
+  const promo = globals?.data.attributes.Mobile_Promo;
 
   return (
     <IonPage>
@@ -97,10 +97,10 @@ const IonHomePage = () => {
       </IonHeader>
 
       <IonContent fullscreen>
-        {promo && (
+        {promo && promo.active && (
           <HeaderPromo
             promoDescription={promo.promo_description}
-            href={promo.mobile_href}
+            href={promo.href}
             external={promo.external}
           />
         )}

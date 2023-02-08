@@ -22,7 +22,12 @@ const Link = (props: LinkProps): JSX.Element => {
   return (
     <Fragment>
       {external ? (
-        <a href={href} onClick={onClick} sx={{ ...linkStyles, ...styles }}>
+        <a
+          href={href}
+          onClick={onClick}
+          sx={{ ...linkStyles, ...styles }}
+          target="_blank"
+        >
           {children}
         </a>
       ) : isNativeMobileApp ? (

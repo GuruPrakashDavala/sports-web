@@ -8,7 +8,7 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { useContext, useEffect, useCallback } from "react";
-import { home, calendar, newspaper, analytics, list } from "ionicons/icons";
+import { home, calendar, newspaper, analytics } from "ionicons/icons";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
 import IonNewsPage from "../Pages/newspage";

@@ -211,10 +211,12 @@ export const ArticleDetailPageContent = (
                   paddingTop: 4,
                 }}
               />
-              <SocialIcons
-                shareURL={shareURL}
-                quote={article.attributes.title}
-              />
+              {!isNativeMobileApp && (
+                <SocialIcons
+                  shareURL={shareURL}
+                  quote={article.attributes.title}
+                />
+              )}
             </div>
           </div>
 
