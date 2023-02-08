@@ -27,6 +27,7 @@ const Link = (props: LinkProps): JSX.Element => {
           onClick={onClick}
           sx={{ ...linkStyles, ...styles }}
           target="_blank"
+          rel="noreferrer"
         >
           {children}
         </a>
