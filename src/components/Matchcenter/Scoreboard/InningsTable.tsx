@@ -73,7 +73,7 @@ const InningsTable = (props: InningsTableProps): JSX.Element => {
       />
       {fixture.batting.map((batting) => {
         const batsmanName =
-          bp > 2 ? batting.batsman.fullname : batting.batsman.lastname;
+          bp > 2 ? batting.batsman.fullname : batting.batsman.fullname;
         const isBatsmanOut = batting.result.is_wicket;
         const result = batting.result.name;
         const bowlerName = batting.bowler
@@ -106,7 +106,7 @@ const InningsTable = (props: InningsTableProps): JSX.Element => {
             >
               <p
                 sx={{
-                  variant: bp === 0 ? "text.subheading4" : "text.subheading3",
+                  variant: bp === 0 ? "text.subheading4" : "text.subheading5",
                 }}
               >
                 {batsmanName}

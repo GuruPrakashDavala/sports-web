@@ -53,16 +53,29 @@ const FixtureCard = (props: {
   const { fixture, includeStageName, styles = {} } = props;
   const bp = useBreakpointIndex();
   const teamDetails = getS1AndS2TeamInfo(fixture);
-  const s1TeamDetails = teamDetails.s1Team;
-  const s2TeamDetails = teamDetails.s2Team;
-  const s1TeamName = bp > 3 ? s1TeamDetails.name : s1TeamDetails.name;
-  const s2TeamName = bp > 3 ? s2TeamDetails.name : s2TeamDetails.name;
-
-  const fixtureStartingDate = new Date(fixture.starting_at);
   const isLive = isMatchLive(fixture.status);
   const isMatchOver = isMatchFinished(fixture.status);
-  const matchStartsInHours =
-    differenceInHours(fixtureStartingDate, new Date()) < 48;
+
+  const s1TeamDetails = teamDetails.s1Team;
+  const s2TeamDetails = teamDetails.s2Team;
+  const s1TeamName =
+    bp > 3
+      ? s1TeamDetails.name
+      : isMatchOver || isLive
+      ? s1TeamDetails.code
+      : s1TeamDetails.name;
+
+  const s2TeamName =
+    bp > 3
+      ? s2TeamDetails.name
+      : isMatchOver || isLive
+      ? s2TeamDetails.code
+      : s2TeamDetails.name;
+
+  const fixtureStartingDate = new Date(fixture.starting_at);
+
+  const matchStartsIn24Hours =
+    differenceInHours(fixtureStartingDate, new Date()) < 24;
 
   const seoURL = `${fixture.visitorteam.code}-vs-${
     fixture.localteam.code
@@ -248,7 +261,7 @@ const FixtureCard = (props: {
           >{`${fixture.tosswon?.name} elected to ${fixture.elected} first`}</p>
         ) : (
           <Fragment>
-            {matchStartsInHours ? (
+            {matchStartsIn24Hours ? (
               <Countdown date={fixtureStartingDate} />
             ) : (
               <p sx={{ variant: "text.label3", paddingY: 1 }}>

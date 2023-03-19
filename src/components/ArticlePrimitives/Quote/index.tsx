@@ -39,17 +39,23 @@ const ArticleQuote = (props: ArticleQuoteType) => {
           </span>
         )}
 
-        <q
+        <blockquote
           sx={{
             display: "flex",
             variant: "text.quote2",
             fontStyle: "italic",
             paddingY: 3,
             justifyContent: "center",
+            // "::before": {
+            //   content: "open-quote",
+            // },
+            // "::after": {
+            //   content: "close-quote",
+            // },
           }}
         >
           {quote}
-        </q>
+        </blockquote>
 
         {post && (
           <span

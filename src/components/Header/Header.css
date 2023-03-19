@@ -51,3 +51,7 @@ ion-tab-button > ion-icon {
 /* .tab-has-label.tab-selected {
   font-size: 14px;
 } */
+
+ion-toolbar > ion-buttons > ion-button {
+  --color: white;
+}

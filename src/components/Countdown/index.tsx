@@ -6,8 +6,6 @@ import { colors } from "../../styles/theme";
 
 // Renderer callback with condition
 const renderer = ({ hours, minutes, seconds, completed }: any) => {
-  //  const bp = useBreakpointIndex();
-
   const timeBox: ThemeUICSSObject = {
     display: "flex",
     paddingY: [1, 2],

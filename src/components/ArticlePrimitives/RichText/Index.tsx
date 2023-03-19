@@ -32,13 +32,16 @@ export const formattedTextStyles: ThemeUICSSObject = {
   ul: { listStyle: "disc" },
   ol: { listStyle: "decimal" },
   a: {
-    color: colors.red100,
+    color: colors.experimental.blue100,
     textDecoration: "underline",
-    textDecorationColor: alpha(colors.red300, 0.17),
+    textDecorationColor: alpha(colors.experimental.blue150, 0.17),
     textDecorationThickness: "2px",
     textUnderlineOffset: "1px",
   },
-  "a:hover": { color: colors.red200, textDecorationColor: colors.red100 },
+  "a:hover": {
+    color: colors.experimental.blue150,
+    textDecorationColor: colors.experimental.blue150,
+  },
   // Styles for CTAs inlined in the formatted text that should be rendered as a button.
   // "a.cta": completeButtonStyles(ButtonVariants.PRIMARY, ColorThemeFrontend.BLACK),
 

@@ -106,3 +106,10 @@ export type RichText = {
   richtext: string;
   type: "richtext";
 };
+
+export type YoutubeEmbed = {
+  id: number;
+  youtubeId: string;
+  embed_title: string;
+  type: "youtubeembed";
+};

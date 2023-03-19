@@ -8,8 +8,11 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchAutoHide: true,
-      splashFullScreen: true,
-      splashImmersive: true,
+      // splashFullScreen: true,
+      // splashImmersive: true,
+    },
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
     },
   },
 };

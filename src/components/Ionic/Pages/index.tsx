@@ -29,8 +29,7 @@ const IonHomePage = () => {
   const [value, setValue] = useState(0);
 
   // hardware back button
-  const ionBackButton = useCallback(() => {
-    // showExitActionSheet();
+  const ionBackButton = useCallback((ev: any) => {
     App.exitApp();
   }, []);
 

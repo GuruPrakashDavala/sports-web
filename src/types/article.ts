@@ -8,6 +8,7 @@ import {
   ArticlePageBlock,
   Quote,
   SnackQuoteComponent,
+  YoutubeEmbed,
 } from "./blocks";
 
 export type WriterType = {
@@ -161,4 +162,5 @@ export type ArticleBlocks =
   | ImagePageBlock
   | ArticlePageBlock
   | Quote
-  | SnackQuoteComponent;
+  | SnackQuoteComponent
+  | YoutubeEmbed;

@@ -24,6 +24,7 @@ import { hapticsImpactMedium } from "../utils/capacitor";
 import { Network } from "@capacitor/network";
 import More from "../Pages/more";
 import MobileAnalytics from "../../GoogleAnalytics/MobileAnalytics";
+// import PushNotificationsContainer from "../utils/pushNotifications";
 
 setupIonicReact();
 
@@ -55,6 +56,7 @@ const NativeAppShell = () => {
   return (
     <IonApp>
       <IonReactRouter>
+        {/* <PushNotificationsContainer /> */}
         <MobileAnalytics />
         <IonTabs>
           <IonRouterOutlet>
@@ -89,6 +91,10 @@ const NativeAppShell = () => {
             <Route exact path="/more">
               <More />
             </Route>
+
+            {/* <Route exact path="/test">
+              <PushNotificationsContainer />
+            </Route> */}
 
             <Redirect exact path="/" to="/home" />
           </IonRouterOutlet>
@@ -130,7 +136,7 @@ const NativeAppShell = () => {
               <IonLabel>Standings</IonLabel>
             </IonTabButton>
 
-            {/* <IonTabButton tab="tab5" href="/more" onClick={hapticsImpactMedium}>
+            {/* <IonTabButton tab="tab5" href="/test" onClick={hapticsImpactMedium}>
               <IonIcon icon={list} />
               <IonLabel>More</IonLabel>
             </IonTabButton> */}

@@ -31,10 +31,14 @@ import PageLoader from "../../components/Loaders/PageLoader/PageLoader";
 import { useIonRouter } from "@ionic/react";
 import { NEWSPAGE_BASE_URL } from "../../utils/pages";
 import Head from "next/head";
+import LiteYouTubeEmbed from "react-lite-youtube-embed";
+import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
+import { useBreakpointIndex } from "@theme-ui/match-media";
 
 const articleContainerStyles: ThemeUICSSObject = {
   paddingX: [2, null, null, 7],
   paddingY: [null, null, 5],
+  paddingBottom: [5],
 };
 
 export const articleBodyWrapperStyles: ThemeUICSSObject = {
@@ -44,7 +48,7 @@ export const articleBodyWrapperStyles: ThemeUICSSObject = {
   width: "calc(100 % -80px)",
   marginLeft: "auto",
   marginRight: "auto",
-  minHeight: "40vh",
+  minHeight: [null, null, "40vh"],
   paddingTop: 0,
   paddingBottom: 0,
   maxWidth: "105rem",
@@ -130,6 +134,12 @@ const BlockPicker = ({
       );
     case "snackquote":
       return <SnackQuote block={block} variant={ComponentVariant.SMALL} />;
+    case "youtubeembed":
+      return (
+        <div sx={{ paddingY: 4 }}>
+          <LiteYouTubeEmbed id={block.youtubeId} title={block.embed_title} />
+        </div>
+      );
     default:
       return <></>;
   }
@@ -155,6 +165,8 @@ export const ArticleDetailPageContent = (
     : router.route;
   const isNewsPage = currentPageURL.startsWith(newspageSlug);
 
+  const bp = useBreakpointIndex();
+
   return (
     <Fragment>
       <Head>
@@ -178,7 +190,9 @@ export const ArticleDetailPageContent = (
           />
 
           {/* Article m ads */}
-          <div></div>
+          {/* Place ads in this div */}
+
+          {bp > 1 && <div></div>}
 
           {/* Article body */}
 
@@ -201,23 +215,24 @@ export const ArticleDetailPageContent = (
             })}
 
             {/* Published info */}
-            <div>
-              <PublishInfo
-                date={article.attributes.createdAt}
-                styles={{
-                  variant: "text.label1",
-                  color: colors.gray100,
-                  paddingY: 3,
-                  paddingTop: 4,
-                }}
-              />
-              {!isNativeMobileApp && (
+            {!isNativeMobileApp && (
+              <div>
+                <PublishInfo
+                  date={article.attributes.createdAt}
+                  styles={{
+                    variant: "text.label1",
+                    color: colors.gray100,
+                    paddingY: 3,
+                    paddingTop: 4,
+                  }}
+                />
+
                 <SocialIcons
                   shareURL={shareURL}
                   quote={article.attributes.title}
                 />
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Article side ads */}

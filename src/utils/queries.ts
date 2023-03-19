@@ -51,6 +51,15 @@ const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   return fixtureDetail;
 };
 
+const getFixtureBasicDetails = async ({ queryKey }: { queryKey: any }) => {
+  const fixtureId = queryKey[1];
+  const fields = fixtureBaseFields.toString();
+  const { data: fixtureBasicDetail } = await axios.get<FixtureAPIResponse>(
+    `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}&fields=${fields}`
+  );
+  return fixtureBasicDetail;
+};
+
 const getCurrentFixtures = async ({ queryKey }: { queryKey: any }) => {
   const seriesIds = queryKey[1];
   const { data: fixtures } = await axios.get<FixturesAPIResponse>(
@@ -96,6 +105,12 @@ export const useFixtureDetails = (
     refetchInterval: refetchInterval ?? 0,
     keepPreviousData: true,
     refetchOnWindowFocus: refetchOnWindowFocus,
+  });
+};
+
+export const useFixtureBasicDetails = (fixtureId: string) => {
+  return useQuery(["fixtureBasicDetail", fixtureId], getFixtureBasicDetails, {
+    keepPreviousData: true,
   });
 };
 

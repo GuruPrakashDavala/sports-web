@@ -2,7 +2,7 @@
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import Image from "next/image";
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
 import { tabStyles } from "../../../pages/matchcenter/[...slug]";
