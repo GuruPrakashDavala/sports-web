@@ -2,7 +2,7 @@ import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.cricfanatic.app",
-  appName: "cricfanatic",
+  appName: "CricFanatic",
   webDir: "out",
   bundledWebRuntime: false,
   plugins: {

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "static": "next build && next export",
-    "build-mobile": "next build && next export && npx cap sync"
+    "build-mobile": "next build && next export && npx cap sync",
+    "open-android": "npx cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^4.6.1",
