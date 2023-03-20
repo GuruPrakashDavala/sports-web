@@ -29,6 +29,8 @@ import { APPLICATION_DOMAIN_URL } from "../../../../utils/util";
 import { isNativeMobileApp } from "../../utils/capacitor";
 
 const NewsDetailPage = (): JSX.Element => {
+  // const { isNativeApp } = useContext<NativeAppContextProps>(NativeAppContext);
+
   const { slug } = useParams<{ slug: string }>();
   const { setShowTabs } = useContext<TabBarContextProps>(TabBarContext);
   const { data: articleData, isLoading: articleLoading } = useArticle(slug);
@@ -44,7 +46,7 @@ const NewsDetailPage = (): JSX.Element => {
     !recentArticlesLoading && articles ? articles.data : undefined;
 
   useIonViewWillEnter(() => {
-    console.log("DidEnter");
+    // console.log("DidEnter");
     setShowTabs(false);
   });
 
@@ -66,7 +68,7 @@ const NewsDetailPage = (): JSX.Element => {
     await Share.share({
       title:
         "🚀🔥 Cricfanatic latest news. Download cricfanatic app from playstore.",
-      text: `${quote}`,
+      text: `${quote} - Catch all the latest news from CricFanatic`,
       url: shareURL,
       dialogTitle: "🚀🔥 Cricfanatic latest news",
     });

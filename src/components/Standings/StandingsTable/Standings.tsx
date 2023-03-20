@@ -87,12 +87,11 @@ export const Standings = (props: { stageId: string }) => {
           {/* Table Body */}
           <div {...getTableBodyProps()} id="tbody">
             {rows.map((row, index) => {
-              console.log(row);
+              // console.log(row);
               prepareRow(row);
               return (
                 <div {...row.getRowProps()} className={`Rtable`} key={index}>
                   {row.cells.map((cell, index) => {
-                    console.log(row);
                     return (
                       <div
                         {...cell.getCellProps()}

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, MutableRefObject } from "react";
 import {
   IonHeader,
   IonPage,
@@ -9,14 +9,22 @@ import {
   useIonViewWillLeave,
 } from "@ionic/react";
 import { NewsPageContent } from "../../../../pages/news/index";
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState } from "react";
 import { fetchStrapiAPI } from "../../../../lib/strapi";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import { useHistory } from "react-router";
 
-const IonNewsPage = () => {
+type IonNewsPageProps = {
+  contentRef: MutableRefObject<HTMLIonContentElement | null>;
+  homeRef?: MutableRefObject<HTMLIonContentElement | null>;
+};
+
+const IonNewsPage = (props: IonNewsPageProps) => {
+  const { contentRef, homeRef } = props;
   const history = useHistory();
-  const [props, setProps] = useState<any>(undefined);
+
+  const [newsPageContentProps, setNewsPageContentProps] =
+    useState<any>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   // TODO: convert this into react queries. Use the same in next pages
@@ -25,7 +33,7 @@ const IonNewsPage = () => {
   const getNewsPageProps = async () => {
     const [articles, categories] = await Promise.all([
       fetchStrapiAPI(
-        `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`
+        `/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`
       ),
       fetchStrapiAPI(`/categories?fields[0]=name,slug`),
     ]);
@@ -35,7 +43,7 @@ const IonNewsPage = () => {
       categories: categories.data,
     };
 
-    setProps(newsPageProps);
+    setNewsPageContentProps(newsPageProps);
   };
 
   useEffect(() => {
@@ -50,6 +58,11 @@ const IonNewsPage = () => {
   const ionBackButton = useCallback((ev: any) => {
     ev.detail.register(10, () => {
       history.replace(`/home`);
+      setTimeout(() => {
+        if (homeRef) {
+          homeRef.current && homeRef.current.scrollToTop(300);
+        }
+      }, 50);
     });
   }, []);
 
@@ -72,16 +85,14 @@ const IonNewsPage = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
-        {props ? (
-          <Fragment>
-            <NewsPageContent
-              articles={props.articles}
-              categories={props.categories}
-              onCategoryChangeEvent={categoryChanged}
-              selectedCategory={selectedCategory}
-            />
-          </Fragment>
+      <IonContent scrollEvents={true} ref={contentRef} fullscreen>
+        {newsPageContentProps ? (
+          <NewsPageContent
+            articles={newsPageContentProps.articles}
+            categories={newsPageContentProps.categories}
+            onCategoryChangeEvent={categoryChanged}
+            selectedCategory={selectedCategory}
+          />
         ) : (
           <PageLoader />
         )}

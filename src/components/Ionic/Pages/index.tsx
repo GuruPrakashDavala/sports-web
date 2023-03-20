@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, MutableRefObject } from "react";
 import {
   useCurrentFixtures,
   useFixturesDefinedInCMS,
@@ -25,7 +25,12 @@ import { logoLink } from "../../../utils/header";
 import { App } from "@capacitor/app";
 import HeaderPromo from "../../Header/HeaderPromo";
 
-const IonHomePage = () => {
+type IonHomePageProps = {
+  contentRef: MutableRefObject<HTMLIonContentElement | null>;
+};
+
+const IonHomePage = (props: IonHomePageProps) => {
+  const { contentRef } = props;
   const [value, setValue] = useState(0);
 
   // hardware back button
@@ -95,7 +100,7 @@ const IonHomePage = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
+      <IonContent scrollEvents={true} ref={contentRef} fullscreen>
         {promo && promo.active && (
           <HeaderPromo
             promoDescription={promo.promo_description}
@@ -103,6 +108,7 @@ const IonHomePage = () => {
             external={promo.external}
           />
         )}
+
         {homepage && fixtures ? (
           <HomePageContent homepage={homepage} fixtures={fixtures} />
         ) : (

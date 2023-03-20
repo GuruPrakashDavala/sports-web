@@ -287,7 +287,7 @@ const LiveCommentary = (props: {
     reversedOrder.slice(0, ballsLimit)
   );
 
-  console.log(reversedOrder);
+  // console.log(reversedOrder);
 
   // reversedOrder contails the balls in reverse order. Example overs from 19.6 to 0.1
   // Balls data
@@ -346,7 +346,6 @@ const LiveCommentary = (props: {
   }, [balls]);
 
   const getMoreBalls = (ev: any) => {
-    console.log("getMoreBallsTrigger");
     if (ballsLimit < reversedOrder.length) {
       setBallsLimit((prev) => prev + 25);
     }

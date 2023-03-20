@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { useCallback, Fragment } from "react";
+import { useCallback, Fragment, MutableRefObject } from "react";
 import {
   IonHeader,
   IonPage,
@@ -17,12 +17,23 @@ import { useStandingsDefinedInCMS } from "../../../../utils/queries";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import { useHistory } from "react-router";
 
-const StadingsPage = () => {
+type IonStandingsPageProps = {
+  contentRef: MutableRefObject<HTMLIonContentElement | null>;
+  homeRef?: MutableRefObject<HTMLIonContentElement | null>;
+};
+
+const StadingsPage = (props: IonStandingsPageProps) => {
+  const { contentRef, homeRef } = props;
   const history = useHistory();
 
   const ionBackButton = useCallback((ev: any) => {
     ev.detail.register(10, () => {
       history.replace(`/home`);
+      setTimeout(() => {
+        if (homeRef) {
+          homeRef.current && homeRef.current.scrollToTop(300);
+        }
+      }, 50);
     });
   }, []);
 
@@ -49,13 +60,13 @@ const StadingsPage = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
+      <IonContent scrollEvents={true} ref={contentRef} fullscreen>
         {standings ? (
           <Fragment>
             <SectionWrapper>
               {standings.map((standing, index) => {
                 return (
-                  <Fragment key={standing.id}>
+                  <Fragment key={standing.seriesId}>
                     <SectionHeading
                       title={standing.seriesName}
                       styles={{ paddingX: 0, paddingTop: index > 0 ? 4 : 0 }}

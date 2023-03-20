@@ -19,8 +19,8 @@ import { colors } from "../../styles/theme";
 import RightArrowIcon from "../../components/Icons/RightArrow";
 import ArticleCardSkeleton from "../../components/Loaders/Cards/ArticleCard";
 import { ThemeUICSSObject } from "theme-ui";
-import { Capacitor } from "@capacitor/core";
 import Head from "next/head";
+import { isNativeMobileApp } from "../../components/Ionic/utils/capacitor";
 
 type ArticleCategories = {
   attributes: {
@@ -106,8 +106,6 @@ export const NewsPageContent = (props: {
     ? (articlesData as unknown as InfiniteArticlesResponseType)
     : initialData;
 
-  const isNativeApp = Capacitor.isNativePlatform();
-
   const loadMore = () => {
     fetchNextPage();
   };
@@ -125,7 +123,7 @@ export const NewsPageContent = (props: {
 
       <SectionWrapper styles={{ paddingY: 2 }}>
         <div sx={headerTitleContainerStyles}>
-          {!isNativeApp && (
+          {!isNativeMobileApp && (
             <SectionHeading
               title={`News`}
               theme={ColorTheme.LIGHT}
@@ -153,6 +151,7 @@ export const NewsPageContent = (props: {
         </div>
 
         {/* Loading state */}
+
         {!articles && isLoading && (
           <div sx={loaderContainerStyles}>
             {new Array(8).fill(0).map((_item, index) => (
@@ -326,7 +325,7 @@ export async function getStaticProps(context: any) {
   try {
     const [articles, categories] = await Promise.all([
       fetchStrapiAPI(
-        `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`
+        `/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`
       ),
       fetchStrapiAPI(`/categories?fields[0]=name,slug`),
     ]);

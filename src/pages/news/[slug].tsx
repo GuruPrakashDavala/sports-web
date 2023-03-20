@@ -136,7 +136,8 @@ const BlockPicker = ({
       return <SnackQuote block={block} variant={ComponentVariant.SMALL} />;
     case "youtubeembed":
       return (
-        <div sx={{ paddingY: 4 }}>
+        <div sx={{ paddingY: 2 }}>
+          <h3 sx={{ paddingBottom: [1, 2] }}>{block.embed_title}</h3>
           <LiteYouTubeEmbed id={block.youtubeId} title={block.embed_title} />
         </div>
       );

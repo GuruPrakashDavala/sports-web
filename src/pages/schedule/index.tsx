@@ -220,9 +220,11 @@ export const SchedulePageContent = (props: {
               }}
             >
               {tabLists.map((tab) => (
-                <Tab tabIndex={tab.id} key={tab.id}>
-                  <p>{tab.name}</p>
-                </Tab>
+                <Fragment key={tab.id}>
+                  <Tab tabIndex={tab.id} key={tab.id}>
+                    <p>{tab.name}</p>
+                  </Tab>
+                </Fragment>
               ))}
             </div>
 
@@ -234,8 +236,8 @@ export const SchedulePageContent = (props: {
             >
               <option value="All">All series</option>
 
-              {series.map((series) => (
-                <option value={series.code} key={series.code}>
+              {series.map((series, index) => (
+                <option value={series.code} key={index}>
                   {series.seriesName}
                 </option>
               ))}

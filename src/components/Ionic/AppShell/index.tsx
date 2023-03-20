@@ -6,8 +6,9 @@ import {
   IonTabBar,
   IonTabButton,
   IonIcon,
+  TabsCustomEvent,
 } from "@ionic/react";
-import { useContext, useEffect, useCallback } from "react";
+import { useContext, useEffect, useCallback, useRef } from "react";
 import { home, calendar, newspaper, analytics } from "ionicons/icons";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
@@ -24,13 +25,12 @@ import { hapticsImpactMedium } from "../utils/capacitor";
 import { Network } from "@capacitor/network";
 import More from "../Pages/more";
 import MobileAnalytics from "../../GoogleAnalytics/MobileAnalytics";
-// import PushNotificationsContainer from "../utils/pushNotifications";
+import PushNotificationsContainer from "../utils/pushNotifications";
 
 setupIonicReact();
 
 const NativeAppShell = () => {
-  console.log("This is an Ionic native app");
-  console.log("Nativeapp shell");
+  // console.log("This is an Ionic native app");
 
   const { showTabs } = useContext<TabBarContextProps>(TabBarContext);
   const tabBarStyles = showTabs ? undefined : { display: "none" };
@@ -53,19 +53,44 @@ const NativeAppShell = () => {
     Network.addListener("networkStatusChange", networkStatusChanged);
   }, []);
 
+  const tabOneRef = useRef<HTMLIonContentElement | null>(null);
+  const tabTwoRef = useRef<HTMLIonContentElement | null>(null);
+  const tabThreeRef = useRef<HTMLIonContentElement | null>(null);
+  const tabFourRef = useRef<HTMLIonContentElement | null>(null);
+
+  const handleTabDidChange = (event: TabsCustomEvent) => {
+    setTimeout(() => {
+      if (event.detail.tab === "tab1" && tabOneRef) {
+        tabOneRef.current && tabOneRef.current.scrollToTop();
+      }
+
+      if (event.detail.tab === "tab2" && tabTwoRef) {
+        tabTwoRef.current && tabTwoRef.current.scrollToTop();
+      }
+
+      if (event.detail.tab === "tab3" && tabThreeRef) {
+        tabThreeRef.current && tabThreeRef.current.scrollToTop();
+      }
+
+      if (event.detail.tab === "tab4" && tabFourRef) {
+        tabFourRef.current && tabFourRef.current.scrollToTop();
+      }
+    }, 50);
+  };
+
   return (
     <IonApp>
       <IonReactRouter>
         {/* <PushNotificationsContainer /> */}
         <MobileAnalytics />
-        <IonTabs>
+        <IonTabs onIonTabsDidChange={handleTabDidChange}>
           <IonRouterOutlet>
             <Route exact path="/home">
-              <IonHomePage />
+              <IonHomePage contentRef={tabOneRef} />
             </Route>
 
             <Route exact path="/newspage">
-              <IonNewsPage />
+              <IonNewsPage contentRef={tabThreeRef} homeRef={tabOneRef} />
             </Route>
 
             <Route path="/newspage/:slug">
@@ -81,11 +106,11 @@ const NativeAppShell = () => {
             </Route>
 
             <Route exact path="/schedulepage">
-              <SchedulePage />
+              <SchedulePage contentRef={tabTwoRef} homeRef={tabOneRef} />
             </Route>
 
             <Route exact path="/standings">
-              <StadingsPage />
+              <StadingsPage contentRef={tabFourRef} homeRef={tabOneRef} />
             </Route>
 
             <Route exact path="/more">
@@ -135,11 +160,6 @@ const NativeAppShell = () => {
               <IonIcon icon={analytics} />
               <IonLabel>Standings</IonLabel>
             </IonTabButton>
-
-            {/* <IonTabButton tab="tab5" href="/test" onClick={hapticsImpactMedium}>
-              <IonIcon icon={list} />
-              <IonLabel>More</IonLabel>
-            </IonTabButton> */}
           </IonTabBar>
         </IonTabs>
       </IonReactRouter>

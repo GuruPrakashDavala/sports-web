@@ -92,14 +92,14 @@ const NewsHeader = ({
               sx={{
                 display: "inline-block",
                 marginRight: "0.5rem",
-                variant: "text.subheading2",
+                variant: "text.subheading3",
               }}
             >
               {category}
             </span>
           )}
 
-          <span sx={{ variant: "text.heading1" }}>{title}</span>
+          <span sx={{ variant: "text.heading2" }}>{title}</span>
         </h2>
       )}
     </div>

@@ -6,6 +6,7 @@ import { Haptics, ImpactStyle } from "@capacitor/haptics";
 //! Option one should be used for app build process
 
 // Option 1: For app build
+
 export const isNativeMobileApp = Capacitor.isNativePlatform();
 
 // Option 2: Only for localhost development purpose

@@ -42,7 +42,7 @@ const ArticleQuote = (props: ArticleQuoteType) => {
         <blockquote
           sx={{
             display: "flex",
-            variant: "text.quote2",
+            variant: "text.heading3",
             fontStyle: "italic",
             paddingY: 3,
             justifyContent: "center",

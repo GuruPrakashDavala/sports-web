@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, MutableRefObject } from "react";
 import {
   IonHeader,
   IonPage,
@@ -24,7 +24,13 @@ import {
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import { useHistory } from "react-router";
 
-const SchedulePage = () => {
+type IonSchedulePageProps = {
+  contentRef: MutableRefObject<HTMLIonContentElement | null>;
+  homeRef?: MutableRefObject<HTMLIonContentElement | null>;
+};
+
+const SchedulePage = (props: IonSchedulePageProps) => {
+  const { contentRef, homeRef } = props;
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const { data: fixturesDefinedInCMS, isLoading: fixturesListLoading } =
     useFixturesDefinedInCMS();
@@ -110,6 +116,11 @@ const SchedulePage = () => {
   const ionBackButton = useCallback((ev: any) => {
     ev.detail.register(10, () => {
       history.replace(`/home`);
+      setTimeout(() => {
+        if (homeRef) {
+          homeRef.current && homeRef.current.scrollToTop(300);
+        }
+      }, 50);
     });
   }, []);
 
@@ -129,7 +140,7 @@ const SchedulePage = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
+      <IonContent scrollEvents={true} ref={contentRef} fullscreen>
         {allSeries ? (
           <Fragment>
             <SchedulePageContent
