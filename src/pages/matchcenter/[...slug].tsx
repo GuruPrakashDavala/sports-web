@@ -322,7 +322,7 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
         >
           {bp > 2 && <AdBlock variant={AdBlockVariant.VERTICAL} />}
 
-          <div>
+          <div sx={{ paddingBottom: 5 }} id="tabs-container">
             {s1Team && s2Team && fixture && (
               <Fragment>
                 {bp > 1 && (

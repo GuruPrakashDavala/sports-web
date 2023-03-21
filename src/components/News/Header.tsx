@@ -86,7 +86,8 @@ const NewsHeader = ({
           </h1>
         </div>
       ) : (
-        <h2 sx={{ paddingX: 2, paddingY: 3 }}>
+        // Mobile news header title
+        <h2 sx={{ paddingX: 2, paddingY: 3, paddingBottom: 0 }}>
           {category && (
             <span
               sx={{

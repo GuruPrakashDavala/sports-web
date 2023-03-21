@@ -74,7 +74,8 @@ const BasicArticleCard = (props: NewscardProps) => {
 
             <h2
               sx={{
-                variant: "text.heading5",
+                // variant: "text.heading5",
+                variant: "text.heading4",
                 color: colors.black,
                 // paddingTop: 2,
                 paddingTop: "5px",
