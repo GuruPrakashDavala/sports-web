@@ -65,7 +65,7 @@ const BasicArticleCard = (props: NewscardProps) => {
                 sx={{
                   variant: "text.subheading4",
                   color: colors.black,
-                  paddingTop: 1,
+                  // paddingTop: 1,
                 }}
               >
                 {category.data.attributes.name}
@@ -76,7 +76,8 @@ const BasicArticleCard = (props: NewscardProps) => {
               sx={{
                 variant: "text.heading5",
                 color: colors.black,
-                paddingTop: 2,
+                // paddingTop: 2,
+                paddingTop: "5px",
               }}
             >
               {label}

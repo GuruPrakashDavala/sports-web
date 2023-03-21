@@ -28,7 +28,7 @@ const cardInfoTransition: ThemeUICSSObject = {
 const imageWrapperStyles: ThemeUICSSObject = {
   position: "relative",
   display: "block",
-  flexBasis: "50%",
+  // flexBasis: "30%",
   marginRight: 1,
 };
 
@@ -73,13 +73,24 @@ const ArticleMicroCard = (props: NewscardProps) => {
     <Link href={path} styles={{ cursor: "pointer", paddingTop: 2 }}>
       <div sx={{ ...cardWrapperStyles, ...styles }}>
         <div sx={imageWrapperStyles}>
-          <Image
+          {/* <Image
             src={imageSrc}
             layout="responsive"
             objectFit="cover"
             alt="image"
             height={articleVariantImageSize}
             width={"120"}
+          /> */}
+
+          <img
+            src={imageSrc}
+            alt={`somelabel`}
+            sx={{
+              height: ["65px"],
+              width: ["85px"],
+              minWidth: "60px",
+              objectFit: "cover",
+            }}
           />
 
           {/* <div sx={{ ...imageIconStyles, height: "35px" }}>
@@ -104,7 +115,7 @@ const ArticleMicroCard = (props: NewscardProps) => {
           </div> */}
         </div>
 
-        <div className="info" sx={{ flexBasis: "50%", ...cardInfoTransition }}>
+        <div className="info" sx={{ ...cardInfoTransition }}>
           <p
             sx={{
               variant: "text.label2",
