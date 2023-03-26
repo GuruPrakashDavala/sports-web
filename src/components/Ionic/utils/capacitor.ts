@@ -16,3 +16,7 @@ export const isNativeMobileApp = Capacitor.isNativePlatform();
 export const hapticsImpactMedium = async () => {
   await Haptics.impact({ style: ImpactStyle.Medium });
 };
+
+export const hapticsImpactLight = async () => {
+  await Haptics.impact({ style: ImpactStyle.Light });
+};

@@ -197,7 +197,7 @@ export const ArticleDetailPageContent = (
 
           {/* Article body */}
 
-          <div>
+          <div sx={{ paddingTop: [1, 0] }}>
             {/* Create a block picker which can hand pick the components and render inside the body */}
             {/* <AdBlock variant={AdBlockVariant.HORIZONTAL} /> */}
 

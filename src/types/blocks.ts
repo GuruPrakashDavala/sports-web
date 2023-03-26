@@ -11,6 +11,7 @@ export enum BlockType {
   ARTICLE = "article",
   NEWSCARD = "newscard",
   SNACKQUOTE = "snackquote",
+  ARTICLE_CAROUSEL = "articlecarousel",
 }
 
 type ArticleBlock = {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, MutableRefObject } from "react";
 import {
+  useArticles,
   useCurrentFixtures,
   useFixturesDefinedInCMS,
   useGlobals,
@@ -24,13 +25,15 @@ import Link from "../../Primitives/Link";
 import { logoLink } from "../../../utils/header";
 import { App } from "@capacitor/app";
 import HeaderPromo from "../../Header/HeaderPromo";
+import { Globals as GlobalsT } from "../../../types/header";
 
 type IonHomePageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
+  globals?: GlobalsT;
 };
 
 const IonHomePage = (props: IonHomePageProps) => {
-  const { contentRef } = props;
+  const { contentRef, globals } = props;
   const [value, setValue] = useState(0);
 
   // hardware back button
@@ -72,6 +75,10 @@ const IonHomePage = (props: IonHomePageProps) => {
 
   const fixtures = currentFixtures;
 
+  const { data: recentNews } = useArticles({});
+
+  const recentNewsArticles = recentNews ? recentNews.data : undefined;
+
   useEffect(() => {
     if (fixtures) {
       const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
@@ -81,7 +88,6 @@ const IonHomePage = (props: IonHomePageProps) => {
     }
   }, [currentFixtures]);
 
-  const { data: globals, isLoading: globalsLoading } = useGlobals();
   const promo = globals?.data.attributes.Mobile_Promo;
 
   return (
@@ -109,8 +115,12 @@ const IonHomePage = (props: IonHomePageProps) => {
           />
         )}
 
-        {homepage && fixtures ? (
-          <HomePageContent homepage={homepage} fixtures={fixtures} />
+        {homepage && fixtures && recentNewsArticles ? (
+          <HomePageContent
+            homepage={homepage}
+            fixtures={fixtures}
+            recentNewsArticles={recentNewsArticles}
+          />
         ) : (
           <PageLoader />
         )}

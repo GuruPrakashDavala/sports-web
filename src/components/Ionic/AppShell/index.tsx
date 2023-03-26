@@ -9,7 +9,14 @@ import {
   TabsCustomEvent,
 } from "@ionic/react";
 import { useContext, useEffect, useCallback, useRef } from "react";
-import { home, calendar, newspaper, analytics } from "ionicons/icons";
+import {
+  home,
+  calendar,
+  newspaper,
+  analytics,
+  trendingUp,
+  flame,
+} from "ionicons/icons";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
 import IonNewsPage from "../Pages/newspage";
@@ -21,11 +28,13 @@ import Matchcenter from "../Pages/matchcenter";
 import SchedulePage from "../Pages/schedule";
 import { setupIonicReact } from "@ionic/react";
 import TabBarContext, { TabBarContextProps } from "../contexts/tabBarContext";
-import { hapticsImpactMedium } from "../utils/capacitor";
+import { hapticsImpactLight } from "../utils/capacitor";
 import { Network } from "@capacitor/network";
 import More from "../Pages/more";
 import MobileAnalytics from "../../GoogleAnalytics/MobileAnalytics";
 import PushNotificationsContainer from "../utils/pushNotifications";
+import Socials from "../Pages/socials";
+import { useGlobals } from "../../../utils/queries";
 
 setupIonicReact();
 
@@ -34,6 +43,9 @@ const NativeAppShell = () => {
 
   const { showTabs } = useContext<TabBarContextProps>(TabBarContext);
   const tabBarStyles = showTabs ? undefined : { display: "none" };
+  const { data: globals, isLoading: globalsLoading } = useGlobals();
+  const showStandings =
+    globals?.data.attributes.Mobile_App_Settings?.show_standings;
 
   const logCurrentNetworkStatus = async () => {
     const status = await Network.getStatus();
@@ -57,6 +69,7 @@ const NativeAppShell = () => {
   const tabTwoRef = useRef<HTMLIonContentElement | null>(null);
   const tabThreeRef = useRef<HTMLIonContentElement | null>(null);
   const tabFourRef = useRef<HTMLIonContentElement | null>(null);
+  const tabFiveRef = useRef<HTMLIonContentElement | null>(null);
 
   const handleTabDidChange = (event: TabsCustomEvent) => {
     setTimeout(() => {
@@ -75,22 +88,38 @@ const NativeAppShell = () => {
       if (event.detail.tab === "tab4" && tabFourRef) {
         tabFourRef.current && tabFourRef.current.scrollToTop();
       }
+
+      if (event.detail.tab === "tab5" && tabFiveRef) {
+        tabFiveRef.current && tabFiveRef.current.scrollToTop();
+      }
     }, 50);
   };
 
   return (
     <IonApp>
       <IonReactRouter>
-        {/* <PushNotificationsContainer /> */}
+        <PushNotificationsContainer />
         <MobileAnalytics />
         <IonTabs onIonTabsDidChange={handleTabDidChange}>
           <IonRouterOutlet>
             <Route exact path="/home">
-              <IonHomePage contentRef={tabOneRef} />
+              <IonHomePage contentRef={tabOneRef} globals={globals} />
+            </Route>
+
+            <Route exact path="/schedulepage">
+              <SchedulePage contentRef={tabTwoRef} homeRef={tabOneRef} />
+            </Route>
+
+            <Route exact path="/socials">
+              <Socials contentRef={tabThreeRef} homeRef={tabOneRef} />
             </Route>
 
             <Route exact path="/newspage">
-              <IonNewsPage contentRef={tabThreeRef} homeRef={tabOneRef} />
+              <IonNewsPage contentRef={tabFourRef} homeRef={tabOneRef} />
+            </Route>
+
+            <Route exact path="/standings">
+              <StadingsPage contentRef={tabFiveRef} homeRef={tabOneRef} />
             </Route>
 
             <Route path="/newspage/:slug">
@@ -103,14 +132,6 @@ const NativeAppShell = () => {
 
             <Route exact path="/matchcenterpage/:fixtureId/:teams">
               <MatchDetailPage />
-            </Route>
-
-            <Route exact path="/schedulepage">
-              <SchedulePage contentRef={tabTwoRef} homeRef={tabOneRef} />
-            </Route>
-
-            <Route exact path="/standings">
-              <StadingsPage contentRef={tabFourRef} homeRef={tabOneRef} />
             </Route>
 
             <Route exact path="/more">
@@ -129,7 +150,7 @@ const NativeAppShell = () => {
             className="ion-tab-bar-styles"
             style={tabBarStyles}
           >
-            <IonTabButton tab="tab1" href="/home" onClick={hapticsImpactMedium}>
+            <IonTabButton tab="tab1" href="/home" onClick={hapticsImpactLight}>
               <IonIcon icon={home} />
               <IonLabel>Home</IonLabel>
             </IonTabButton>
@@ -137,7 +158,7 @@ const NativeAppShell = () => {
             <IonTabButton
               tab="tab2"
               href="/schedulepage"
-              onClick={hapticsImpactMedium}
+              onClick={hapticsImpactLight}
             >
               <IonIcon icon={calendar} />
               <IonLabel>Fixtures</IonLabel>
@@ -145,21 +166,32 @@ const NativeAppShell = () => {
 
             <IonTabButton
               tab="tab3"
+              href="/socials"
+              onClick={hapticsImpactLight}
+            >
+              <IonIcon icon={flame} />
+              <IonLabel>Trending</IonLabel>
+            </IonTabButton>
+
+            <IonTabButton
+              tab="tab4"
               href="/newspage"
-              onClick={hapticsImpactMedium}
+              onClick={hapticsImpactLight}
             >
               <IonIcon icon={newspaper} />
               <IonLabel>News</IonLabel>
             </IonTabButton>
 
-            <IonTabButton
-              tab="tab4"
-              href="/standings"
-              onClick={hapticsImpactMedium}
-            >
-              <IonIcon icon={analytics} />
-              <IonLabel>Standings</IonLabel>
-            </IonTabButton>
+            {showStandings && (
+              <IonTabButton
+                tab="tab5"
+                href="/standings"
+                onClick={hapticsImpactLight}
+              >
+                <IonIcon icon={analytics} />
+                <IonLabel>Standings</IonLabel>
+              </IonTabButton>
+            )}
           </IonTabBar>
         </IonTabs>
       </IonReactRouter>

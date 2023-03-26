@@ -14,9 +14,12 @@ import { API_BASE_URL } from "./util";
 import { InfiniteArticlesResponseType } from "../pages/news";
 import { FixturesList, StandingsList } from "./fixtures";
 import { Globals } from "../types/header";
+import { Tweet as TweetT } from "../types/common";
 
 export const recentArticlesStrapiAPI =
   "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=createdAt:desc";
+
+export const tweetsStrapiAPI = "/tweets?populate=deep&sort=createdAt:desc";
 
 type FixtureAPIResponse = {
   data: FixtureT;
@@ -40,6 +43,10 @@ type FixturesListQueryResponse = {
 
 type StandingsListQueryResponse = {
   data: StandingsList;
+};
+
+type TweetsQueryResponse = {
+  data: TweetT[];
 };
 
 const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
@@ -94,6 +101,12 @@ const getInfiniteArticles = ({
       : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
 
   return fetchStrapiAPI(APIURL);
+};
+
+export const useTweets = (): UseQueryResult<TweetsQueryResponse, Error> => {
+  return useQuery("fetchTweetsFromStrapi", () =>
+    fetchStrapiAPI(tweetsStrapiAPI)
+  );
 };
 
 export const useFixtureDetails = (
@@ -201,27 +214,23 @@ export const useHomepage = (): UseQueryResult<
   );
 };
 
-const useArticles = ({
+export const useArticles = ({
   category,
-  initialData,
-  pageNumber,
+  pageNumber = 1,
 }: {
-  category: string;
-  initialData: { data: ArticleType[] };
+  category?: string;
   pageNumber?: number;
 }): UseQueryResult<{ data: ArticleType[] }, Error> => {
   const APIURL =
     !category || category === "All"
-      ? `/articles?pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2`
-      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2`;
+      ? `/articles?pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`
+      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`;
 
   return useQuery(
     ["articles", category, pageNumber ?? 1],
     () => fetchStrapiAPI(APIURL),
     {
       keepPreviousData: true,
-      initialData: initialData,
-      // enabled: false,
     }
   );
 };

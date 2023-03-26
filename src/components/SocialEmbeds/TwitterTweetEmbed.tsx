@@ -2,6 +2,7 @@
 
 import { TwitterTweetEmbed as TwitterTweetEmbedComponent } from "react-twitter-embed";
 import { ThemeUICSSObject } from "theme-ui";
+import Skeleton from "../Skeleton";
 
 const wrapperStyles: ThemeUICSSObject = {
   "& > div, & > div > div": {
@@ -20,6 +21,20 @@ const wrapperStyles: ThemeUICSSObject = {
 
 type TwitterTweetEmbedProps = { tweetId: string };
 
+const TweetSkeleton = (): JSX.Element => {
+  return (
+    <div>
+      <Skeleton
+        styles={{
+          height: ["180px", "350px"],
+          width: ["90%"],
+          paddingX: 3,
+        }}
+      />
+    </div>
+  );
+};
+
 const TwitterTweetEmbed = ({
   tweetId,
 }: TwitterTweetEmbedProps): JSX.Element => {
@@ -30,7 +45,7 @@ const TwitterTweetEmbed = ({
       {userCanView ? (
         <TwitterTweetEmbedComponent
           tweetId={tweetId}
-          placeholder={`Tweet loading`}
+          placeholder={<TweetSkeleton />}
         />
       ) : (
         <></>

@@ -39,7 +39,8 @@ const NewsDetailPage = (): JSX.Element => {
     useRecentArticles();
 
   const globals = useGlobals();
-  const newsShareURL = globals.data?.data.attributes.news_share_url;
+  const newsShareURL =
+    globals.data?.data.attributes.Mobile_App_Settings?.news_share_url;
 
   const article = articleData ? articleData.data[0] : undefined;
   const recentArticles =

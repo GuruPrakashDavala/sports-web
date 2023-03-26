@@ -7,8 +7,12 @@ import ArticleGrid from "../components/Grids/ArticleGrid";
 import ContentGrid from "../components/Grids/ContentGrid";
 import { fetchStrapiAPI } from "../lib/strapi";
 import { ColorTheme } from "../types/modifier";
-import { ImageType } from "../types/article";
-import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
+import { ArticleType, ImageType } from "../types/article";
+import {
+  ArticleCarousel,
+  ContentGrid as ContentGridT,
+  HomeBlocks,
+} from "../types/blocks";
 import Quote from "../components/Quote";
 import { Fixture as FixtureT } from "../types/sportmonks";
 import { isMatchLive } from "../utils/matchcenter";
@@ -27,7 +31,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
       return (
         <ArticeCarousel
           block={block}
-          theme={index % 2 === 0 ? ColorTheme.GRAY : ColorTheme.LIGHT}
+          theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
           styles={{ padding: [1, 2] }}
         />
       );
@@ -42,7 +46,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
       return (
         <ArticleGrid
           articleGrid={block}
-          theme={index % 2 === 0 ? ColorTheme.GRAY : ColorTheme.LIGHT}
+          theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
         />
       );
 
@@ -56,11 +60,34 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
 export const HomePageContent = (props: {
   homepage: HomePageProps;
   fixtures: FixtureT[];
+  recentNewsArticles?: ArticleType[];
 }) => {
-  const { homepage, fixtures } = props;
+  const { homepage, fixtures, recentNewsArticles } = props;
 
   const title = `Cricfanatic homepage`;
   const keywords = `homepage, cricfanatic, cricket, live scores, live, cricket app, India, BCCI, ICC, news, IPL, ODI, t20, Indian Premier League`;
+
+  const newsCategory = {
+    data: {
+      attributes: {
+        createdAt: "now",
+        name: "View all",
+        slug: "All",
+        updatedAt: "now",
+      },
+      id: 222,
+    },
+  };
+
+  const recentNewsCarouselProps: ArticleCarousel = {
+    id: 111,
+    category: newsCategory,
+    title: "Latest News",
+    type: "articlecarousel",
+    articles: {
+      data: recentNewsArticles ? recentNewsArticles : [],
+    },
+  };
 
   return (
     <section>
@@ -69,7 +96,7 @@ export const HomePageContent = (props: {
         <title>{title}</title>
         <meta
           name="description"
-          content="Cricfanatic superfast livescores app"
+          content="Cricfanatic superfast cricket news and livescores app"
         />
         {/* TODO: change the fav icon */}
         <link rel="icon" href="/favicon.ico" />
@@ -81,6 +108,13 @@ export const HomePageContent = (props: {
         )} */}
 
       <FixtureCarousel fixtures={fixtures} />
+
+      {recentNewsArticles && recentNewsArticles.length > 0 ? (
+        <ArticeCarousel
+          block={recentNewsCarouselProps}
+          theme={ColorTheme.GRAY}
+        />
+      ) : null}
 
       {homepage.attributes.pageblocks &&
         homepage.attributes.pageblocks.length > 0 &&
@@ -117,8 +151,9 @@ const WebHome = (props: {
   homepage: HomePageProps;
   fixtures: FixtureT[];
   seriesIds: string;
+  recentNewsArticles?: ArticleType[];
 }) => {
-  const { seriesIds } = props;
+  const { seriesIds, recentNewsArticles } = props;
   const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const { data: currentFixtures, isLoading: isFixturesLoading } =
     useCurrentFixtures({
@@ -141,15 +176,22 @@ const WebHome = (props: {
       : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
-  return <HomePageContent homepage={homepage} fixtures={fixtures} />;
+  return (
+    <HomePageContent
+      homepage={homepage}
+      fixtures={fixtures}
+      recentNewsArticles={recentNewsArticles}
+    />
+  );
 };
 
 const Home = (props: {
   homepage: HomePageProps;
   fixtures: FixtureT[];
   seriesIds: string;
+  recentNewsArticles?: ArticleType[];
 }): JSX.Element => {
-  const { homepage, fixtures, seriesIds } = props;
+  const { homepage, fixtures, recentNewsArticles, seriesIds } = props;
   const isNativeMobileApp = process.env.NEXT_PUBLIC_IS_WEB === "false";
 
   const AppShell = dynamic(() => import(`../components/Ionic/AppShell/index`), {
@@ -165,6 +207,7 @@ const Home = (props: {
           homepage={homepage}
           fixtures={fixtures}
           seriesIds={seriesIds}
+          recentNewsArticles={recentNewsArticles}
         />
       )}
     </Fragment>
@@ -173,13 +216,15 @@ const Home = (props: {
 
 export async function getStaticProps() {
   try {
-    const [homepage, fixturesDefinedInCMS] = await Promise.all([
+    const recentNewsAPIURL = `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`;
+    const [homepage, fixturesDefinedInCMS, recentNews] = await Promise.all([
       fetchStrapiAPI("/home", {
         populate: "deep, 4",
       }),
       fetchStrapiAPI("/fixtures-list", {
         populate: "deep, 3",
       }),
+      fetchStrapiAPI(recentNewsAPIURL),
     ]);
 
     const seriesIds: string = getSeriesIdsFromFixturesList(
@@ -202,6 +247,7 @@ export async function getStaticProps() {
       props: {
         homepage: homepage.data,
         fixtures: fixtures.data,
+        recentNewsArticles: recentNews.data,
         seriesIds,
       },
       revalidate: 60 * 5,

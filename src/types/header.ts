@@ -19,7 +19,7 @@ export type Globals = {
       AppHeader: AppHeader;
       Web_Promo: HeaderPromo;
       Mobile_Promo: HeaderPromo;
-      news_share_url?: string;
+      Mobile_App_Settings: null | AppSettings;
     };
   };
   meta: any;
@@ -81,4 +81,9 @@ export type HeaderPromo = {
   href: string;
   external?: boolean;
   active?: boolean;
+};
+
+export type AppSettings = {
+  news_share_url?: string;
+  show_standings?: boolean;
 };
