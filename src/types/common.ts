@@ -8,3 +8,15 @@ export type Tweet = {
   };
   id: number;
 };
+
+export type SocialEmbed = {
+  attributes: {
+    title: string;
+    social_id: string;
+    type: "Twitter" | "Instagram" | "YouTube";
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+  };
+  id: number;
+};

@@ -16,7 +16,8 @@ const NewsHeader = ({
   imageSrc,
 }: NewsHeaderProps): JSX.Element => {
   const bp = useBreakpointIndex();
-  const articleHeaderImageHeight = bp > 2 ? 54 : 74;
+  // const articleHeaderImageHeight = bp > 2 ? 54 : 74;
+  const articleHeaderImageHeight = bp > 2 ? 54 : 90;
 
   return (
     <div>

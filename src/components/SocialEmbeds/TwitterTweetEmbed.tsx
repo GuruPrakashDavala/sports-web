@@ -15,7 +15,7 @@ const wrapperStyles: ThemeUICSSObject = {
   },
   "> div > div > iframe > body": {
     opacity: 0.6,
-    backgroundColor: "red !important",
+    // backgroundColor: "red !important",
   },
 };
 
@@ -26,7 +26,7 @@ const TweetSkeleton = (): JSX.Element => {
     <div>
       <Skeleton
         styles={{
-          height: ["180px", "350px"],
+          height: ["160px", "350px"],
           width: ["90%"],
           paddingX: 3,
         }}
@@ -38,18 +38,13 @@ const TweetSkeleton = (): JSX.Element => {
 const TwitterTweetEmbed = ({
   tweetId,
 }: TwitterTweetEmbedProps): JSX.Element => {
-  const userCanView = true;
-
   return (
     <div sx={wrapperStyles}>
-      {userCanView ? (
-        <TwitterTweetEmbedComponent
-          tweetId={tweetId}
-          placeholder={<TweetSkeleton />}
-        />
-      ) : (
-        <></>
-      )}
+      <TwitterTweetEmbedComponent
+        tweetId={tweetId}
+        placeholder={<TweetSkeleton />}
+        options={{ dnt: true, conversation: "none" }}
+      />
     </div>
   );
 };

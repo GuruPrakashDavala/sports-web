@@ -14,7 +14,7 @@ import { API_BASE_URL } from "./util";
 import { InfiniteArticlesResponseType } from "../pages/news";
 import { FixturesList, StandingsList } from "./fixtures";
 import { Globals } from "../types/header";
-import { Tweet as TweetT } from "../types/common";
+import { SocialEmbed as SocialEmbedT, Tweet as TweetT } from "../types/common";
 
 export const recentArticlesStrapiAPI =
   "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=createdAt:desc";
@@ -103,10 +103,53 @@ const getInfiniteArticles = ({
   return fetchStrapiAPI(APIURL);
 };
 
+const getInfiniteSocials = ({
+  pageParam = 1,
+  queryKey,
+}: {
+  pageParam?: number;
+  queryKey: string[];
+}) => {
+  const APIURL = `/socials?pagination[page]=${pageParam}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
+  return fetchStrapiAPI(APIURL);
+};
+
 export const useTweets = (): UseQueryResult<TweetsQueryResponse, Error> => {
   return useQuery("fetchTweetsFromStrapi", () =>
     fetchStrapiAPI(tweetsStrapiAPI)
   );
+};
+
+export type InfiniteSocialsResponseType = {
+  pages: { data: SocialEmbedT[] }[];
+  pageParams: any;
+};
+
+export const useInfiniteSocials = ({
+  category,
+  initialData,
+}: {
+  category?: string;
+  initialData?: any;
+}): UseInfiniteQueryResult<InfiniteSocialsResponseType, Error> => {
+  return useInfiniteQuery(["infiniteSocials"], getInfiniteSocials, {
+    getNextPageParam: (_lastPage, pages) => {
+      const lastFetchedPageMeta = pages[pages.length - 1].meta;
+      const metaPagination = lastFetchedPageMeta
+        ? lastFetchedPageMeta.pagination
+        : undefined;
+      if (metaPagination) {
+        const currentPage = metaPagination.page;
+        const hasNextPage = currentPage < metaPagination.pageCount;
+        const nextPageNumber = hasNextPage ? currentPage + 1 : undefined;
+        return nextPageNumber;
+      } else {
+        return undefined;
+      }
+    },
+    keepPreviousData: true,
+    initialData: initialData,
+  });
 };
 
 export const useFixtureDetails = (

@@ -5,7 +5,6 @@ import {
   useArticles,
   useCurrentFixtures,
   useFixturesDefinedInCMS,
-  useGlobals,
   useHomepage,
 } from "../../../utils/queries";
 import {
@@ -26,7 +25,6 @@ import { logoLink } from "../../../utils/header";
 import { App } from "@capacitor/app";
 import HeaderPromo from "../../Header/HeaderPromo";
 import { Globals as GlobalsT } from "../../../types/header";
-
 type IonHomePageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
   globals?: GlobalsT;
@@ -41,7 +39,7 @@ const IonHomePage = (props: IonHomePageProps) => {
     App.exitApp();
   }, []);
 
-  // force rerender by using state variable to avoid swiper initialization issues
+  // Force rerender by using state variable to avoid swiper initialization issues
   useIonViewDidEnter(() => {
     setValue((value) => value + 1);
     document.addEventListener("ionBackButton", ionBackButton);

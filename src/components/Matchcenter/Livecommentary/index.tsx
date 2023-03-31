@@ -348,6 +348,7 @@ const LiveCommentary = (props: {
   const getMoreBalls = (ev: any) => {
     if (ballsLimit < reversedOrder.length) {
       setBallsLimit((prev) => prev + 25);
+      setTimeout(() => ev.target.complete(), 500);
     }
     ev.target.complete();
   };

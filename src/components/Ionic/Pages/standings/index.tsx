@@ -16,6 +16,7 @@ import SectionWrapper from "../../../Wrappers/SectionWrapper";
 import { useStandingsDefinedInCMS } from "../../../../utils/queries";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import { useHistory } from "react-router";
+import Head from "next/head";
 
 type IonStandingsPageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
@@ -61,6 +62,14 @@ const StadingsPage = (props: IonStandingsPageProps) => {
       </IonHeader>
 
       <IonContent scrollEvents={true} ref={contentRef} fullscreen>
+        <Head>
+          <title>{`Standings page`}</title>
+          <meta
+            name="description"
+            content="Cricfanatic superfast cricket news"
+          />
+        </Head>
+
         {standings ? (
           <Fragment>
             <SectionWrapper>
