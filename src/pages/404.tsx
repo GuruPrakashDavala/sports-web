@@ -36,7 +36,7 @@ const NotFoundPage = () => {
     <div sx={container}>
       <h1>404 - Page Not Found</h1>
       <p>Sorry, there is nothing to see here</p>
-      <p>
+      {/* <p>
         Use the search box or the links below to explore our amazing application
       </p>
       <input
@@ -54,7 +54,7 @@ const NotFoundPage = () => {
         <Link href="/contact" sx={link}>
           Contact US
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };
