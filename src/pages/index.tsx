@@ -172,7 +172,7 @@ const WebHome = (props: {
   useEffect(() => {
     const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
     isLive.length > 0
-      ? setRefetchInterval(20000) // 2 mins polling
+      ? setRefetchInterval(10000) // 1 mins polling
       : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
@@ -244,14 +244,20 @@ export async function getStaticProps() {
     const fixtures = await response.json();
 
     return {
-      props: {
-        homepage: homepage.data,
-        fixtures: fixtures.data,
-        recentNewsArticles: recentNews.data,
-        seriesIds,
+      redirect: {
+        destination: "/standings",
       },
-      revalidate: 60 * 5,
     };
+
+    // return {
+    //   props: {
+    //     homepage: homepage.data,
+    //     fixtures: fixtures.data,
+    //     recentNewsArticles: recentNews.data,
+    //     seriesIds,
+    //   },
+    //   revalidate: 60 * 5,
+    // };
   } catch (err) {
     console.log(err);
     return {};
