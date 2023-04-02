@@ -22,6 +22,7 @@ import FixtureCarousel from "../components/CarouselBlocks/FixtureCarousel";
 import dynamic from "next/dynamic";
 import { getSeriesIdsFromFixturesList } from "../utils/fixtures";
 import RetailCarousel from "../components/CarouselBlocks/RetailCarousel";
+import NotFoundPage from "./404";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
@@ -176,6 +177,8 @@ const WebHome = (props: {
       : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
+  return <NotFoundPage />;
+
   return (
     <HomePageContent
       homepage={homepage}
@@ -244,20 +247,14 @@ export async function getStaticProps() {
     const fixtures = await response.json();
 
     return {
-      redirect: {
-        destination: "/standings",
+      props: {
+        homepage: homepage.data,
+        fixtures: fixtures.data,
+        recentNewsArticles: recentNews.data,
+        seriesIds,
       },
+      revalidate: 60 * 5,
     };
-
-    // return {
-    //   props: {
-    //     homepage: homepage.data,
-    //     fixtures: fixtures.data,
-    //     recentNewsArticles: recentNews.data,
-    //     seriesIds,
-    //   },
-    //   revalidate: 60 * 5,
-    // };
   } catch (err) {
     console.log(err);
     return {};
