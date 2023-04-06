@@ -52,8 +52,6 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
 
   // const articles = data ? data.data : undefined;
 
-  // console.log(articles);
-
   return (
     <div sx={{ paddingY: 3 }}>
       {tosswon && elected && (
