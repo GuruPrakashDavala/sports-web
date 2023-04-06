@@ -186,6 +186,7 @@ export const ArticleDetailPageContent = (
           {/* Article author info block */}
           <AuthorInfoBlock
             createdAt={article.attributes.createdAt}
+            writer={article.attributes.writer}
             shareURL={shareURL}
             quote={article.attributes.title}
           />

@@ -16,6 +16,7 @@ import CalendarIcon from "../../Icons/CalendarIcon";
 import LivePulse from "../../Icons/LivePulse";
 import StadiumIcon from "../../Icons/Stadium";
 import Pill from "../../Primitives/Pill";
+import FixtureInningsStatus from "./FixtureInningsStatus";
 
 type HeaderProps = {
   fixture: FixtureT;
@@ -353,6 +354,10 @@ const Header = (props: HeaderProps) => {
             >
               <span sx={{ opacity: "1", color: colors.black }}>
                 {fixture.note}
+                {/* Place second innings note here from cricker data */}
+                {secondInningsInPlay && (
+                  <FixtureInningsStatus fixtureId={fixture.id} />
+                )}
               </span>
             </div>
           </div>

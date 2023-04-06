@@ -14,6 +14,7 @@ import {
   Bowling as BowlingT,
   Player as PlayerT,
   Scoreboard as ScoreboardT,
+  Team as TeamT,
 } from "../../../types/sportmonks";
 import LiveBatting from "./LiveBatting";
 import LiveBowling from "./LiveBowling";
@@ -24,6 +25,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import WicketBallInfo from "./utils/WicketBallInfo";
 import BallInfo from "./utils/BallInfo";
 import { IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react";
+import Lineup from "../Util/Lineup";
 
 export const PlayerBattingDetails = (props: {
   batsman: PlayerT;
@@ -278,9 +280,22 @@ const LiveCommentary = (props: {
   bowling: BowlingT[];
   scoreboards: ScoreboardT[];
   manofmatch?: null | PlayerT;
+  localteam?: TeamT;
+  visitorteam?: TeamT;
+  lineup?: [] | PlayerT[];
 }): JSX.Element => {
-  const { balls, status, note, batting, bowling, manofmatch, scoreboards } =
-    props;
+  const {
+    balls,
+    status,
+    note,
+    batting,
+    bowling,
+    manofmatch,
+    scoreboards,
+    localteam,
+    visitorteam,
+    lineup,
+  } = props;
   const reversedOrder = [...balls].reverse();
   const [ballsLimit, setBallsLimit] = useState<number>(25);
   const [ballsInList, setBallsInList] = useState<BallT[]>(
@@ -430,6 +445,14 @@ const LiveCommentary = (props: {
             );
           })}
       </div>
+
+      {localteam && visitorteam && lineup && lineup.length > 0 && (
+        <Lineup
+          localteam={localteam}
+          visitorteam={visitorteam}
+          lineup={lineup}
+        />
+      )}
 
       <IonInfiniteScroll onIonInfinite={getMoreBalls}>
         <IonInfiniteScrollContent></IonInfiniteScrollContent>

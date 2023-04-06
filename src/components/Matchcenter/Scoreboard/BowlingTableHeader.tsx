@@ -37,7 +37,7 @@ const BowlingTableHeader = () => {
     >
       {tableHeaders.map((heading, index) => (
         <li
-          sx={{ flexBasis: heading.width, variant: "text.subheading3" }}
+          sx={{ flexBasis: heading.width, variant: "text.subheading4" }}
           key={index}
         >
           {heading.name}

@@ -4,7 +4,7 @@ import { IonCard, IonCardHeader, IonImg } from "@ionic/react";
 import { colors } from "../../../styles/theme";
 import { ColorTheme } from "../../../types/modifier";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
-import getArticleFormattedDate from "../../../utils/util";
+import { getArticleFormattedDate } from "../../../utils/util";
 import { ArticleVariant, NewscardProps } from "../ArticleCard";
 
 const BasicArticleCard = (props: NewscardProps) => {

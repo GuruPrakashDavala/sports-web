@@ -104,6 +104,31 @@ const Scoreboard = (props: ScoreboardProps) => {
 
   const scoreboardTabStyles: ThemeUICSSObject = {
     ...tabStyles,
+    "> ul .react-tabs__tab": {
+      flexGrow: [1, 0],
+      flexBasis: "50%",
+      flexWrap: "wrap",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+      listStyle: "none",
+      paddingY: 2,
+      cursor: "pointer",
+      "&:hover": {
+        "> p, > div > p": {
+          color: colors.black,
+        },
+      },
+      // For scoreboard tabs as it is contained inside a flexbox with image and teamname
+      "> div > p": {
+        color: "rgba(12, 12, 12, 0.3)",
+      },
+      "> p": {
+        variant: "text.subheading4",
+        color: "rgba(12, 12, 12, 0.3)",
+      },
+    },
   };
 
   useEffect(() => {

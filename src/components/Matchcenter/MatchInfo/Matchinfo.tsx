@@ -1,10 +1,10 @@
 /** @jsxImportSource theme-ui */
 
-import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
+import Lineup from "../Util/Lineup";
 
 const rowWrapperStyles: ThemeUICSSObject = {
   display: "flex",
@@ -41,9 +41,18 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
     round,
     tosswon,
     elected,
+    lineup,
   } = props.fixture;
   const matchStartsAt = new Date(starting_at);
-  const bp = useBreakpointIndex();
+  // const bp = useBreakpointIndex();
+
+  // console.log(bp);
+
+  // const { data } = useArticles({ pageNumber: 1 });
+
+  // const articles = data ? data.data : undefined;
+
+  // console.log(articles);
 
   return (
     <div sx={{ paddingY: 3 }}>
@@ -97,7 +106,19 @@ const Matchinfo = (props: { fixture: FixtureT }) => {
         )}
       </div>
 
-      {/* {bp && bp < 2 ? <RelatedArticles styles={{ paddingX: 0 }} /> : <></>} */}
+      {/* {bp < 2 && articles ? (
+        <RelatedArticles styles={{ paddingX: 0 }} recentArticles={articles} />
+      ) : (
+        <></>
+      )} */}
+
+      {localteam && visitorteam && lineup && lineup.length > 0 && (
+        <Lineup
+          localteam={localteam}
+          visitorteam={visitorteam}
+          lineup={lineup}
+        />
+      )}
     </div>
   );
 };

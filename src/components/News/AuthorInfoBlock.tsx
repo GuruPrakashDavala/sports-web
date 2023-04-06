@@ -18,12 +18,14 @@ type AuthorInfoBlockProps = {
 const AuthorInfoBlock = (props: AuthorInfoBlockProps): JSX.Element => {
   const { createdAt, writer, quote, shareURL, styles } = props;
 
+  const authorName = writer?.data?.attributes.name;
+
   return (
     <div
       sx={{ display: "flex", flexDirection: "column", height: "fit-content" }}
     >
       <PublishInfo date={createdAt} />
-      {writer?.data && <AuthorInfo name={writer.data.attributes.name} />}
+      {authorName && <AuthorInfo name={authorName} />}
       {!isNativeMobileApp && <SocialIcons quote={quote} shareURL={shareURL} />}
     </div>
   );

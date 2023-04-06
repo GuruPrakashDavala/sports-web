@@ -51,8 +51,8 @@ const PostMatchInfo = (props: {
 
       <div sx={{ marginY: 2, marginX: [0, 1] }}>
         <p>
-          OK folks that&apos;s a wrap. See you in the next game. Take care. Team
-          cricfanatic.
+          OK folks that&apos;s a wrap. See you in the next game. Take care -
+          Team CricFanatic🏏
         </p>
       </div>
     </Fragment>

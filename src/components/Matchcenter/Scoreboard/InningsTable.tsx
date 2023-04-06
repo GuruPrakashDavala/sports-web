@@ -101,12 +101,15 @@ const InningsTable = (props: InningsTableProps): JSX.Element => {
               sx={{
                 flexBasis: "40%",
                 display: "flex",
+                flexWrap: "wrap",
                 flexDirection: "column",
+                // Padding to accomodate long player names
+                paddingRight: "5px",
               }}
             >
               <p
                 sx={{
-                  variant: bp === 0 ? "text.subheading4" : "text.subheading5",
+                  variant: bp === 0 ? "text.body4" : "text.subheading5",
                 }}
               >
                 {batsmanName}

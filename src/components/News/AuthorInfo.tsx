@@ -15,11 +15,11 @@ const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
       sx={{
         variant: "text.label1",
         color: colors.gray100,
-        paddingY: [1, null, null, 3],
+        paddingBottom: [1, null, null, 3],
         ...styles,
       }}
     >
-      {name}
+      By {name}
     </p>
   );
 };

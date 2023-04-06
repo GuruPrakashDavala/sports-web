@@ -45,6 +45,7 @@ export type RetailCarousel = {
   type: "retailcarousel";
   theme: ColorTheme.DARK | ColorTheme.LIGHT;
   retail_products: { data: RetailProduct[] };
+  isActive: boolean;
 };
 
 export type TweetEmbed = {

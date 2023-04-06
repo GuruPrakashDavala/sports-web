@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
-import getArticleFormattedDate from "../../../utils/util";
+import { getArticleFormattedDate } from "../../../utils/util";
 import Link from "../../Primitives/Link";
 import { ArticleVariant, NewscardProps } from "../ArticleCard";
 

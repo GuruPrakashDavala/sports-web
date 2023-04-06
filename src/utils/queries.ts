@@ -10,7 +10,7 @@ import { fetchStrapiAPI } from "../lib/strapi";
 import { ArticleType } from "../types/article";
 import { fixtureBallFields, fixtureBaseFields } from "./matchcenter";
 import { HomePageProps } from "../pages";
-import { API_BASE_URL } from "./util";
+import { API_BASE_URL, getCountry, getFixtureStatus } from "./util";
 import { InfiniteArticlesResponseType } from "../pages/news";
 import { FixturesList, StandingsList } from "./fixtures";
 import { Globals } from "../types/header";
@@ -382,6 +382,61 @@ export const useInfiniteFixtures = ({
       initialData: initialData,
       keepPreviousData: false,
       enabled: queryEnabled,
+    }
+  );
+};
+
+type IPREGISTRY = {
+  location: {
+    country: {
+      name: string;
+    };
+  };
+};
+
+export const useUserCountry = (): UseQueryResult<IPREGISTRY, Error> => {
+  return useQuery(["userCountry"], getCountry, {
+    refetchOnWindowFocus: false,
+  });
+};
+
+type FixtureStrapiType = {
+  attributes: {
+    createdAt: string;
+    publishedAt: string;
+    cricketdata_match_id: string;
+    sportmonk_fixture_id: string;
+  };
+};
+
+export const useCricketDataFixtureIdFromStrapi = (
+  sportmonkFixtureId: number
+): UseQueryResult<{ data: FixtureStrapiType[] }, Error> => {
+  return useQuery(
+    ["fixture", sportmonkFixtureId],
+    () =>
+      fetchStrapiAPI(
+        `/fixtures?filters[sportmonk_fixture_id][$eq]=${sportmonkFixtureId}&populate=deep`
+      ),
+    { refetchOnWindowFocus: false }
+  );
+};
+
+export const useFixtureStatus = ({
+  cricketDataFixtureId,
+  queryEnabled = false,
+  refetchInterval,
+}: {
+  cricketDataFixtureId?: string;
+  queryEnabled?: boolean;
+  refetchInterval?: number;
+}): UseQueryResult<any, Error> => {
+  return useQuery(
+    ["fixtureStatus", cricketDataFixtureId],
+    () => getFixtureStatus(cricketDataFixtureId),
+    {
+      enabled: queryEnabled,
+      refetchInterval,
     }
   );
 };

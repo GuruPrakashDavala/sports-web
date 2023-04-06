@@ -81,7 +81,7 @@ const IonHomePage = (props: IonHomePageProps) => {
     if (fixtures) {
       const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
       isLive.length > 0
-        ? setRefetchInterval(20000) // 2 mins polling
+        ? setRefetchInterval(1000 * 60) // 1 mins polling
         : setRefetchInterval(1000 * 300); // 5 mins polling;
     }
   }, [currentFixtures]);

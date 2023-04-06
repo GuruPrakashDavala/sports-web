@@ -366,6 +366,9 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
                         bowling={fixture.bowling}
                         manofmatch={fixture.manofmatch}
                         scoreboards={fixture.scoreboards}
+                        localteam={fixture.localteam}
+                        visitorteam={fixture.visitorteam}
+                        lineup={fixture.lineup}
                       />
                     ) : !fixture.balls ? (
                       <LivecommentarySkeleton />
@@ -456,7 +459,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
         differenceInMins > 0 && differenceInMins < 60;
 
       if (isLive) {
-        setRefetchInterval(15000); // 1.5 mins polling
+        setRefetchInterval(1000 * 60); // 1 mins polling
       } else {
         isFinished
           ? setRefetchInterval(0)

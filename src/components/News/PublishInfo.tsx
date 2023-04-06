@@ -2,7 +2,7 @@
 
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
-import getArticleFormattedDate from "../../utils/util";
+import { getArticleFormattedDate } from "../../utils/util";
 
 type PublishInfoProps = {
   date: string | Date;

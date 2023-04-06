@@ -8,7 +8,7 @@ import { CategoryType } from "../../../types/article";
 import PlayIcon from "../../Icons/Play";
 import Link from "../../Primitives/Link";
 import Pill from "../../Primitives/Pill";
-import getArticleFormattedDate from "../../../utils/util";
+import { getArticleFormattedDate } from "../../../utils/util";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 

@@ -149,6 +149,7 @@ export type RetailProduct = {
     type: string;
     updatedAt: string;
     image: { data: ImageType };
+    country: string;
   };
   id: number;
 };

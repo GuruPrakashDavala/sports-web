@@ -364,7 +364,7 @@ const Schedule = (props: {
       );
 
       isLive && isLive.length > 0
-        ? setRefetchInterval(20000) // 2 mins polling for live fixtures
+        ? setRefetchInterval(1000 * 60) // 1 mins polling for live fixtures
         : setRefetchInterval(1000 * 300); // 5 mins polling;
     }
   }, [fixtures]);

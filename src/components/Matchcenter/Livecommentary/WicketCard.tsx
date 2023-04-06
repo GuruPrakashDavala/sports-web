@@ -19,14 +19,6 @@ const wicketCardContainerStyles: ThemeUICSSObject = {
   borderRadius: "10px",
 };
 
-const wicketCardWrapperStyles: ThemeUICSSObject = {
-  display: "flex",
-  justifyContent: ["flex-start", null],
-  flexWrap: "wrap",
-  width: "100%",
-  alignItems: "center",
-};
-
 const cardInfoStyles: ThemeUICSSObject = {
   display: "flex",
   flexBasis: ["10%", null, "10%"],
@@ -41,59 +33,62 @@ const WicketCard = (props: WicketCardProps): JSX.Element => {
 
   return (
     <div sx={wicketCardContainerStyles}>
-      <div sx={{ display: "flex", width: "100%" }}>
-        <div sx={wicketCardWrapperStyles}>
-          <div sx={cardInfoStyles}>
-            <p
-              sx={{
-                padding: 1,
-                variant: "text.subheading2",
-                color: colors.white,
-              }}
-            >
-              Out
-            </p>
-          </div>
-
-          <div
+      <div sx={{ display: "flex", width: "100%", alignItems: "center" }}>
+        <div sx={cardInfoStyles}>
+          <p
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              flexBasis: ["80%", null, "90%"],
-              flexWrap: "wrap",
+              padding: 1,
+              variant: "text.subheading2",
+              color: colors.white,
             }}
           >
-            <ul
-              sx={{
-                ...rowHeaderStyles,
-                background: "transparent",
-                display: "flex",
-                "> li": {
-                  color: colors.white,
-                  variant: "text.subheading3",
-                },
-              }}
-            >
-              <li sx={{ flexBasis: ["45%", "30%"] }}>Batsman</li>
-              <li sx={{ flexBasis: ["11%", "14%"] }}>R</li>
-              <li sx={{ flexBasis: ["11%", "14%"] }}>B</li>
-              <li sx={{ flexBasis: ["11%", "14%"] }}>4S</li>
-              <li sx={{ flexBasis: ["11%", "14%"] }}>6S</li>
-              <li sx={{ flexBasis: ["11%", "14%"] }}>SR</li>
-            </ul>
-            <PlayerBattingDetails
-              batsman={ball.batsmanout}
-              fullBattingList={fullBattingList}
-              recentBall={recentBall}
-              excludeWicketPlayer={false}
-              styles={{
-                ">li": {
-                  color: colors.white,
-                  variant: "text.heading4",
-                },
-              }}
-            />
-          </div>
+            Out
+          </p>
+        </div>
+
+        <div
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flexBasis: ["90%", null, "90%"],
+            flexWrap: "wrap",
+          }}
+        >
+          <ul
+            sx={{
+              ...rowHeaderStyles,
+              background: "transparent",
+              display: "flex",
+              flexWrap: "wrap",
+              width: "100%",
+              "> li": {
+                color: colors.white,
+                variant: "text.subheading3",
+              },
+            }}
+          >
+            <li sx={{ flexBasis: ["45%", "30%"] }}>Batsman</li>
+            <li sx={{ flexBasis: ["11%", "14%"] }}>R</li>
+            <li sx={{ flexBasis: ["11%", "14%"] }}>B</li>
+            <li sx={{ flexBasis: ["11%", "14%"] }}>4S</li>
+            <li sx={{ flexBasis: ["11%", "14%"] }}>6S</li>
+            <li sx={{ flexBasis: ["11%", "14%"] }}>SR</li>
+          </ul>
+          <PlayerBattingDetails
+            batsman={ball.batsmanout}
+            fullBattingList={fullBattingList}
+            recentBall={recentBall}
+            excludeWicketPlayer={false}
+            styles={{
+              ">li": {
+                color: colors.white,
+                variant: "text.heading4",
+              },
+              ">li:first-child": {
+                paddingRight: "5px",
+              },
+            }}
+          />
         </div>
       </div>
     </div>

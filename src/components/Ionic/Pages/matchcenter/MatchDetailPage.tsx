@@ -80,7 +80,7 @@ const MatchDetailPage = () => {
         differenceInMins > 0 && differenceInMins < 60;
 
       if (isLive) {
-        setRefetchInterval(10000); // 1 min polling
+        setRefetchInterval(1000 * 60); // 1 min polling
       } else {
         isFinished
           ? setRefetchInterval(0)

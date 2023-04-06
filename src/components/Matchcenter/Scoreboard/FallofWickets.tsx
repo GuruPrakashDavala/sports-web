@@ -23,7 +23,7 @@ const FallofWickets = (props: FallOfWicketsProps) => {
         <Fragment>
           <p
             sx={{
-              variant: "text.subheading3",
+              variant: "text.subheading4",
               paddingBottom: 2,
               paddingTop: 1,
               paddingX: "5px",
@@ -39,13 +39,36 @@ const FallofWickets = (props: FallOfWicketsProps) => {
               padding: 1,
             }}
           >
-            <li sx={{ flexBasis: "50%", variant: "text.subheading3" }}>
+            <li
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                flexBasis: "50%",
+                variant: "text.subheading4",
+              }}
+            >
               Batsman
             </li>
-            <li sx={{ flexBasis: "25%", variant: "text.subheading3" }}>
+            <li
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                flexBasis: "30%",
+                variant: "text.subheading4",
+              }}
+            >
               Team score
             </li>
-            <li sx={{ flexBasis: "25%", variant: "text.subheading3" }}>Over</li>
+            <li
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                flexBasis: "20%",
+                variant: "text.subheading4",
+              }}
+            >
+              Over
+            </li>
           </ul>
 
           {fallOfWickets.map((batting, index: number) => {
@@ -69,10 +92,10 @@ const FallofWickets = (props: FallOfWicketsProps) => {
                 >
                   {bp < 1 ? batting.batsman.lastname : batting.batsman.fullname}
                 </li>
-                <li sx={{ flexBasis: "25%", variant: "text.body4" }}>
+                <li sx={{ flexBasis: "30%", variant: "text.body4" }}>
                   {batting.fow_score}-{index + 1}
                 </li>
-                <li sx={{ flexBasis: "25%", variant: "text.body4" }}>
+                <li sx={{ flexBasis: "20%", variant: "text.body4" }}>
                   {batting.fow_balls}
                 </li>
               </ul>

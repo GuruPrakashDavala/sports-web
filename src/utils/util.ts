@@ -6,7 +6,7 @@ export const APPLICATION_DOMAIN_URL = `https://cricfanatic.com`;
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_REST_API ?? `http://localhost:3000/api`;
 
-const getArticleFormattedDate = (articleDate: string | Date) => {
+export const getArticleFormattedDate = (articleDate: string | Date) => {
   const now = new Date();
   const articlePublishedDate = new Date(articleDate);
   const differenceFromCurrentTime = differenceInHours(
@@ -35,4 +35,26 @@ export const renderImage = (image: ImageType) => {
   return imageSrc;
 };
 
-export default getArticleFormattedDate;
+export const getCountry = async () => {
+  const res = await fetch("https://api.ipregistry.co/?key=42r5ldd0dh2gem25");
+  const ipAddress = await res.json();
+  return ipAddress;
+};
+
+export const getFixtureStatus = async (fixtureId?: string) => {
+  if (!fixtureId) {
+    return;
+  }
+  const APIToken = "5b6ddb95-de9c-4059-8ea8-a15eb3f373f2";
+  const apiBaseURL = "https://api.cricapi.com/v1/match_info";
+  try {
+    const res = await fetch(
+      `${apiBaseURL}?apikey=${APIToken}&offset=0&id=${fixtureId}`
+    );
+    const cricketDataRes = await res.json();
+    return cricketDataRes;
+  } catch (err) {
+    console.log(err);
+    return;
+  }
+};
