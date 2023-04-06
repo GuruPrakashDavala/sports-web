@@ -21,6 +21,12 @@ export const recentArticlesStrapiAPI =
 
 export const tweetsStrapiAPI = "/tweets?populate=deep&sort=createdAt:desc";
 
+// Region: Mumbai
+export const fixtureDetailLambdaBaseURL = `https://7quaen67b5kaqmokpxx25jcdca0zokxc.lambda-url.ap-south-1.on.aws/`;
+
+// Region: US EAST
+export const fixtureDetailLambdaBaseURL2 = `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws/`;
+
 type FixtureAPIResponse = {
   data: FixtureT;
   status: number;
@@ -53,7 +59,7 @@ const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   const fixtureId = queryKey[1];
   const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
   const { data: fixtureDetail } = await axios.get<FixtureAPIResponse>(
-    `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}`
+    `${fixtureDetailLambdaBaseURL}?fixtureId=${fixtureId}`
   );
   return fixtureDetail;
 };
@@ -62,7 +68,7 @@ const getFixtureBasicDetails = async ({ queryKey }: { queryKey: any }) => {
   const fixtureId = queryKey[1];
   const fields = fixtureBaseFields.toString();
   const { data: fixtureBasicDetail } = await axios.get<FixtureAPIResponse>(
-    `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}&fields=${fields}`
+    `${fixtureDetailLambdaBaseURL}?fixtureId=${fixtureId}&fields=${fields}`
   );
   return fixtureBasicDetail;
 };

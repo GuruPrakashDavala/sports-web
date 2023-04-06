@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cors from "cors";
 import axios from "axios";
+import { fixtureDetailLambdaBaseURL } from "../../../utils/queries";
 
 // Initializing the cors middleware
 const cors = Cors({
@@ -49,7 +50,7 @@ export default async function handler(
 
     const { data: fixture } = await axios({
       method: "GET",
-      url: `https://bntfwvspn7xvyta7vmoheoxawy0xkeyf.lambda-url.us-east-1.on.aws?fixtureId=${fixtureId}&fields=${
+      url: `${fixtureDetailLambdaBaseURL}?fixtureId=${fixtureId}&fields=${
         fields ?? baseFields
       }`,
       responseType: "json",
