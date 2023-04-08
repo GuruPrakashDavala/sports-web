@@ -217,7 +217,7 @@ const Home = (props: {
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   try {
     const recentNewsAPIURL = `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`;
     const [homepage, fixturesDefinedInCMS, recentNews] = await Promise.all([
