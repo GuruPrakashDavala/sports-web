@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { ThemeUICSSObject } from "theme-ui";
 
 export enum AdBlockVariant {
@@ -46,9 +46,9 @@ const AdBlock = (props: AdBlockProps): JSX.Element => {
         src={path ? path : adBlockPath}
         layout="responsive"
         objectFit="contain"
-        alt="image"
+        alt="adBlock"
         height={adBlockHeight}
-        width={"100%"}
+        width={100}
       />
     </div>
   );

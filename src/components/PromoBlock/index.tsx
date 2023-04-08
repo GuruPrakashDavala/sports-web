@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { colors } from "../../styles/theme";
 import SectionWrapper from "../Wrappers/SectionWrapper";
 
@@ -66,8 +66,8 @@ const PromoBlock = (): JSX.Element => {
                 layout="responsive"
                 objectFit="cover"
                 alt="image"
-                height={"100%"}
-                width={"100%"}
+                height={100}
+                width={100}
               />
             </div>
           </div>

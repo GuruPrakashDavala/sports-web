@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";

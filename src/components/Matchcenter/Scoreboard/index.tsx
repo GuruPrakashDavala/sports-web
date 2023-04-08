@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useState, useEffect } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { ThemeUICSSObject } from "theme-ui";
@@ -146,7 +146,7 @@ const Scoreboard = (props: ScoreboardProps) => {
       <TabList>
         <Tab>
           <div sx={tabItemStyles}>
-            <Image src={s1Team.image} width={24} height={24} />
+            <Image src={s1Team.image} width={24} height={24} alt="team1" />
             <p
               sx={{
                 marginLeft: 1,
@@ -162,7 +162,7 @@ const Scoreboard = (props: ScoreboardProps) => {
         {fixture.status !== FixtureStatus.FirstInnings && (
           <Tab>
             <div sx={tabItemStyles}>
-              <Image src={s2Team.image} width={24} height={24} />
+              <Image src={s2Team.image} width={24} height={24} alt="team2" />
               <p
                 sx={{
                   marginLeft: 1,

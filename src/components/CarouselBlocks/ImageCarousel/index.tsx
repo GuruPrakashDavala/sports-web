@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import { useState, useCallback } from "react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { colors } from "../../../styles/theme";
 import { ImageType } from "../../../types/article";
 import { renderImage } from "../../../utils/util";

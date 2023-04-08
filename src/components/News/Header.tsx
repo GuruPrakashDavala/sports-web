@@ -28,7 +28,7 @@ const NewsHeader = ({
           objectFit="cover"
           alt="image"
           height={articleHeaderImageHeight}
-          width={"100%"}
+          width={100}
         />
       </div>
 

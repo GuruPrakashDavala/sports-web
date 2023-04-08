@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 
 import { useIonRouter } from "@ionic/react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useRouter } from "next/router";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
@@ -144,7 +144,7 @@ const SnackQuoteNews = (props: SnackNewsType) => {
               objectFit="cover"
               alt={slug}
               height={articleVariantImageSize}
-              width={"100%"}
+              width={100}
             />
           </div>
           <h2>

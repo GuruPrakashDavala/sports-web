@@ -26,7 +26,7 @@ const BasicArticleCard = (props: BasicArticleCardProps): JSX.Element => {
           objectFit="cover"
           alt="image"
           height={articleVariantImageSize}
-          width={"100%"}
+          width={100}
         />
       </header>
       <div

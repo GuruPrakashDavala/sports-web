@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ColorTheme, ColorThemeAll } from "../../../types/modifier";
@@ -199,7 +199,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
               objectFit="cover"
               alt={label}
               height={articleVariantImageSize}
-              width={"100%"}
+              width={100}
             />
 
             <div sx={imageIconStyles}>

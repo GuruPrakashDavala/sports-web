@@ -2,7 +2,7 @@
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import { format } from "date-fns";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Fragment } from "react";
 import { colors } from "../../../styles/theme";
 import {

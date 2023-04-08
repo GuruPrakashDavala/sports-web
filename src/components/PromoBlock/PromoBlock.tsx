@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { colors } from "../../styles/theme";
 
 const PromoBlockFlex = (): JSX.Element => {
@@ -53,6 +53,7 @@ const PromoBlockFlex = (): JSX.Element => {
             height: "100%",
           }}
         >
+          {/* !! Image in testing */}
           <Image
             src={"/assets/pexel.jpg"}
             layout="fill"
