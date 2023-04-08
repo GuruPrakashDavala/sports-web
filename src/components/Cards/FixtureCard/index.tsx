@@ -20,6 +20,7 @@ import Pill from "../../Primitives/Pill";
 import CTAButton from "../../Primitives/LinkButton";
 import { MATCHCENTER_PAGE_BASE_URL } from "../../../utils/pages";
 import dynamic from "next/dynamic";
+import FixtureInningsStatus from "../../Matchcenter/Header/FixtureInningsStatus";
 
 const Countdown = dynamic(() => import(`../../Countdown`), {
   ssr: false,
@@ -86,6 +87,8 @@ const FixtureCard = (props: {
     : isLive
     ? `Follow live scores`
     : `View match facts`;
+
+  const secondInningsInPlay = fixture.status === "2nd Innings";
 
   return (
     <div
@@ -254,6 +257,11 @@ const FixtureCard = (props: {
           >
             {/* Innings break note should be handled appropriately */}
             {fixture.status === "Innings Break" ? fixture.note : fixture.note}
+
+            {/* Uses cricketData API to show the match status */}
+            {secondInningsInPlay && (
+              <FixtureInningsStatus fixtureId={fixture.id} />
+            )}
           </p>
         ) : fixture.toss_won_team_id ? (
           <p

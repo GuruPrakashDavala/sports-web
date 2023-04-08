@@ -459,7 +459,7 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
         differenceInMins > 0 && differenceInMins < 60;
 
       if (isLive) {
-        setRefetchInterval(1000 * 60); // 1 mins polling
+        setRefetchInterval(1000 * 30); // 0.5 mins polling
       } else {
         isFinished
           ? setRefetchInterval(0)

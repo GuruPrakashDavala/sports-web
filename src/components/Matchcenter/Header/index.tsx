@@ -355,6 +355,7 @@ const Header = (props: HeaderProps) => {
               <span sx={{ opacity: "1", color: colors.black }}>
                 {fixture.note}
                 {/* Place second innings note here from cricker data */}
+                {/* Uses cricketData API to show the match status */}
                 {secondInningsInPlay && (
                   <FixtureInningsStatus fixtureId={fixture.id} />
                 )}

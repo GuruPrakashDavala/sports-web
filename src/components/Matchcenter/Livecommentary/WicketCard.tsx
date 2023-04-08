@@ -84,7 +84,7 @@ const WicketCard = (props: WicketCardProps): JSX.Element => {
                 color: colors.white,
                 variant: "text.heading4",
               },
-              ">li:first-child": {
+              ">li:first-of-type": {
                 paddingRight: "5px",
               },
             }}

@@ -16,11 +16,13 @@ const FixtureInningsStatus = (props: { fixtureId: number }): JSX.Element => {
   const { data: cricketDataFixtureInfo } = useFixtureStatus({
     cricketDataFixtureId: cricketDataMatchId,
     queryEnabled: cricketDataMatchId ? true : false,
-    refetchInterval: 1000 * 60,
+    refetchInterval: 1000 * 20, // 20 seconds
   });
 
   const status = cricketDataFixtureInfo
-    ? cricketDataFixtureInfo.data.status
+    ? cricketDataFixtureInfo.data
+      ? cricketDataFixtureInfo.data.status
+      : undefined
     : undefined;
 
   return <Fragment> {status ? <>{status}</> : null} </Fragment>;
