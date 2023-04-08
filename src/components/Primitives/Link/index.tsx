@@ -36,10 +36,8 @@ const Link = (props: LinkProps): JSX.Element => {
           {children}
         </ReactLink>
       ) : (
-        <NextLink href={href}>
-          <a href={href} sx={{ ...linkStyles, ...styles }}>
-            {children}
-          </a>
+        <NextLink href={href} sx={{ ...linkStyles, ...styles }}>
+          {children}
         </NextLink>
       )}
     </Fragment>
