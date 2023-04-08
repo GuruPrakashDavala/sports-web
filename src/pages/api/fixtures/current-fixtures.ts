@@ -5,7 +5,7 @@ import { add, compareAsc, format, isToday, set, sub } from "date-fns";
 import { Fixture as FixtureT } from "../../../types/sportmonks";
 
 // Initializing the cors middleware
-const cors = Cors({
+export const cors = Cors({
   methods: ["GET", "HEAD"],
   origin: "*",
   optionsSuccessStatus: 200,
@@ -13,7 +13,7 @@ const cors = Cors({
 
 // Helper method to wait for a middleware to execute before continuing
 // And to throw an error when an error happens in a middleware
-function runMiddleware(
+export function runMiddleware(
   req: NextApiRequest,
   res: NextApiResponse,
   fn: Function

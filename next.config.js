@@ -1,20 +1,23 @@
-const withTM = require("next-transpile-modules")([
-  "@ionic/react",
-  "@ionic/core",
-  "@stencil/core",
-  "ionicons",
-]);
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  transpilePackages: [
+    "@ionic/react",
+    "@ionic/core",
+    "@stencil/core",
+    "ionicons",
+    "next-tweet",
+  ],
   images: {
     loader: "default",
+    unoptimized: true,
     domains: [
       "localhost",
       "urbansports-backend.s3.amazonaws.com",
       "cdn.sportmonks.com",
+      "pbs.twimg.com",
+      "abs.twimg.com",
     ],
   },
   webpack: (config) => {
@@ -37,11 +40,11 @@ const nextConfig = {
 
   // Experimental only for android and ios native app
 
-  experimental: {
-    images: {
-      unoptimized: true,
-    },
-  },
+  // experimental: {
+  //   images: {
+  //     unoptimized: true,
+  //   },
+  // },
 };
 
-module.exports = withTM(nextConfig);
+module.exports = nextConfig;

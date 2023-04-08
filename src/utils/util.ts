@@ -59,3 +59,18 @@ export const getFixtureStatus = async (fixtureId?: string) => {
     return;
   }
 };
+
+// Get TweetData
+
+export const getTweet = async (tweetId: string) => {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/socials/single-tweet?tweetId=${tweetId}`
+    );
+    const tweet = await res.json();
+    return tweet.tweetData;
+  } catch (err) {
+    console.log(`Error fetching the tweet - ${tweetId}`);
+    console.log(err);
+  }
+};
