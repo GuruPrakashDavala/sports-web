@@ -80,7 +80,6 @@ const ReelCarousel = (props: ReelCarouselProps): JSX.Element => {
             label={reel.attributes.title}
             imageSrc={renderImage(reel.attributes.thumbnail.data)}
             date={reel.attributes.createdAt}
-            cricfanaticOriginals={reel.attributes.cricfanatic_originals}
             cardType={"Video"}
             badge={reel.attributes.badge}
             slug={reel.attributes.slug}

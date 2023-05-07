@@ -16,7 +16,7 @@ const FixtureInningsStatus = (props: { fixtureId: number }): JSX.Element => {
     : undefined;
 
   const cricketDataAPIToken =
-    globals?.data.attributes.API_Tokens.cricketdata_api_token;
+    globals?.data.attributes.API_Tokens?.cricketdata_api_token;
 
   const { data: cricketDataFixtureInfo } = useFixtureStatus({
     cricketDataFixtureId: cricketDataMatchId,

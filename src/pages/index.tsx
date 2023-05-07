@@ -20,6 +20,7 @@ import VideoCarouselPicker from "../components/CarouselBlocks/VideoCarousel";
 import ArticleCarouselPicker from "../components/CarouselBlocks/ArticleCarousel";
 import StandingsTableBlock from "../components/StandingsTableBlock";
 import ReelCarouselPicker from "../components/CarouselBlocks/ReelCarousel";
+import NotFoundPage from "./404";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
@@ -174,7 +175,7 @@ const WebHome = (props: {
       : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
-  // return <NotFoundPage />;
+  return <NotFoundPage />;
 
   return (
     <HomePageContent

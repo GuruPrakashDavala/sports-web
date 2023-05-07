@@ -47,7 +47,6 @@ const NewsDetailPage = (): JSX.Element => {
     !recentArticlesLoading && articles ? articles.data : undefined;
 
   useIonViewWillEnter(() => {
-    // console.log("DidEnter");
     setShowTabs(false);
   });
 

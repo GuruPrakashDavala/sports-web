@@ -20,7 +20,7 @@ export type Globals = {
       Web_Promo: HeaderPromo;
       Mobile_Promo: HeaderPromo;
       Mobile_App_Settings: null | AppSettings;
-      API_Tokens: {
+      API_Tokens: null | {
         cricketdata_api_token: string;
         sportmonk_api_token: string;
       };

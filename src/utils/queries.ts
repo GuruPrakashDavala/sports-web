@@ -443,14 +443,14 @@ export const useFixtureStatus = ({
   queryEnabled = false,
   refetchInterval,
 }: {
-  cricketDataAPIToken?: string;
   cricketDataFixtureId?: string;
+  cricketDataAPIToken?: string;
   queryEnabled?: boolean;
   refetchInterval?: number;
 }): UseQueryResult<any, Error> => {
   return useQuery(
     ["fixtureStatus", cricketDataFixtureId, cricketDataAPIToken],
-    () => getFixtureStatus(cricketDataFixtureId),
+    () => getFixtureStatus(cricketDataFixtureId, cricketDataAPIToken),
     {
       enabled: queryEnabled,
       refetchInterval,

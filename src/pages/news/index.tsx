@@ -105,8 +105,6 @@ export const NewsPageContent = (props: {
     ? (articlesData as unknown as InfiniteArticlesResponseType)
     : initialData;
 
-  console.log(articlesData);
-
   const loadMore = () => {
     fetchNextPage();
   };

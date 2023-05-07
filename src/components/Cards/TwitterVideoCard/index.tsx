@@ -43,7 +43,6 @@ const TwitterVideoCard = (props: TwitterVideoCardProps): JSX.Element => {
       setError(false);
       setLoading(true);
       const tweet = await getTweet(tweetId);
-      console.log(tweet);
       tweet ? setTweet(tweet) : setError(true);
       setLoading(false);
       return;
