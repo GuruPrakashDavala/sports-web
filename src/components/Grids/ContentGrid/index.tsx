@@ -1,20 +1,17 @@
 /** @jsxImportSource theme-ui */
 
-import { fetchStrapiAPI } from "../../../lib/strapi";
-import { getArticles } from "../../../lib/strapi-utils";
 import { ColorTheme, ComponentVariant } from "../../../types/modifier";
-import { ContentGrid } from "../../../types/blocks";
+import { ContentGrid as ContentGridT } from "../../../types/blocks";
 import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
 import SnackQuote from "../../Cards/SnackQuote";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { renderImage } from "../../../utils/util";
-import SectionHeading from "../../SectionHeading";
 
 type ContentGridProps = {
-  blocks: ContentGrid[];
+  blocks: ContentGridT[];
 };
 
-type BlockPickerProps = { block: ContentGrid };
+type BlockPickerProps = { block: ContentGridT };
 
 const BlockPicker = ({ block }: BlockPickerProps): JSX.Element => {
   switch (block.type) {

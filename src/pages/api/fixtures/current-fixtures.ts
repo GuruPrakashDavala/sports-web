@@ -35,10 +35,6 @@ const sixMonthsFromNow = format(add(now, { months: 6 }), "yyyy-MM-d");
 
 const APIToken = process.env.NEXT_PUBLIC_SPORT_MONKS_API_TOKEN;
 
-type Data = {
-  name: string;
-};
-
 const getLatestFixtures = (fixtures: FixtureT[]) => {
   const dateFromYesterday = sub(
     set(now, {

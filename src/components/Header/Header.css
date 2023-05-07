@@ -55,3 +55,21 @@ ion-tab-button > ion-icon {
 ion-toolbar > ion-buttons > ion-button {
   --color: white;
 }
+
+.no-ripple {
+  --ripple-color: transparent;
+}
+
+.no-hover {
+  pointer-events: none;
+}
+
+.swiper-slide {
+  height: "auto";
+}
+
+.control-styles {
+  /* Hide the error dialog */
+  --dialog: none;
+  --controls: none;
+}

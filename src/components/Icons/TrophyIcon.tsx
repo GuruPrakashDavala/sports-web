@@ -5,7 +5,7 @@ import { ComponentVariant } from "../../types/modifier";
 import { getIconSize, IconProps } from "./Play";
 
 const TrophyIcon = (props: IconProps) => {
-  const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;
+  const { styles = {}, variant = ComponentVariant.LARGE } = props;
 
   return (
     <div

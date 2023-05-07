@@ -16,6 +16,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useThemeUI } from "theme-ui";
 import { column } from "../../utils/grid";
 import { themeUIArray } from "../../utils/themeui";
+import { useCarouselContext } from "../Ionic/contexts/carouselRefContext";
 
 SwiperCore.use([Navigation, Keyboard, Mousewheel]);
 
@@ -45,6 +46,8 @@ const Carousel = (props: CarouselProps): JSX.Element => {
   const {
     theme: { space },
   } = useThemeUI();
+
+  const { carouselUpdate } = useCarouselContext();
 
   // if (!items) return <></>;
 
@@ -154,9 +157,15 @@ const Carousel = (props: CarouselProps): JSX.Element => {
     }
   }, [swiperOptions]);
 
+  useEffect(() => {
+    if (swiperRef.current && carouselUpdate > 0) {
+      swiperRef.current.slideTo(0, 100);
+    }
+  }, [carouselUpdate]);
+
   return (
     <LazyMotion features={domAnimation}>
-      <div sx={{ ...carouselWrapperStyles, ...styles }}>
+      <div sx={{ ...carouselWrapperStyles, ...styles }} id="carousel">
         <CarouselNavigationButton
           direction="left"
           className={`swiper-button-prev swiper-button-prev-${swiperId}`}
@@ -187,13 +196,14 @@ const Carousel = (props: CarouselProps): JSX.Element => {
                   key={i}
                   sx={{
                     width: [
-                      `calc(100% - 60px)`,
-                      `calc(100% - 60px)`,
-                      `calc(50% - 30px)`,
-                      `calc(33% - 23px)`,
-                      `calc(33% - 36px)`,
+                      `calc(100% - 60px) !important`,
+                      `calc(100% - 60px) !important`,
+                      `calc(50% - 30px) !important`,
+                      `calc(33% - 23px) !important`,
+                      `calc(33% - 36px) !important`,
                       column(4),
                     ],
+                    height: "auto !important",
                     ...item.slideStyles,
                   }}
                 >

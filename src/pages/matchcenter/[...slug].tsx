@@ -71,8 +71,11 @@ export const tabStyles: ThemeUICSSObject = {
     listStyle: "none",
     paddingY: 2,
     cursor: "pointer",
+    "> p, > div > svg, > div > p": {
+      color: colors.gray200,
+    },
     "&:hover": {
-      "> p, > div > p": {
+      "> p, > div > svg, > div > p": {
         color: colors.black,
       },
     },
@@ -92,7 +95,7 @@ export const tabStyles: ThemeUICSSObject = {
     background: colors.white,
     borderBottom: "2px solid",
     borderColor: colors.red100,
-    "> p, > div > p": {
+    "> p, > div > svg, > div > p": {
       color: colors.black,
     },
   },
@@ -283,7 +286,7 @@ export const MatchCenterContent = (props: MatchCenterContentProps) => {
       // S2 fall of wickets
       const s2Fow = fixture.batting
         .filter(
-          (batting, index) =>
+          (batting) =>
             batting.scoreboard === "S2" && batting.result.is_wicket === true
         )
         .sort((batting1, batting2) => batting1.fow_balls - batting2.fow_balls);

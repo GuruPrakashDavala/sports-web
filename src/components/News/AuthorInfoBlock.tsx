@@ -22,7 +22,12 @@ const AuthorInfoBlock = (props: AuthorInfoBlockProps): JSX.Element => {
 
   return (
     <div
-      sx={{ display: "flex", flexDirection: "column", height: "fit-content" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "fit-content",
+        ...styles,
+      }}
     >
       <PublishInfo date={createdAt} />
       {authorName && <AuthorInfo name={authorName} />}

@@ -28,7 +28,7 @@ function runMiddleware(
   });
 }
 
-const APIToken = process.env.NEXT_PUBLIC_SPORT_MONKS_API_TOKEN;
+// const APIToken = process.env.NEXT_PUBLIC_SPORT_MONKS_API_TOKEN;
 
 const baseFields = `visitorteam, localteam`;
 

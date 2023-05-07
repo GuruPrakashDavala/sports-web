@@ -1,11 +1,19 @@
 /** @jsxImportSource theme-ui */
 
-import { useState, useEffect, useCallback, MutableRefObject } from "react";
 import {
+  useState,
+  useEffect,
+  useCallback,
+  MutableRefObject,
+  Fragment,
+} from "react";
+import {
+  InfiniteSocialsResponseType,
   useArticles,
   useCurrentFixtures,
   useFixturesDefinedInCMS,
   useHomepage,
+  useInfiniteSocials,
 } from "../../../utils/queries";
 import {
   IonHeader,
@@ -15,6 +23,9 @@ import {
   useIonViewDidEnter,
   IonButtons,
   useIonViewWillLeave,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  ScrollDetail,
 } from "@ionic/react";
 import { isMatchLive } from "../../../utils/matchcenter";
 import { HomePageContent } from "../../../pages";
@@ -25,6 +36,9 @@ import { logoLink } from "../../../utils/header";
 import { App } from "@capacitor/app";
 import HeaderPromo from "../../Header/HeaderPromo";
 import { Globals as GlobalsT } from "../../../types/header";
+import GoTop from "../../Primitives/GoTopButton";
+import SocialsFeed from "../../SocialsFeed";
+
 type IonHomePageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
   globals?: GlobalsT;
@@ -33,15 +47,17 @@ type IonHomePageProps = {
 const IonHomePage = (props: IonHomePageProps) => {
   const { contentRef, globals } = props;
   const [value, setValue] = useState(0);
+  const [showGoTop, setShowGoTop] = useState(false);
 
   // hardware back button
-  const ionBackButton = useCallback((ev: any) => {
+  const ionBackButton = useCallback(() => {
     App.exitApp();
   }, []);
 
   // Force rerender by using state variable to avoid swiper initialization issues
   useIonViewDidEnter(() => {
     setValue((value) => value + 1);
+    console.log(value);
     document.addEventListener("ionBackButton", ionBackButton);
   });
 
@@ -61,12 +77,11 @@ const IonHomePage = (props: IonHomePageProps) => {
       ? getSeriesIdsFromFixturesList(fixturesDefinedInCMS.data)
       : ``;
 
-  const { data: currentFixtures, isLoading: isCurrentFixturesLoading } =
-    useCurrentFixtures({
-      seriesIds,
-      refetchInterval,
-      queryEnabled: seriesIds.length > 0,
-    });
+  const { data: currentFixtures } = useCurrentFixtures({
+    seriesIds,
+    refetchInterval,
+    queryEnabled: seriesIds.length > 0,
+  });
 
   const homepage =
     !isHomepageLoading && homepageRes ? homepageRes.data : undefined;
@@ -88,6 +103,37 @@ const IonHomePage = (props: IonHomePageProps) => {
 
   const promo = globals?.data.attributes.Mobile_Promo;
 
+  const showSocialsInHomePage =
+    globals?.data.attributes.Mobile_App_Settings?.show_socials_in_homepage;
+
+  const {
+    isLoading: socialsLoading,
+    data: socials,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteSocials({ queryEnabled: showSocialsInHomePage ?? false });
+
+  const loadMore = (ev: any) => {
+    if (hasNextPage) {
+      fetchNextPage();
+      setTimeout(() => ev.target.complete(), 500);
+    } else {
+      setTimeout(() => ev.target.complete(), 500);
+    }
+  };
+
+  const socialEmbeds = socials as unknown as InfiniteSocialsResponseType;
+
+  const handleScroll = (scrollEvent: CustomEvent<ScrollDetail>) => {
+    const scrollYPosition = scrollEvent.detail.scrollTop;
+
+    if (scrollYPosition > 2000) {
+      return setShowGoTop(true);
+    } else if (scrollYPosition < 2000) {
+      return setShowGoTop(false);
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -104,7 +150,12 @@ const IonHomePage = (props: IonHomePageProps) => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent scrollEvents={true} ref={contentRef} fullscreen>
+      <IonContent
+        scrollEvents={true}
+        ref={contentRef}
+        onIonScroll={handleScroll}
+        fullscreen
+      >
         {promo && promo.active && (
           <HeaderPromo
             promoDescription={promo.promo_description}
@@ -114,11 +165,28 @@ const IonHomePage = (props: IonHomePageProps) => {
         )}
 
         {homepage && fixtures && recentNewsArticles ? (
-          <HomePageContent
-            homepage={homepage}
-            fixtures={fixtures}
-            recentNewsArticles={recentNewsArticles}
-          />
+          <Fragment>
+            <GoTop contentRef={contentRef} showGoTop={showGoTop} />
+
+            <HomePageContent
+              homepage={homepage}
+              fixtures={fixtures}
+              recentNewsArticles={recentNewsArticles}
+            />
+
+            {!socialsLoading && socialEmbeds && (
+              <SocialsFeed socialEmbeds={socialEmbeds} />
+            )}
+
+            {hasNextPage && (
+              <IonInfiniteScroll
+                onIonInfinite={loadMore}
+                sx={{ alignContent: "center" }}
+              >
+                <IonInfiniteScrollContent></IonInfiniteScrollContent>
+              </IonInfiniteScroll>
+            )}
+          </Fragment>
         ) : (
           <PageLoader />
         )}

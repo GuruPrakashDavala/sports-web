@@ -41,11 +41,11 @@ const Lineup = (props: {
   }
 
   const localTeamLineup = lineup.filter(
-    (player, _index) => player.lineup?.team_id === localteam.id
+    (player) => player.lineup?.team_id === localteam.id
   );
 
   const visitorTeamLineUp = lineup.filter(
-    (player, _index) => player.lineup?.team_id === visitorteam.id
+    (player) => player.lineup?.team_id === visitorteam.id
   );
 
   return (

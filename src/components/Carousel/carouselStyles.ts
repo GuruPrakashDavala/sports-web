@@ -39,6 +39,7 @@ export const SwipeContainer = styled.div`
   }
   .swiper-container-css-mode > .swiper-wrapper > .swiper-slide {
     scroll-snap-align: start start;
+    height: auto;
   }
   .swiper-container-horizontal.swiper-container-css-mode > .swiper-wrapper {
     scroll-snap-type: x mandatory;

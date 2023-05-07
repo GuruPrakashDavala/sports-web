@@ -41,12 +41,15 @@ export const getCountry = async () => {
   return ipAddress;
 };
 
-export const getFixtureStatus = async (fixtureId?: string) => {
+export const getFixtureStatus = async (
+  fixtureId?: string,
+  cricketDataAPIToken?: string
+) => {
   if (!fixtureId) {
     return;
   }
-  // const APIToken = "5b6ddb95-de9c-4059-8ea8-a15eb3f373f2";
-  const APIToken = "77b0704b-6b3f-4196-a1ac-343e6963f67e";
+  const LifeTimeFreeAPIToken = "5b6ddb95-de9c-4059-8ea8-a15eb3f373f2";
+  const APIToken = cricketDataAPIToken ?? LifeTimeFreeAPIToken;
   const apiBaseURL = "https://api.cricapi.com/v1/match_info";
   try {
     const res = await fetch(
@@ -72,5 +75,6 @@ export const getTweet = async (tweetId: string) => {
   } catch (err) {
     console.log(`Error fetching the tweet - ${tweetId}`);
     console.log(err);
+    return undefined;
   }
 };

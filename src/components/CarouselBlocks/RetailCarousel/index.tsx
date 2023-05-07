@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { ColorTheme } from "../../../types/modifier";
-import { RetailCarousel } from "../../../types/blocks";
+import { RetailCarousel as RetailCarouselT } from "../../../types/blocks";
 import { ArticleVariant } from "../../Cards/ArticleCard";
 import Carousel from "../../Carousel";
 import SectionHeading from "../../SectionHeading";
@@ -12,7 +12,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useUserCountry } from "../../../utils/queries";
 
 type RetailCarouselProps = {
-  block: RetailCarousel;
+  block: RetailCarouselT;
   theme?: ColorTheme;
   styles?: ThemeUICSSObject;
 };
@@ -42,7 +42,7 @@ const RetailCarousel = (props: RetailCarouselProps): JSX.Element => {
     return <></>;
   }
 
-  const carouselTheme = block.theme;
+  const carouselTheme = block.theme ?? theme;
 
   const retailCarouselItems = retailProducts.map((product) => {
     const discountedProduct = product.attributes.status === `Offer`;

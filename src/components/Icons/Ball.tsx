@@ -23,7 +23,7 @@ export const getIconSize = (variant: ComponentVariant) => {
 };
 
 const BallIcon = (props: IconProps) => {
-  const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;
+  const { styles = {}, variant = ComponentVariant.LARGE } = props;
 
   return (
     <div sx={{ paddingX: [3], ...styles }}>

@@ -2,9 +2,11 @@ import { Fragment } from "react";
 import {
   useCricketDataFixtureIdFromStrapi,
   useFixtureStatus,
+  useGlobals,
 } from "../../../utils/queries";
 
 const FixtureInningsStatus = (props: { fixtureId: number }): JSX.Element => {
+  const { data: globals } = useGlobals();
   const { data } = useCricketDataFixtureIdFromStrapi(props.fixtureId);
 
   const cricketDataMatchId = data
@@ -13,9 +15,13 @@ const FixtureInningsStatus = (props: { fixtureId: number }): JSX.Element => {
       : undefined
     : undefined;
 
+  const cricketDataAPIToken =
+    globals?.data.attributes.API_Tokens.cricketdata_api_token;
+
   const { data: cricketDataFixtureInfo } = useFixtureStatus({
     cricketDataFixtureId: cricketDataMatchId,
-    queryEnabled: cricketDataMatchId ? true : false,
+    cricketDataAPIToken: cricketDataAPIToken,
+    queryEnabled: cricketDataMatchId && cricketDataAPIToken ? true : false,
     refetchInterval: 1000 * 20, // 20 seconds
   });
 
@@ -25,7 +31,7 @@ const FixtureInningsStatus = (props: { fixtureId: number }): JSX.Element => {
       : undefined
     : undefined;
 
-  return <Fragment> {status ? <>{status}</> : null} </Fragment>;
+  return <Fragment> {status ? <>&nbsp;-&nbsp;{status}</> : null} </Fragment>;
 };
 
 export default FixtureInningsStatus;

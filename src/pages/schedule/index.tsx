@@ -124,7 +124,7 @@ export const selectBtnStyles: ThemeUICSSObject = {
   "> option": { background: colors.white },
 };
 
-const fixtureTabStyles: ThemeUICSSObject = {
+export const fixtureTabStyles: ThemeUICSSObject = {
   "> .react-tabs__tab-list": {
     justifyContent: "space-between",
     display: "flex",

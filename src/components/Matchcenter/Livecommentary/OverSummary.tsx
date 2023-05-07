@@ -51,7 +51,7 @@ const OverSummary = (props: {
   ball: BallT;
   inningsOversSummary?: OversSummary;
 }): JSX.Element => {
-  const { overNumber, innings, ball, inningsOversSummary } = props;
+  const { overNumber, inningsOversSummary } = props;
   if (!inningsOversSummary) {
     return <></>;
   }

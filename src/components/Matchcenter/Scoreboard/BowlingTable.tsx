@@ -38,7 +38,7 @@ const BowlingTable = (props: InningsTableProps) => {
   ];
 
   const bowlingTableHeaderSm = [
-    { name: "Bowler", key: "lastname", width: "30%" },
+    { name: "Bowler", key: "fullname", width: "30%" },
     { name: "O", key: "overs", width: "14%" },
     { name: "M", key: "medians", width: "14%" },
     { name: "R", key: "runs", width: "14%" },
@@ -70,8 +70,10 @@ const BowlingTable = (props: InningsTableProps) => {
                 <li
                   sx={{
                     flexBasis: heading.width,
+                    width: heading.width,
                     paddingY: [null, 1],
                     variant: bp < 1 ? "text.body4" : undefined,
+                    paddingRight: 1,
                   }}
                   key={index}
                 >

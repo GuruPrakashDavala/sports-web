@@ -87,10 +87,12 @@ const FallofWickets = (props: FallOfWicketsProps) => {
                 <li
                   sx={{
                     flexBasis: "50%",
+                    width: "50%",
+                    paddingRight: 1,
                     variant: bp < 1 ? "text.body4" : undefined,
                   }}
                 >
-                  {bp < 1 ? batting.batsman.lastname : batting.batsman.fullname}
+                  {bp < 1 ? batting.batsman.fullname : batting.batsman.fullname}
                 </li>
                 <li sx={{ flexBasis: "30%", variant: "text.body4" }}>
                   {batting.fow_score}-{index + 1}

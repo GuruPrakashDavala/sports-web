@@ -5,7 +5,7 @@ import { getIconSize, IconProps } from "./Play";
 import { IoIosArrowForward } from "react-icons/io";
 
 const RightArrowIcon = (props: IconProps) => {
-  const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;
+  const { styles = {}, variant = ComponentVariant.LARGE } = props;
 
   return (
     <div sx={{ display: "flex", paddingLeft: "5px", ...styles }}>

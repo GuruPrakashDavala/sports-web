@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import { ColorTheme } from "../../../types/modifier";
-import { ArticleGrid } from "../../../types/blocks";
+import { ArticleGrid as ArticleGridT } from "../../../types/blocks";
 import ArticleCard, { ArticleVariant } from "../../Cards/ArticleCard";
 import SectionHeading from "../../SectionHeading";
 import SectionWrapper from "../../Wrappers/SectionWrapper";
@@ -14,7 +14,7 @@ import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 import { useRouter } from "next/router";
 import { useIonRouter } from "@ionic/react";
 
-type ArticleGridProps = { articleGrid: ArticleGrid; theme?: ColorTheme };
+type ArticleGridProps = { articleGrid: ArticleGridT; theme?: ColorTheme };
 
 const ArticleGrid = ({ articleGrid, theme }: ArticleGridProps) => {
   const { articles, title } = articleGrid;

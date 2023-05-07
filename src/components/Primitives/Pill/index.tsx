@@ -27,7 +27,10 @@ const Pill = ({
         py: "5px",
         px: 2,
         // mx: 2,
-        backgroundColor: theme === ColorTheme.LIGHT ? "black" : colors.red200,
+        backgroundColor:
+          theme === ColorTheme.LIGHT || theme === ColorTheme.GRAY
+            ? "black"
+            : colors.red200,
         borderRadius: 20,
         ":focus-visible": {
           outline: "2px solid",

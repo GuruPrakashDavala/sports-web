@@ -1,8 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import { FaCircle } from "react-icons/fa";
 import { ThemeUICSSObject } from "theme-ui";
-import { colors } from "../../styles/theme";
 import { ColorThemeAll, ComponentVariant } from "../../types/modifier";
 import { keyframes } from "@emotion/react";
 
@@ -61,7 +59,7 @@ const pulseStyles: ThemeUICSSObject = {
 };
 
 const LivePulse = (props: IconProps) => {
-  const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;
+  const { styles = {} } = props;
 
   return (
     <div sx={{ ...pulseStyles, ...styles }}>

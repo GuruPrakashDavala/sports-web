@@ -29,6 +29,7 @@
     "@emotion/styled": "^11.10.5",
     "@ionic/react": "^6.4.1",
     "@ionic/react-router": "^6.0.0",
+    "@mux/mux-video-react": "^0.7.10",
     "@theme-ui/color": "^0.15.3",
     "@theme-ui/match-media": "^0.15.3",
     "axios": "^1.2.0",
@@ -37,7 +38,6 @@
     "framer-motion": "^7.3.2",
     "marked": "^4.0.18",
     "next": "^13.3.0",
-    "next-transpile-modules": "^10.0.0",
     "next-tweet": "^0.8.1",
     "nprogress": "^0.2.0",
     "qs": "^6.10.5",
@@ -76,6 +76,7 @@
     "@types/react-table": "^7.7.14",
     "eslint": "8.20.0",
     "eslint-config-next": "^13.3.0",
+    "eslint-config-prettier": "^8.8.0",
     "react-scripts": "^5.0.0",
     "typescript": "^4.7.4",
     "webpack-preprocessor-loader": "^1.2.0"

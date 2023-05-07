@@ -13,7 +13,6 @@ import { fetchStrapiAPI } from "../../lib/strapi";
 import { ArticleType } from "../../types/article";
 import { ColorTheme } from "../../types/modifier";
 import { renderImage } from "../../utils/util";
-import { selectBtnStyles } from "../schedule";
 import { useInfiniteArticles } from "../../utils/queries";
 import { colors } from "../../styles/theme";
 import RightArrowIcon from "../../components/Icons/RightArrow";
@@ -77,12 +76,13 @@ export const NewsPageContent = (props: {
   onCategoryChangeEvent: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   selectedCategory: string;
 }) => {
-  const { selectedCategory, onCategoryChangeEvent } = props;
+  // const { selectedCategory, onCategoryChangeEvent } = props;
+  const { selectedCategory } = props;
   const bp = useBreakpointIndex();
 
-  const newsCategories = props.categories.filter(
-    (category) => category.attributes.slug !== "All"
-  );
+  // const newsCategories = props.categories.filter(
+  //   (category) => category.attributes.slug !== "All"
+  // );
 
   const initialData: InfiniteArticlesResponseType = {
     pages: [{ data: props.articles, meta: undefined }],
@@ -91,7 +91,6 @@ export const NewsPageContent = (props: {
 
   const {
     isLoading,
-    isError,
     error,
     data: articlesData,
     hasNextPage,
@@ -105,6 +104,8 @@ export const NewsPageContent = (props: {
   const articles = articlesData
     ? (articlesData as unknown as InfiniteArticlesResponseType)
     : initialData;
+
+  console.log(articlesData);
 
   const loadMore = () => {
     fetchNextPage();
@@ -132,6 +133,7 @@ export const NewsPageContent = (props: {
           )}
 
           {/* TODO: Enable the category filter later (to be reviewed) */}
+
           {/* <select
           name="category"
           sx={{ ...selectBtnStyles, marginBottom: 1 }}
@@ -181,7 +183,7 @@ export const NewsPageContent = (props: {
             {articles.pages.map((group, index) => {
               return (
                 <Fragment key={index}>
-                  {group.data.map((article, index) => (
+                  {group.data.map((article) => (
                     <div
                       sx={{
                         // flexBasis:
@@ -321,7 +323,7 @@ const NewsPage = (props: {
 
 export default NewsPage;
 
-export async function getStaticProps(context: any) {
+export async function getStaticProps() {
   try {
     const [articles, categories] = await Promise.all([
       fetchStrapiAPI(

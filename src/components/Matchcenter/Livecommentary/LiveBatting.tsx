@@ -13,15 +13,10 @@ type LiveBattingProps = {
 };
 
 const LiveBatting = (props: LiveBattingProps) => {
-  const {
-    fullBattingList,
-    recentBall,
-    excludeWicketPlayer = true,
-    styles = {},
-  } = props;
+  const { fullBattingList, recentBall, styles = {} } = props;
   const bp = useBreakpointIndex();
   return (
-    <div sx={rowWrapperStyles}>
+    <div sx={{ ...rowWrapperStyles, ...styles }}>
       {/* Table header */}
       <ul sx={rowHeaderStyles}>
         <li sx={{ flexBasis: ["45%", "30%"] }}>Batsman</li>

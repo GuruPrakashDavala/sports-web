@@ -22,13 +22,14 @@ import TwitterTweetEmbed from "../../../SocialEmbeds/TwitterTweetEmbed";
 import { useHistory } from "react-router";
 import Head from "next/head";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
+import { useCarouselContext } from "../../contexts/carouselRefContext";
 
 type IonStandingsPageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
   homeRef?: MutableRefObject<HTMLIonContentElement | null>;
 };
 
-const SocialsBlockPicker = (props: {
+export const SocialsBlockPicker = (props: {
   type: string;
   socialId: string;
 }): JSX.Element => {
@@ -52,6 +53,8 @@ const Socials = (props: IonStandingsPageProps) => {
   const history = useHistory();
   const { contentRef, homeRef } = props;
 
+  const { setCarouselUpdate } = useCarouselContext();
+
   const ionBackButton = useCallback((ev: any) => {
     ev.detail.register(10, () => {
       history.replace(`/home`);
@@ -59,6 +62,7 @@ const Socials = (props: IonStandingsPageProps) => {
         if (homeRef) {
           homeRef.current && homeRef.current.scrollToTop(300);
         }
+        setCarouselUpdate((prev) => prev + 1);
       }, 50);
     });
   }, []);
@@ -73,12 +77,9 @@ const Socials = (props: IonStandingsPageProps) => {
 
   const {
     isLoading,
-    isError,
-    error,
     data: socials,
     hasNextPage,
     fetchNextPage,
-    isFetching,
   } = useInfiniteSocials({});
 
   const loadMore = (ev: any) => {

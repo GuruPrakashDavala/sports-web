@@ -92,3 +92,13 @@ export const performImmediateUpdate = async () => {
     await AppUpdate.performImmediateUpdate();
   }
 };
+
+export const startFlexibleUpdate = async () => {
+  const result = await AppUpdate.getAppUpdateInfo();
+  if (result.updateAvailability !== AppUpdateAvailability.UPDATE_AVAILABLE) {
+    return;
+  }
+  if (result.flexibleUpdateAllowed) {
+    await AppUpdate.startFlexibleUpdate();
+  }
+};

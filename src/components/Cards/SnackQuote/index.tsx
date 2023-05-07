@@ -22,7 +22,6 @@ type SnackQuoteProps = {
 
 const containerStyles = {
   display: "flex",
-  // height: "100%",
   width: "100%",
   paddingTop: 2,
   // Hover effect - transition color
@@ -114,7 +113,7 @@ const SnackQuote = (props: SnackQuoteProps) => {
   const isNewsPage = currentPageURL.startsWith(newspageSlug);
 
   const titleArticleSlug = title_article.data.attributes.slug;
-  const descriptionArticleSlug = description_article.data.attributes.slug;
+  // const descriptionArticleSlug = description_article.data.attributes.slug;
 
   const titleArticleRoute = isNewsPage
     ? `${titleArticleSlug}`

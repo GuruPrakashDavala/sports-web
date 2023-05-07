@@ -11,14 +11,7 @@ import {
   IonList,
   IonIcon,
 } from "@ionic/react";
-import {
-  home,
-  calendar,
-  newspaper,
-  analytics,
-  list,
-  gift,
-} from "ionicons/icons";
+import { calendar, newspaper, analytics, gift } from "ionicons/icons";
 import { colors } from "../../../../styles/theme";
 
 const More = () => {

@@ -6,20 +6,20 @@ import { EmbeddedTweet, TweetSkeleton } from "next-tweet";
 import { Tweet as TweetT } from "next-tweet/api";
 import { getTweet } from "../../utils/util";
 
-const wrapperStyles: ThemeUICSSObject = {
-  "& > div, & > div > div": {
-    display: "flex",
-    justifyContent: "center",
-  },
-  // Twitter iFrame style overwrites
-  "> div > div > iframe": {
-    maxWidth: ["90vw", 400],
-  },
-  "> div > div > iframe > body": {
-    opacity: 0.6,
-    // backgroundColor: "red !important",
-  },
-};
+// const wrapperStyles: ThemeUICSSObject = {
+//   "& > div, & > div > div": {
+//     display: "flex",
+//     justifyContent: "center",
+//   },
+//   // Twitter iFrame style overwrites
+//   "> div > div > iframe": {
+//     maxWidth: ["90vw", 400],
+//   },
+//   "> div > div > iframe > body": {
+//     opacity: 0.6,
+//     // backgroundColor: "red !important",
+//   },
+// };
 
 type TwitterTweetEmbedProps = { tweetId: string };
 
@@ -41,32 +41,48 @@ const tweetStyles: ThemeUICSSObject = {
   paddingX: 2,
   paddingY: 2,
   "> div": { marginY: 0 },
-  "> div > article> div:nth-child(n+5)": {
+  "> div > article> div:nth-of-type(n+4)": {
     display: "none",
   },
 };
 
 const TwitterEmbedContent = (props: { tweetId: string }): JSX.Element => {
   const { tweetId } = props;
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [tweet, setTweet] = useState<undefined | TweetT>();
 
   const getTweetFunction = async (tweetId: string) => {
     try {
+      setError(false);
+      setLoading(true);
       const tweet = await getTweet(tweetId);
-      setTweet(tweet);
+      tweet ? setTweet(tweet) : setError(true);
+      setLoading(false);
+      return;
     } catch (err) {
       console.log(`Error fetching the tweet - ${tweetId}`);
       console.log(err);
+      setError(true);
+      return;
     }
   };
 
   useEffect(() => {
     getTweetFunction(tweetId);
-  }, []);
+  }, [tweetId]);
 
   return (
     <div sx={tweetStyles} className="light">
-      {tweet ? <EmbeddedTweet tweet={tweet} priority /> : <TweetSkeleton />}
+      {error ? (
+        <></>
+      ) : loading ? (
+        <TweetSkeleton />
+      ) : tweet ? (
+        <EmbeddedTweet tweet={tweet} priority />
+      ) : (
+        <TweetSkeleton />
+      )}
     </div>
   );
 };

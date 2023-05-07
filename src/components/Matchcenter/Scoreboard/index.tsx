@@ -49,12 +49,12 @@ const tabItemStyles: ThemeUICSSObject = {
   position: "relative",
 };
 
-const tabTeamImageStyles: ThemeUICSSObject = {
-  background: colors.white,
-  height: ["24px", "35px"],
-  width: ["24px", "35px"],
-  marginRight: 1,
-};
+// const tabTeamImageStyles: ThemeUICSSObject = {
+//   background: colors.white,
+//   height: ["24px", "35px"],
+//   width: ["24px", "35px"],
+//   marginRight: 1,
+// };
 
 const ScoreboardContent = (props: ScoreboardContentProps): JSX.Element => {
   const { fixture, team, extras, didNotBat, fallOfWickets, innings } = props;

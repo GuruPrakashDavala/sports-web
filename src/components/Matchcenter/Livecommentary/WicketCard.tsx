@@ -63,7 +63,7 @@ const WicketCard = (props: WicketCardProps): JSX.Element => {
               width: "100%",
               "> li": {
                 color: colors.white,
-                variant: "text.subheading3",
+                variant: "text.subheading4",
               },
             }}
           >
@@ -82,7 +82,7 @@ const WicketCard = (props: WicketCardProps): JSX.Element => {
             styles={{
               ">li": {
                 color: colors.white,
-                variant: "text.heading4",
+                variant: "text.body4",
               },
               ">li:first-of-type": {
                 paddingRight: "5px",

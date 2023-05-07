@@ -8,7 +8,7 @@ import RightArrowIcon from "../Icons/RightArrow";
 import Link from "../Primitives/Link";
 import Pill from "../Primitives/Pill";
 
-type Link = {
+type LinkT = {
   label: string;
   href: string;
   external: boolean;
@@ -17,7 +17,7 @@ type Link = {
 type SectionHeadingProps = {
   title?: string;
   theme?: ColorTheme;
-  link?: Link;
+  link?: LinkT;
   styles?: ThemeUICSSObject;
 };
 
@@ -62,16 +62,16 @@ const SectionHeading = ({
               <Fragment>
                 <p
                   sx={{
+                    color: theme === ColorTheme.DARK ? "white" : colors.gray100,
                     variant: "text.label1",
                     fontWeight: "bold",
-                    color: colors.gray100,
                   }}
                 >
                   {link.label}
                 </p>
                 <RightArrowIcon
                   styles={{
-                    color: colors.gray100,
+                    color: theme === ColorTheme.DARK ? "white" : colors.gray100,
                     alignItems: "center",
                   }}
                 />

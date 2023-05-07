@@ -17,6 +17,7 @@ import { useStandingsDefinedInCMS } from "../../../../utils/queries";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import { useHistory } from "react-router";
 import Head from "next/head";
+import { useCarouselContext } from "../../contexts/carouselRefContext";
 
 type IonStandingsPageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
@@ -27,6 +28,8 @@ const StadingsPage = (props: IonStandingsPageProps) => {
   const { contentRef, homeRef } = props;
   const history = useHistory();
 
+  const { setCarouselUpdate } = useCarouselContext();
+
   const ionBackButton = useCallback((ev: any) => {
     ev.detail.register(10, () => {
       history.replace(`/home`);
@@ -34,6 +37,7 @@ const StadingsPage = (props: IonStandingsPageProps) => {
         if (homeRef) {
           homeRef.current && homeRef.current.scrollToTop(300);
         }
+        setCarouselUpdate((prev) => prev + 1);
       }, 50);
     });
   }, []);

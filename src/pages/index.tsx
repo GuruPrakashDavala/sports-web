@@ -2,17 +2,11 @@
 
 import Head from "next/head";
 import { useState, useEffect, Fragment } from "react";
-import ArticeCarousel from "../components/CarouselBlocks/ArticleCarousel";
 import ArticleGrid from "../components/Grids/ArticleGrid";
-import ContentGrid from "../components/Grids/ContentGrid";
 import { fetchStrapiAPI } from "../lib/strapi";
 import { ColorTheme } from "../types/modifier";
 import { ArticleType, ImageType } from "../types/article";
-import {
-  ArticleCarousel,
-  ContentGrid as ContentGridT,
-  HomeBlocks,
-} from "../types/blocks";
+import { ContentGrid as ContentGridT, HomeBlocks } from "../types/blocks";
 import Quote from "../components/Quote";
 import { Fixture as FixtureT } from "../types/sportmonks";
 import { isMatchLive } from "../utils/matchcenter";
@@ -22,7 +16,10 @@ import FixtureCarousel from "../components/CarouselBlocks/FixtureCarousel";
 import dynamic from "next/dynamic";
 import { getSeriesIdsFromFixturesList } from "../utils/fixtures";
 import RetailCarousel from "../components/CarouselBlocks/RetailCarousel";
-import NotFoundPage from "./404";
+import VideoCarouselPicker from "../components/CarouselBlocks/VideoCarousel";
+import ArticleCarouselPicker from "../components/CarouselBlocks/ArticleCarousel";
+import StandingsTableBlock from "../components/StandingsTableBlock";
+import ReelCarouselPicker from "../components/CarouselBlocks/ReelCarousel";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
@@ -30,7 +27,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
     case "articlecarousel":
       return (
-        <ArticeCarousel
+        <ArticleCarouselPicker
           block={block}
           theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
           styles={{ padding: [1, 2] }}
@@ -38,10 +35,31 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
       );
 
     case "retailcarousel":
-      return <RetailCarousel block={block} styles={{ padding: [1, 2] }} />;
+      return (
+        <RetailCarousel
+          block={block}
+          theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
+          styles={{ padding: [1, 2] }}
+        />
+      );
 
     case "videocarousel":
-      return <h1>VideoCarouselPlaceholder</h1>;
+      return (
+        <VideoCarouselPicker
+          block={block}
+          theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
+          styles={{ padding: [1, 2] }}
+        />
+      );
+
+    case "reelcarousel":
+      return (
+        <ReelCarouselPicker
+          block={block}
+          theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
+          styles={{ padding: [1, 2] }}
+        />
+      );
 
     case "articlegrid":
       return (
@@ -53,6 +71,14 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
 
     case "quote":
       return <Quote quote={block.quote} pre={block.pre} post={block.post} />;
+    case "standingstable":
+      return (
+        <StandingsTableBlock
+          series_name={block.series_name}
+          series_id={block.series_id}
+          theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
+        />
+      );
     default:
       return <></>;
   }
@@ -63,32 +89,10 @@ export const HomePageContent = (props: {
   fixtures: FixtureT[];
   recentNewsArticles?: ArticleType[];
 }) => {
-  const { homepage, fixtures, recentNewsArticles } = props;
+  const { homepage, fixtures } = props;
 
   const title = `Cricfanatic homepage`;
   const keywords = `homepage, cricfanatic, cricket, live scores, live, cricket app, India, BCCI, ICC, news, IPL, ODI, t20, Indian Premier League`;
-
-  const newsCategory = {
-    data: {
-      attributes: {
-        createdAt: "now",
-        name: "View all",
-        slug: "All",
-        updatedAt: "now",
-      },
-      id: 222,
-    },
-  };
-
-  const recentNewsCarouselProps: ArticleCarousel = {
-    id: 111,
-    category: newsCategory,
-    title: "Latest News",
-    type: "articlecarousel",
-    articles: {
-      data: recentNewsArticles ? recentNewsArticles : [],
-    },
-  };
 
   return (
     <section>
@@ -110,19 +114,12 @@ export const HomePageContent = (props: {
 
       <FixtureCarousel fixtures={fixtures} />
 
-      {recentNewsArticles && recentNewsArticles.length > 0 ? (
-        <ArticeCarousel
-          block={recentNewsCarouselProps}
-          theme={ColorTheme.GRAY}
-        />
-      ) : null}
-
       {homepage.attributes.pageblocks &&
         homepage.attributes.pageblocks.length > 0 &&
         homepage.attributes.pageblocks.map((block, index) => {
           return (
             <Fragment key={index}>
-              <BlockPicker block={block} index={index} />
+              <BlockPicker block={block} index={index + 1} />
             </Fragment>
           );
         })}
@@ -177,7 +174,7 @@ const WebHome = (props: {
       : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
-  return <NotFoundPage />;
+  // return <NotFoundPage />;
 
   return (
     <HomePageContent

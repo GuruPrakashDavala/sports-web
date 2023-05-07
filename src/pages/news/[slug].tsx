@@ -3,7 +3,6 @@
 import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../styles/theme";
-import AdBlock, { AdBlockVariant } from "../../components/AdBlock";
 import SocialIcons from "../../components/News/SocialIcons";
 import NewsHeader from "../../components/News/Header";
 import AuthorInfoBlock from "../../components/News/AuthorInfoBlock";
@@ -77,7 +76,6 @@ const BlockPicker = ({
   block,
   index,
   isNewsPage = false,
-  isLastBlock,
 }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
     case "tweetembed":
@@ -155,7 +153,7 @@ type ArticleDetailPageContentProps = {
 export const ArticleDetailPageContent = (
   props: ArticleDetailPageContentProps
 ): JSX.Element => {
-  const { article, recentArticles, styles } = props;
+  const { article, recentArticles } = props;
   const shareURL = `${APPLICATION_DOMAIN_URL}/news/${article.attributes.slug}`;
 
   const router = useRouter();
@@ -272,9 +270,9 @@ export const ArticleDetailPageContent = (
 };
 
 const ArticlePage = (props: ArticlePageProps) => {
-  const { slug, styles = {} } = props;
+  const { slug } = props;
 
-  const { data: articleData, isLoading: articleLoading } = useArticle(slug);
+  const { data: articleData } = useArticle(slug);
 
   const { isLoading: recentArticlesLoading, data: articles } =
     useRecentArticles();

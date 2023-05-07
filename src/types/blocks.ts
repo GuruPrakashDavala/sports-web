@@ -1,10 +1,5 @@
-import {
-  ArticleType,
-  CategoryType,
-  ImageType,
-  RetailProduct,
-  Video,
-} from "./article";
+import { ArticleType, CategoryType, ImageType, RetailProduct } from "./article";
+import { ReelType, VideoItemType } from "./common";
 import { ColorTheme } from "./modifier";
 
 export enum BlockType {
@@ -33,10 +28,32 @@ export type ContentGrid = ArticleBlock | SnackQuoteComponent;
 
 export type ArticleCarousel = {
   id: number;
-  category: CategoryType;
+  category?: CategoryType;
   title: string;
   type: "articlecarousel";
   articles: { data: ArticleType[] };
+  theme?: ColorTheme;
+  automatic: boolean;
+};
+
+export type VideoCarousel = {
+  id: number;
+  category?: CategoryType;
+  title: string;
+  type: "videocarousel";
+  videos: { data: VideoItemType[] };
+  automatic: boolean;
+  theme?: ColorTheme;
+};
+
+export type ReelCarousel = {
+  id: number;
+  category?: CategoryType;
+  title: string;
+  type: "reelcarousel";
+  reels: { data: ReelType[] };
+  automatic: boolean;
+  theme?: ColorTheme;
 };
 
 export type RetailCarousel = {
@@ -48,18 +65,18 @@ export type RetailCarousel = {
   isActive: boolean;
 };
 
+export type StandingsTableBlock = {
+  series_name: string;
+  series_id: string;
+  code: string;
+  type: "standingstable";
+};
+
 export type TweetEmbed = {
   id: number;
   title: string;
   tweet_id: string;
   type: "tweetembed";
-};
-
-export type VideoCarousel = {
-  id: number;
-  title: "Videos";
-  type: "videocarousel";
-  videos: { data: Video[] };
 };
 
 export type ArticleGrid = {
@@ -93,9 +110,11 @@ export type ArticlePageBlock = {
 export type HomeBlocks =
   | ArticleCarousel
   | VideoCarousel
+  | ReelCarousel
   | ArticleGrid
   | Quote
-  | RetailCarousel;
+  | RetailCarousel
+  | StandingsTableBlock;
 
 export type ImageCarousel = {
   id: number;

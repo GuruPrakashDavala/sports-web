@@ -12,13 +12,13 @@ const LiveBowling = (props: {
   return (
     <div sx={{ ...rowWrapperStyles, marginTop: [2, 3, 4] }}>
       <ul sx={rowHeaderStyles}>
-        <li sx={{ flexBasis: "40%" }}>
+        <li sx={{ flexBasis: "45%" }}>
           <p>Bowler</p>
         </li>
-        <li sx={{ flexBasis: "15%" }}>Ov</li>
-        <li sx={{ flexBasis: "15%" }}>R</li>
-        <li sx={{ flexBasis: "15%" }}>W</li>
-        <li sx={{ flexBasis: "15%" }}>Eco</li>
+        <li sx={{ flexBasis: "13.75%" }}>Ov</li>
+        <li sx={{ flexBasis: "13.75%" }}>R</li>
+        <li sx={{ flexBasis: "13.75%" }}>W</li>
+        <li sx={{ flexBasis: "13.75%" }}>Eco</li>
       </ul>
 
       {/* Bowler one */}

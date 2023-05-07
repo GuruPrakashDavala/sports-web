@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from "react";
 import { colors } from "../../../styles/theme";
 import { Fragment } from "react";
 import { ThemeUICSSObject } from "theme-ui";
-import InfiniteScroll from "react-infinite-scroll-component";
 import BatIcon from "../../Icons/Bat";
 import BallIcon from "../../Icons/Ball";
 import { FixtureStatus } from "../../../types/matchcenter";
@@ -58,19 +57,23 @@ export const PlayerBattingDetails = (props: {
             <li
               sx={{
                 flexBasis: ["45%", "30%"],
+                width: ["45%", "30%"],
                 display: "flex",
                 alignItems: "center",
                 variant: bp < 1 ? "text.body4" : undefined,
+                paddingRight: [1],
               }}
             >
-              {bp > 1 ? batsman.fullname : batsman.lastname}
+              {bp > 1 ? batsman.fullname : batsman.fullname}
+              {/* Experimental full name in mobile device */}
 
               {batsman.id === recentBall.batsman_id && excludeWicketPlayer && (
                 <BatIcon
                   styles={{
                     display: "flex",
                     marginLeft: "5px",
-                    padding: 0,
+                    paddingX: 0,
+                    paddingRight: 2,
                     "> svg": {
                       fontSize: ["16px", "20px"],
                       color: colors.black,
@@ -166,24 +169,30 @@ export const PlayerBowlingDetails = (props: {
   const bowlerStats = fullBowlersList.filter(
     (bowling) => bowler.id === bowling.bowler.id
   )?.[0];
+  const playerShortName = `${Array.from(bowler.firstname)[0]} ${
+    bowler.lastname
+  }`;
+
   return (
     <ul sx={rowStyles}>
       <li
         sx={{
-          flexBasis: "40%",
+          flexBasis: "45%",
+          width: "45%",
           display: "flex",
           alignItems: "center",
           variant: bp < 1 ? "text.body4" : undefined,
+          paddingRight: [1],
         }}
         key={bowler.firstname}
       >
-        {bp > 1 ? bowler.fullname : bowler.lastname}
+        {bp > 1 ? bowler.fullname : playerShortName ?? bowler.lastname}
         {currentBowler && (
           <BallIcon
             styles={{
               display: "flex",
               marginLeft: "5px",
-              padding: 0,
+              paddingX: 0,
               "> svg": { fontSize: ["14px", "18px"], color: colors.black },
             }}
           />
@@ -194,7 +203,7 @@ export const PlayerBowlingDetails = (props: {
         <Fragment>
           <li
             sx={{
-              flexBasis: "15%",
+              flexBasis: "13.75%",
               variant: bp < 1 ? "text.body4" : undefined,
             }}
           >
@@ -202,7 +211,7 @@ export const PlayerBowlingDetails = (props: {
           </li>
           <li
             sx={{
-              flexBasis: "15%",
+              flexBasis: "13.75%",
               variant: bp < 1 ? "text.body4" : undefined,
             }}
           >
@@ -210,7 +219,7 @@ export const PlayerBowlingDetails = (props: {
           </li>
           <li
             sx={{
-              flexBasis: "15%",
+              flexBasis: "13.75%",
               variant: bp < 1 ? "text.body4" : undefined,
             }}
           >
@@ -218,7 +227,7 @@ export const PlayerBowlingDetails = (props: {
           </li>
           <li
             sx={{
-              flexBasis: "15%",
+              flexBasis: "13.75%",
               variant: bp < 1 ? "text.body4" : undefined,
             }}
           >

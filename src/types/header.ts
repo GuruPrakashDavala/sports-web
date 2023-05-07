@@ -20,6 +20,10 @@ export type Globals = {
       Web_Promo: HeaderPromo;
       Mobile_Promo: HeaderPromo;
       Mobile_App_Settings: null | AppSettings;
+      API_Tokens: {
+        cricketdata_api_token: string;
+        sportmonk_api_token: string;
+      };
     };
   };
   meta: any;
@@ -85,5 +89,7 @@ export type HeaderPromo = {
 
 export type AppSettings = {
   news_share_url?: string;
-  show_standings?: boolean;
+  show_standings_page?: boolean;
+  show_videos_page?: boolean;
+  show_socials_in_homepage?: boolean;
 };

@@ -42,6 +42,14 @@ function MyApp({ Component, pageProps, globals }: MyAppProps) {
         <QueryClientProvider client={queryClient}>
           <Head>
             <meta name="keywords" content="homepage, Cricfanatic.com" />
+            <meta
+              name="viewport"
+              content="initial-scale=1.0, maximum-scale=1.0"
+            ></meta>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, viewport-fit=cover"
+            />
             <RobotoFontFace />
             <ProgressBarStyles />
           </Head>

@@ -36,16 +36,16 @@ const Header = (props: HeaderProps) => {
   const firstInningsInPlay = fixture.status === "1st Innings";
   const secondInningsInPlay = fixture.status === "2nd Innings";
 
-  const fixtureTitle =
-    bp < 2
-      ? `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round}`
-      : `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round} ${fixture.stage.name} `;
+  // const fixtureTitle =
+  //   bp < 2
+  //     ? `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round}`
+  //     : `${s1Team.name} vs ${s2Team.name} - ${fixture.league.code} ${fixture.round} ${fixture.stage.name} `;
 
-  const matchNote = firstInningsInPlay
-    ? `Live`
-    : secondInningsInPlay
-    ? `Live - ${s2Team.code} ${fixture.note}`
-    : `Live`;
+  // const matchNote = firstInningsInPlay
+  //   ? `Live`
+  //   : secondInningsInPlay
+  //   ? `Live - ${s2Team.code} ${fixture.note}`
+  //   : `Live`;
 
   const matchStartingDate = new Date(fixture.starting_at);
   const highlightFirstInningsTeam = !isLive
@@ -354,8 +354,10 @@ const Header = (props: HeaderProps) => {
             >
               <span sx={{ opacity: "1", color: colors.black }}>
                 {fixture.note}
-                {/* Place second innings note here from cricker data */}
+
+                {/* Place second innings note here from cricket data */}
                 {/* Uses cricketData API to show the match status */}
+
                 {secondInningsInPlay && (
                   <FixtureInningsStatus fixtureId={fixture.id} />
                 )}

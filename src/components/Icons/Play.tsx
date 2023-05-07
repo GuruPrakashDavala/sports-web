@@ -9,6 +9,7 @@ export type IconProps = {
   theme?: ColorThemeAll;
   styles?: ThemeUICSSObject;
   variant?: ComponentVariant;
+  fontSize?: number;
 };
 
 export const getIconSize = (variant: ComponentVariant) => {
@@ -23,12 +24,13 @@ export const getIconSize = (variant: ComponentVariant) => {
 };
 
 const PlayIcon = (props: IconProps) => {
-  const { theme, styles = {}, variant = ComponentVariant.LARGE } = props;
+  const { fontSize, styles = {}, variant = ComponentVariant.LARGE } = props;
 
   return (
     <div sx={{ paddingRight: [2], ...styles }}>
       <FaPlay
-        sx={{ color: colors.white, height: getIconSize(variant), zIndex: 1 }}
+        sx={{ color: colors.white, zIndex: 1 }}
+        fontSize={fontSize ?? getIconSize(variant)}
       />
     </div>
   );

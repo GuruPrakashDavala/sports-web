@@ -80,7 +80,7 @@ export type NewscardProps = {
   variant?: ArticleVariant;
   styles?: ThemeUICSSObject;
   badge?: string;
-  type?: string;
+  type?: "Plain" | "Video";
   category?: CategoryType;
 };
 
@@ -238,7 +238,7 @@ const ArticleCard = (props: NewscardProps): JSX.Element => {
                       <>{category.data.attributes.name}</>
                     )}
                   </span>
-                  <span sx={{ variant: "text.heading5" }}>{label}</span>
+                  <span sx={{ variant: "text.heading4" }}>{label}</span>
                 </h2>
               </div>
             </div>

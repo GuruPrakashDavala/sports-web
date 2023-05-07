@@ -24,7 +24,7 @@ export type WriterType = {
   };
 };
 
-type BadgeType = {
+export type BadgeType = {
   data: null | {
     attributes: {
       createdAt: string;
@@ -78,7 +78,7 @@ type ImageFormats = {
   thumbnail: ImageFormatSpecs;
 };
 
-type TagsType = {
+export type TagsType = {
   data:
     | []
     | {
@@ -129,7 +129,7 @@ export type ArticleType = {
     slug: string;
     tags: TagsType;
     title: string;
-    type: string;
+    type: "Video" | "Plain";
     updatedAt: string;
   };
   id: number;

@@ -256,9 +256,11 @@ const FixtureCard = (props: {
             }}
           >
             {/* Innings break note should be handled appropriately */}
+
             {fixture.status === "Innings Break" ? fixture.note : fixture.note}
 
             {/* Uses cricketData API to show the match status */}
+
             {secondInningsInPlay && (
               <FixtureInningsStatus fixtureId={fixture.id} />
             )}

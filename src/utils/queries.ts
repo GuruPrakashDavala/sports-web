@@ -8,13 +8,18 @@ import { Fixture as FixtureT } from "../types/sportmonks";
 import axios from "axios";
 import { fetchStrapiAPI } from "../lib/strapi";
 import { ArticleType } from "../types/article";
-import { fixtureBallFields, fixtureBaseFields } from "./matchcenter";
+import { fixtureBaseFields } from "./matchcenter";
 import { HomePageProps } from "../pages";
 import { API_BASE_URL, getCountry, getFixtureStatus } from "./util";
 import { InfiniteArticlesResponseType } from "../pages/news";
 import { FixturesList, StandingsList } from "./fixtures";
 import { Globals } from "../types/header";
-import { SocialEmbed as SocialEmbedT, Tweet as TweetT } from "../types/common";
+import {
+  ReelType,
+  SocialEmbed as SocialEmbedT,
+  Tweet as TweetT,
+  VideoItemType,
+} from "../types/common";
 
 export const recentArticlesStrapiAPI =
   "/articles?pagination[page]=1&pagination[pageSize]=5&populate=deep,2 &sort=createdAt:desc";
@@ -57,7 +62,7 @@ type TweetsQueryResponse = {
 
 const getFixtureDetails = async ({ queryKey }: { queryKey: any }) => {
   const fixtureId = queryKey[1];
-  const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
+  // const fields = [...fixtureBaseFields, ...fixtureBallFields].toString();
   const { data: fixtureDetail } = await axios.get<FixtureAPIResponse>(
     `${fixtureDetailLambdaBaseURL}?fixtureId=${fixtureId}`
   );
@@ -111,7 +116,6 @@ const getInfiniteArticles = ({
 
 const getInfiniteSocials = ({
   pageParam = 1,
-  queryKey,
 }: {
   pageParam?: number;
   queryKey: string[];
@@ -132,11 +136,12 @@ export type InfiniteSocialsResponseType = {
 };
 
 export const useInfiniteSocials = ({
-  category,
   initialData,
+  queryEnabled = true,
 }: {
   category?: string;
   initialData?: any;
+  queryEnabled?: boolean;
 }): UseInfiniteQueryResult<InfiniteSocialsResponseType, Error> => {
   return useInfiniteQuery(["infiniteSocials"], getInfiniteSocials, {
     getNextPageParam: (_lastPage, pages) => {
@@ -155,6 +160,7 @@ export const useInfiniteSocials = ({
     },
     keepPreviousData: true,
     initialData: initialData,
+    enabled: queryEnabled,
   });
 };
 
@@ -266,20 +272,23 @@ export const useHomepage = (): UseQueryResult<
 export const useArticles = ({
   category,
   pageNumber = 1,
+  enabled = true,
 }: {
   category?: string;
   pageNumber?: number;
+  enabled?: boolean;
 }): UseQueryResult<{ data: ArticleType[] }, Error> => {
   const APIURL =
     !category || category === "All"
-      ? `/articles?pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`
-      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`;
+      ? `/articles?pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`
+      : `/articles?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
 
   return useQuery(
     ["articles", category, pageNumber ?? 1],
     () => fetchStrapiAPI(APIURL),
     {
       keepPreviousData: true,
+      enabled: enabled,
     }
   );
 };
@@ -430,15 +439,17 @@ export const useCricketDataFixtureIdFromStrapi = (
 
 export const useFixtureStatus = ({
   cricketDataFixtureId,
+  cricketDataAPIToken,
   queryEnabled = false,
   refetchInterval,
 }: {
+  cricketDataAPIToken?: string;
   cricketDataFixtureId?: string;
   queryEnabled?: boolean;
   refetchInterval?: number;
 }): UseQueryResult<any, Error> => {
   return useQuery(
-    ["fixtureStatus", cricketDataFixtureId],
+    ["fixtureStatus", cricketDataFixtureId, cricketDataAPIToken],
     () => getFixtureStatus(cricketDataFixtureId),
     {
       enabled: queryEnabled,
@@ -446,3 +457,145 @@ export const useFixtureStatus = ({
     }
   );
 };
+
+const getInfiniteVideos = ({ pageParam = 1 }: { pageParam?: number }) => {
+  const APIURL = `/videos?pagination[page]=${pageParam}&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`;
+  return fetchStrapiAPI(APIURL);
+};
+
+const getInfiniteReels = ({ pageParam = 1 }: { pageParam?: number }) => {
+  const APIURL = `/reels?pagination[page]=${pageParam}&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`;
+  return fetchStrapiAPI(APIURL);
+};
+
+export type InfiniteVideosResponseType = {
+  pages: { data: VideoItemType[]; meta: any }[];
+  pageParams: any;
+};
+
+export type InfiniteReelsResponseType = {
+  pages: { data: ReelType[]; meta: any }[];
+  pageParams: any;
+};
+
+export const useInfiniteVideos = ({
+  initialData,
+  refetchOnWindowFocus = false,
+}: {
+  initialData?: InfiniteVideosResponseType;
+  refetchOnWindowFocus?: boolean;
+}): UseInfiniteQueryResult<InfiniteVideosResponseType, Error> => {
+  return useInfiniteQuery(["infiniteVideos"], getInfiniteVideos, {
+    getNextPageParam: (_lastPage, pages) => {
+      const lastFetchedPageMeta = pages[pages.length - 1].meta;
+      const metaPagination = lastFetchedPageMeta
+        ? lastFetchedPageMeta.pagination
+        : undefined;
+      if (metaPagination) {
+        const currentPage = metaPagination.page;
+        const hasNextPage = currentPage < metaPagination.pageCount;
+        const nextPageNumber = hasNextPage ? currentPage + 1 : undefined;
+        return nextPageNumber;
+      } else {
+        return undefined;
+      }
+    },
+    keepPreviousData: true,
+    initialData: initialData,
+    refetchOnWindowFocus: refetchOnWindowFocus,
+  });
+};
+
+export const useVideo = (
+  slug: string
+): UseQueryResult<{ data: VideoItemType[] }, Error> => {
+  return useQuery(["video", slug], () =>
+    fetchStrapiAPI(`/videos?filters[slug][$eq]=${slug}&populate=deep, 2`)
+  );
+};
+
+export const useVideos = ({
+  category,
+  pageNumber = 1,
+  enabled = true,
+}: {
+  category?: string;
+  pageNumber?: number;
+  enabled?: boolean;
+}): UseQueryResult<{ data: VideoItemType[] }, Error> => {
+  const APIURL =
+    !category || category === "All"
+      ? `/videos?pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`
+      : `/videos?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
+
+  return useQuery(
+    ["videosByCategory", category, pageNumber ?? 1],
+    () => fetchStrapiAPI(APIURL),
+    {
+      keepPreviousData: true,
+      enabled: enabled,
+    }
+  );
+};
+
+export const useReels = ({
+  category,
+  pageNumber = 1,
+  enabled = true,
+}: {
+  category?: string;
+  pageNumber?: number;
+  enabled?: boolean;
+}): UseQueryResult<{ data: ReelType[] }, Error> => {
+  const APIURL =
+    !category || category === "All"
+      ? `/reels?pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`
+      : `/videos?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
+
+  return useQuery(
+    ["reelsByCategory", category, pageNumber ?? 1],
+    () => fetchStrapiAPI(APIURL),
+    {
+      keepPreviousData: true,
+      enabled: enabled,
+    }
+  );
+};
+
+export const useReel = (
+  slug: string
+): UseQueryResult<{ data: ReelType[] }, Error> => {
+  return useQuery(["singleReel", slug], () =>
+    fetchStrapiAPI(`/reels?filters[slug][$eq]=${slug}&populate=deep, 2`)
+  );
+};
+
+export const useInfiniteReels = ({
+  initialData,
+  refetchOnWindowFocus = false,
+}: {
+  initialData?: InfiniteReelsResponseType;
+  refetchOnWindowFocus?: boolean;
+}): UseInfiniteQueryResult<InfiniteReelsResponseType, Error> => {
+  return useInfiniteQuery(["infiniteReels"], getInfiniteReels, {
+    getNextPageParam: (_lastPage, pages) => {
+      const lastFetchedPageMeta = pages[pages.length - 1].meta;
+      const metaPagination = lastFetchedPageMeta
+        ? lastFetchedPageMeta.pagination
+        : undefined;
+      if (metaPagination) {
+        const currentPage = metaPagination.page;
+        const hasNextPage = currentPage < metaPagination.pageCount;
+        const nextPageNumber = hasNextPage ? currentPage + 1 : undefined;
+        return nextPageNumber;
+      } else {
+        return undefined;
+      }
+    },
+    keepPreviousData: true,
+    initialData: initialData,
+    refetchOnWindowFocus: refetchOnWindowFocus,
+  });
+};
+
+export const useTwitterFeedById = () => {};

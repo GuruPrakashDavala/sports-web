@@ -8,7 +8,7 @@ import {
   useIonViewDidEnter,
   useIonViewWillLeave,
 } from "@ionic/react";
-import { useState, useMemo, useEffect, Fragment } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { SchedulePageContent } from "../../../../pages/schedule";
 import { add, format } from "date-fns";
 import {
@@ -23,6 +23,7 @@ import {
 } from "../../../../utils/matchcenter";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import { useHistory } from "react-router";
+import { useCarouselContext } from "../../contexts/carouselRefContext";
 
 type IonSchedulePageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
@@ -113,6 +114,8 @@ const SchedulePage = (props: IonSchedulePageProps) => {
     setSelectedStage(event.target.value);
   };
 
+  const { setCarouselUpdate } = useCarouselContext();
+
   const ionBackButton = useCallback((ev: any) => {
     ev.detail.register(10, () => {
       history.replace(`/home`);
@@ -120,6 +123,7 @@ const SchedulePage = (props: IonSchedulePageProps) => {
         if (homeRef) {
           homeRef.current && homeRef.current.scrollToTop(300);
         }
+        setCarouselUpdate((prev) => prev + 1);
       }, 50);
     });
   }, []);
@@ -142,18 +146,16 @@ const SchedulePage = (props: IonSchedulePageProps) => {
 
       <IonContent scrollEvents={true} ref={contentRef} fullscreen>
         {allSeries ? (
-          <Fragment>
-            <SchedulePageContent
-              setDateRange={setDateRange}
-              stageChanged={stageChanged}
-              selectedStage={selectedStage}
-              series={allSeries}
-              fixtures={fixtures}
-              hasNextPage={hasNextPage}
-              loadMore={loadMore}
-              isFetching={isFetching}
-            />
-          </Fragment>
+          <SchedulePageContent
+            setDateRange={setDateRange}
+            stageChanged={stageChanged}
+            selectedStage={selectedStage}
+            series={allSeries}
+            fixtures={fixtures}
+            hasNextPage={hasNextPage}
+            loadMore={loadMore}
+            isFetching={isFetching}
+          />
         ) : (
           <PageLoader />
         )}

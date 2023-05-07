@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 
-import Skeleton, { SkeletonProps } from "../../Skeleton";
+import Skeleton from "../../Skeleton";
 
 const LivecommentarySkeleton = () => {
   return (

@@ -1,5 +1,3 @@
-import { FixtureStatus } from "./matchcenter";
-
 export type Fixture = {
   resource: string;
   id: number;

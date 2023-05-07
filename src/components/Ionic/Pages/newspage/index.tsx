@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { fetchStrapiAPI } from "../../../../lib/strapi";
 import PageLoader from "../../../Loaders/PageLoader/PageLoader";
 import { useHistory } from "react-router";
+import { useCarouselContext } from "../../contexts/carouselRefContext";
 
 type IonNewsPageProps = {
   contentRef: MutableRefObject<HTMLIonContentElement | null>;
@@ -55,6 +56,8 @@ const IonNewsPage = (props: IonNewsPageProps) => {
     setSelectedCategory(event.target.value);
   };
 
+  const { setCarouselUpdate } = useCarouselContext();
+
   const ionBackButton = useCallback((ev: any) => {
     ev.detail.register(10, () => {
       history.replace(`/home`);
@@ -62,6 +65,7 @@ const IonNewsPage = (props: IonNewsPageProps) => {
         if (homeRef) {
           homeRef.current && homeRef.current.scrollToTop(300);
         }
+        setCarouselUpdate((prev) => prev + 1);
       }, 50);
     });
   }, []);

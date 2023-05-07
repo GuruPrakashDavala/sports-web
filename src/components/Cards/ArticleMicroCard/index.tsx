@@ -1,13 +1,12 @@
 /** @jsxImportSource theme-ui */
 
 import { useBreakpointIndex } from "@theme-ui/match-media";
-import Image from "next/legacy/image";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import { getArticleFormattedDate } from "../../../utils/util";
 import Link from "../../Primitives/Link";
-import { ArticleVariant, NewscardProps } from "../ArticleCard";
+import { NewscardProps } from "../ArticleCard";
 
 const cardHoverStyles: ThemeUICSSObject = {
   transition:
@@ -35,12 +34,9 @@ const imageWrapperStyles: ThemeUICSSObject = {
 const ArticleMicroCard = (props: NewscardProps) => {
   const {
     imageSrc,
-    variant,
     slug,
     label,
     date,
-    badge,
-    type,
     category,
     isNewsPage,
     styles = {},
@@ -49,12 +45,12 @@ const ArticleMicroCard = (props: NewscardProps) => {
   const bp = useBreakpointIndex();
   const articlePublishedDate = getArticleFormattedDate(date);
 
-  const articleVariantImageSize =
-    variant === ArticleVariant.SMALL
-      ? 48
-      : variant === ArticleVariant.MEDIUM
-      ? 64
-      : 96;
+  // const articleVariantImageSize =
+  //   variant === ArticleVariant.SMALL
+  //     ? 48
+  //     : variant === ArticleVariant.MEDIUM
+  //     ? 64
+  //     : 96;
 
   const path = isNewsPage ? `${slug}` : `${NEWSPAGE_BASE_URL}/${slug}`;
 

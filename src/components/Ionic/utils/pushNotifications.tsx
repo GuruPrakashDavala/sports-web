@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { PushNotifications, Token } from "@capacitor/push-notifications";
 
 const PushNotificationsContainer = () => {
@@ -27,7 +27,7 @@ const PushNotificationsContainer = () => {
 
     // On success, we should be able to receive notifications
     PushNotifications.addListener("registration", (token: Token) => {
-      console.log("Push registration success");
+      console.log(`Push registration success - ${token}`);
     });
 
     // Some issue with our setup and push will not work

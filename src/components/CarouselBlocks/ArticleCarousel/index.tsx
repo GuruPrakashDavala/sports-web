@@ -9,6 +9,7 @@ import { renderImage } from "../../../utils/util";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 import BasicArticleCard from "../../Cards/BasicArticalCard";
+import { useArticles } from "../../../utils/queries";
 
 type ArticleCarouselProps = {
   block: ArticleCarousel;
@@ -16,22 +17,61 @@ type ArticleCarouselProps = {
   styles?: ThemeUICSSObject;
 };
 
+const ArticleCarouselPicker = (props: ArticleCarouselProps): JSX.Element => {
+  const { block, theme, styles = {} } = props;
+
+  const carouselType = block.automatic ? "automatic" : "manual";
+  const category = block.category?.data?.attributes.slug;
+  const fetchArticlesByCategory = block.automatic && category ? true : false;
+
+  const { data: articles } = useArticles({
+    category,
+    enabled: fetchArticlesByCategory ?? false,
+  });
+
+  const articleByCategory = articles ? articles.data : undefined;
+
+  const articleCarouselProps: ArticleCarousel = {
+    id: block.id,
+    category: undefined,
+    title: block.title,
+    type: "articlecarousel",
+    articles: {
+      data: articleByCategory ? articleByCategory : [],
+    },
+    automatic: true,
+    theme: block.theme,
+  };
+
+  switch (carouselType) {
+    case "automatic":
+      return (
+        <ArticeCarousel
+          block={articleCarouselProps}
+          theme={theme}
+          styles={styles}
+        />
+      );
+    case "manual":
+      return <ArticeCarousel block={block} theme={theme} styles={styles} />;
+
+    default:
+      return <></>;
+  }
+};
+
 const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   const { block, theme = ColorTheme.LIGHT, styles = {} } = props;
 
   if (!block.articles.data || block.articles.data.length === 0) return <></>;
 
-  const categorySlug = block.category.data?.attributes.slug;
-  const categoryName = block.category.data?.attributes.name;
+  const carouselTheme = block.theme ?? theme;
 
-  const categoryLink =
-    categorySlug && categoryName
-      ? {
-          href: `/${NEWSPAGE_BASE_URL}?category=${categorySlug}`,
-          external: false,
-          label: categoryName,
-        }
-      : undefined;
+  const categoryLink = {
+    href: `/${NEWSPAGE_BASE_URL}`,
+    external: false,
+    label: "View all news",
+  };
 
   const carouselItems: CarouselItem[] = block.articles.data.map((article) => {
     return {
@@ -45,7 +85,8 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
           type={article.attributes.type}
           category={article.attributes.category}
           slug={article.attributes.slug}
-          theme={theme}
+          theme={carouselTheme}
+          styles={{ height: "100%", cursor: "grab", ...styles }}
         />
       ) : (
         <ArticleCard
@@ -57,7 +98,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
           type={article.attributes.type}
           category={article.attributes.category}
           slug={article.attributes.slug}
-          theme={theme}
+          theme={carouselTheme}
           styles={{ height: "100%", cursor: "grab", ...styles }}
         />
       ),
@@ -65,20 +106,16 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
   });
 
   return (
-    <SectionWrapper theme={theme}>
+    <SectionWrapper theme={carouselTheme}>
       <SectionHeading
         title={block.title}
-        theme={ColorTheme.LIGHT}
+        theme={carouselTheme}
         styles={{ px: [0, 1] }}
         link={categoryLink}
       />
-      <Carousel
-        swiperId={block.id.toString()}
-        items={carouselItems}
-        styles={{ gap: [1] }}
-      />
+      <Carousel swiperId={block.id.toString()} items={carouselItems} />
     </SectionWrapper>
   );
 };
 
-export default ArticeCarousel;
+export default ArticleCarouselPicker;

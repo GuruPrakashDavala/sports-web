@@ -27,7 +27,6 @@ const containerStyles: ThemeUICSSObject = {
 };
 
 const wrapperStyles: ThemeUICSSObject = {
-  //// marginX: -1,
   transition: "background-color 400ms cubic-bezier(0.645, 0.045, 0.355, 1)",
   willChange: "background-color",
   textDecoration: "none",
@@ -104,7 +103,6 @@ const SnackQuoteNews = (props: SnackNewsType) => {
     description,
     slug,
     category,
-    styles = {},
     variant = ComponentVariant.LARGE,
   } = props;
 

@@ -33,7 +33,7 @@ const NewsDetailPage = (): JSX.Element => {
 
   const { slug } = useParams<{ slug: string }>();
   const { setShowTabs } = useContext<TabBarContextProps>(TabBarContext);
-  const { data: articleData, isLoading: articleLoading } = useArticle(slug);
+  const { data: articleData } = useArticle(slug);
 
   const { isLoading: recentArticlesLoading, data: articles } =
     useRecentArticles();

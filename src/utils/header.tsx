@@ -303,15 +303,15 @@ export const mobileHeaderItemsLeftAndRight: ThemeUICSSObject = {
   "> .mobile-menu-trigger": mobileMenuTrigger,
 };
 
-const smItemRight: ThemeUICSSObject = {
-  flex: "0 0 auto",
-  alignItems: "center",
-  display: "none",
-  // Disable right icons on mobile
-  "> a": {
-    display: "none",
-  },
-};
+// const smItemRight: ThemeUICSSObject = {
+//   flex: "0 0 auto",
+//   alignItems: "center",
+//   display: "none",
+//   // Disable right icons on mobile
+//   "> a": {
+//     display: "none",
+//   },
+// };
 
 export const mobileHeaderStyles: ThemeUICSSObject = {
   display: "block",
