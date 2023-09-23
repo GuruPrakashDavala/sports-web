@@ -53,7 +53,7 @@ const ReelVideoPlayer = (props: {
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { video, muted, play } = props;
-  const [playerErr, setPlayerErr] = useState<boolean>();
+  const [playerErr, setPlayerErr] = useState<boolean>(false);
   const muxVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const [playbackVideoAttributes, setPlaybackVideoAttributes] = useState<
@@ -125,8 +125,8 @@ const ReelVideoPlayer = (props: {
     } else if (videoType === ReelEntitlements.MUX) {
       setPlaybackVideoAttributes({
         playbackVideoId:
-          video.attributes.mux_video_uploader_mux_asset?.data.attributes
-            .playback_id,
+          video.attributes.mux_video_uploader_mux_asset?.data?.attributes
+            ?.playback_id,
         playbackVideoTitle: video.attributes.title,
         playbackVideoDate: video.attributes.createdAt,
         videoURL: undefined,
@@ -155,13 +155,11 @@ const ReelVideoPlayer = (props: {
     } else if (!loading && playbackVideoAttributes && muxVideoRef.current) {
       setPlayerErr(false);
       muxVideoRef.current?.pause();
-    } else {
-      setPlayerErr(true);
     }
   }, [video, playbackVideoAttributes, muxVideoRef, play]);
 
   return (
-    <div sx={{ ...reelContainerStyles, padding: 2 }}>
+    <div sx={{ ...reelContainerStyles }}>
       {playerErr && (
         <div sx={errorInfoStyles}>
           <p sx={{ color: "white" }}>

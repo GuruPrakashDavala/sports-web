@@ -66,20 +66,31 @@ const ReelCarousel = (
       </div>
 
       {reels.map((reel, index) => {
+        const isReelItemAnImage =
+          reel.attributes.type === ReelEntitlements.IMAGE
+            ? ReelEntitlements.IMAGE
+            : undefined;
+
+        const isReelItemAVideo =
+          reel.attributes.type === ReelEntitlements.MUX ||
+          reel.attributes.type === ReelEntitlements.TWITTER_VIDEO;
+
         return (
           <SwiperSlide
             key={reel.id}
             style={swiperSlideStyles}
             onClick={() => setMuted(!muted)}
           >
-            {reel.attributes.type === ReelEntitlements.IMAGE ? (
+            {isReelItemAnImage ? (
               <ReelImageViewer reel={reel} />
-            ) : (
+            ) : isReelItemAVideo ? (
               <ReelVideoPlayer
                 video={reel}
                 muted={muted}
                 play={index === currentSlideId}
               />
+            ) : (
+              <></>
             )}
           </SwiperSlide>
         );

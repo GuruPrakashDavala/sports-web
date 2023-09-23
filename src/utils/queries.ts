@@ -550,7 +550,7 @@ export const useReels = ({
   const APIURL =
     !category || category === "All"
       ? `/reels?pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`
-      : `/videos?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
+      : `/reels?filters[category][slug][$eq]=${category}&pagination[page]=${pageNumber}&pagination[pageSize]=5&populate=deep, 2&sort=createdAt:desc`;
 
   return useQuery(
     ["reelsByCategory", category, pageNumber ?? 1],
