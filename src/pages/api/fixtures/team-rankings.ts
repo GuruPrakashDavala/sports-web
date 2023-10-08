@@ -45,6 +45,7 @@ export default async function handler(
       },
     });
 
+    res.setHeader("Cache-Control", "s-maxage=86400");
     res.status(200).json({
       data: rankings.data,
     });
