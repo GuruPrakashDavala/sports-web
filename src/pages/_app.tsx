@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import { useEffect } from "react";
 import App from "next/app";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -26,6 +27,7 @@ import Script from "next/script";
 import { isNativeMobileApp } from "../components/Ionic/utils/capacitor";
 import WebAnalytics from "../components/GoogleAnalytics/WebAnalytics";
 import { Globals } from "../types/header";
+import { parseCookies, setCookie } from "nookies";
 
 setupIonicReact();
 
@@ -35,6 +37,21 @@ type MyAppProps = AppProps & { globals: Globals };
 
 function MyApp({ Component, pageProps, globals }: MyAppProps) {
   useProgressBar();
+
+  useEffect(() => {
+    const cookies = parseCookies();
+
+    console.log("Reading Cookies on client side");
+    console.log(cookies);
+
+    if (cookies && cookies["_dyid"]) {
+      const dyid = cookies["_dyid"];
+      setCookie(null, "_dyid_server", dyid, {
+        maxAge: 30 * 24 * 60 * 60, // Set a 1 year expiration for the new cookie
+        path: "/",
+      });
+    }
+  }, []);
 
   return (
     <TabBarProvider>
