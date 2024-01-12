@@ -5,12 +5,12 @@ import {
   QueryCommandInput,
 } from "@aws-sdk/client-dynamodb";
 
-type Data = {
-  name: string;
-};
-
 const ddb = new DynamoDBClient({
   region: "ap-south-1",
+  credentials: {
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID ?? "",
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY ?? "",
+  },
 });
 
 export default async function handler(
@@ -48,14 +48,6 @@ export default async function handler(
       response.Items.length > 0 &&
       response.Items.length < 2
     ) {
-      // Check all mandatory fields here
-
-      // if(!){
-
-      // }
-
-      // process the league_ids and send it back
-
       const isActive = response.Items[0].isActive["BOOL"];
       const remainingQuota = Number(response.Items[0].remaining_quota["N"]);
 
@@ -67,44 +59,16 @@ export default async function handler(
       console.log(typeof remainingQuota);
 
       if (isActive && remainingQuota && remainingQuota > 0) {
-        return {
-          statusCode: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-          },
-          body: JSON.stringify({ isValid: true }),
-        };
+        res.status(200).json({ isValid: true });
       } else {
-        return {
-          statusCode: 400,
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-          },
-          body: JSON.stringify({ isValid: false }),
-        };
+        res.status(200).json({ isValid: false });
       }
     } else {
-      return {
-        statusCode: 401,
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache",
-        },
-        body: JSON.stringify({ isValid: false }),
-      };
+      res.status(401).json({ isValid: true });
     }
   } catch (err) {
     console.log("Error with API call");
     console.log(err);
-    return {
-      statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-      },
-      body: JSON.stringify({ message: "Something went wrong" }),
-    };
+    res.status(500).json({ message: "Something went wrong" });
   }
 }
