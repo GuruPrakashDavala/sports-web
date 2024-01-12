@@ -50,6 +50,7 @@ export default async function handler(
     ) {
       const isActive = response.Items[0].isActive["BOOL"];
       const remainingQuota = Number(response.Items[0].remaining_quota["N"]);
+      res.setHeader("Cache-Control", "public, max-age=86400, must-revalidate");
 
       console.log("Details");
       console.log(isActive);
@@ -59,11 +60,16 @@ export default async function handler(
       console.log(typeof remainingQuota);
 
       if (isActive && remainingQuota && remainingQuota > 0) {
+        res.setHeader(
+          "Cache-Control",
+          "public, max-age=86400, must-revalidate"
+        );
         res.status(200).json({ isValid: true });
       } else {
         res.status(200).json({ isValid: false });
       }
     } else {
+      res.setHeader("Cache-Control", "public, max-age=86400, must-revalidate");
       res.status(401).json({ isValid: false });
     }
   } catch (err) {
