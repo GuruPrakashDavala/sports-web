@@ -64,7 +64,7 @@ export default async function handler(
         res.status(200).json({ isValid: false });
       }
     } else {
-      res.status(401).json({ isValid: true });
+      res.status(401).json({ isValid: false });
     }
   } catch (err) {
     console.log("Error with API call");
