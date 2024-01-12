@@ -62,6 +62,7 @@
     "xss": "^1.0.13"
   },
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.490.0",
     "@capacitor/assets": "^2.0.4",
     "@capacitor/cli": "^5.0.0",
     "@types/cors": "^2.8.12",
