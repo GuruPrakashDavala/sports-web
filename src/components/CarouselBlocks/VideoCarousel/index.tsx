@@ -7,9 +7,9 @@ import { ThemeUICSSObject } from "theme-ui";
 import { renderImage } from "../../../utils/util";
 import { VIDEOS_PAGE_BASE_URL } from "../../../utils/pages";
 import TwitterVideoCard from "../../Cards/TwitterVideoCard";
-import BasicArticleCard from "../../Cards/BasicArticalCard";
 import { useVideos } from "../../../utils/queries";
 import { VideoType } from "../../Cards/VideoCard/VideoMicroCard";
+import BasicArticleCard from "../../Cards/BasicArticalCard";
 
 type VideoCarouselProps = {
   block: VideoCarouselT;
