@@ -22,6 +22,24 @@ import ContentGrid from "../components/Grids/ContentGrid";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
+export type HomePageProps = {
+  attributes: {
+    contentGrid: ContentGridT[];
+    pageblocks: HomeBlocks[];
+    createdAt: string;
+    hero: { id: number; title: string };
+    publishedAt: string;
+    seo: {
+      id: number;
+      metaDescription: string;
+      metaTitle: string;
+      shareImage: { data: ImageType };
+    };
+    updatedAt: string;
+  };
+  id: number;
+};
+
 const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
   switch (block.type) {
     case "articlecarousel":
@@ -83,7 +101,7 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
   }
 };
 
-export const HomePageContent = (props: {
+const HomePageContent = (props: {
   homepage: HomePageProps;
   fixtures: FixtureT[];
   recentNewsArticles?: ArticleType[];
@@ -126,24 +144,6 @@ export const HomePageContent = (props: {
   );
 };
 
-export type HomePageProps = {
-  attributes: {
-    contentGrid: ContentGridT[];
-    pageblocks: HomeBlocks[];
-    createdAt: string;
-    hero: { id: number; title: string };
-    publishedAt: string;
-    seo: {
-      id: number;
-      metaDescription: string;
-      metaTitle: string;
-      shareImage: { data: ImageType };
-    };
-    updatedAt: string;
-  };
-  id: number;
-};
-
 const WebHome = (props: {
   homepage: HomePageProps;
   fixtures: FixtureT[];
@@ -151,11 +151,11 @@ const WebHome = (props: {
   recentNewsArticles?: ArticleType[];
 }) => {
   const { seriesIds, recentNewsArticles } = props;
-  const [refetchInterval, setRefetchInterval] = useState<number>(0);
+  // const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const { data: currentFixtures, isLoading: isFixturesLoading } =
     useCurrentFixtures({
       seriesIds,
-      refetchInterval,
+      refetchInterval: 1000,
     });
 
   const { data: homepageRes, isLoading: isHomepageLoading } = useHomepage();
@@ -168,9 +168,10 @@ const WebHome = (props: {
 
   useEffect(() => {
     const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
-    isLive.length > 0
-      ? setRefetchInterval(1000 * 30) // 0.5 mins polling
-      : setRefetchInterval(1000 * 300); // 5 mins polling;
+
+    // isLive.length > 0
+    //   ? setRefetchInterval(1000 * 30) // 0.5 mins polling
+    //   : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
   return (

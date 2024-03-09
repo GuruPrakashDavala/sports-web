@@ -1,5 +1,4 @@
 /** @jsxImportSource theme-ui */
-import Link from "next/link";
 import { ThemeUICSSObject } from "theme-ui";
 
 const container: ThemeUICSSObject = {
