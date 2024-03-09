@@ -16,6 +16,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media";
 import { useThemeUI } from "theme-ui";
 import { column } from "../../utils/grid";
 import { themeUIArray } from "../../utils/themeui";
+import { useCarouselContext } from "../../context/carouselRefContext";
 
 SwiperCore.use([Navigation, Keyboard, Mousewheel]);
 
@@ -45,6 +46,8 @@ const Carousel = (props: CarouselProps): JSX.Element => {
   const {
     theme: { space },
   } = useThemeUI();
+
+  const { carouselUpdate } = useCarouselContext();
 
   // if (!items) return <></>;
 
@@ -153,6 +156,12 @@ const Carousel = (props: CarouselProps): JSX.Element => {
       swiperRef.current.update();
     }
   }, [swiperOptions]);
+
+  useEffect(() => {
+    if (swiperRef.current && carouselUpdate > 0) {
+      swiperRef.current.slideTo(0, 100);
+    }
+  }, [carouselUpdate]);
 
   return (
     <LazyMotion features={domAnimation}>

@@ -124,10 +124,10 @@ const HomePageContent = (props: {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* {homepage.attributes.contentGrid &&
+      {homepage.attributes.contentGrid &&
         homepage.attributes.contentGrid.length > 0 && (
           <ContentGrid blocks={homepage.attributes.contentGrid} />
-        )} */}
+        )}
 
       <FixtureCarousel fixtures={fixtures} />
 
