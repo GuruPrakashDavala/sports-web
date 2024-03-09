@@ -18,8 +18,6 @@ import RetailCarousel from "../components/CarouselBlocks/RetailCarousel";
 import VideoCarouselPicker from "../components/CarouselBlocks/VideoCarousel";
 import ArticleCarouselPicker from "../components/CarouselBlocks/ArticleCarousel";
 import StandingsTableBlock from "../components/StandingsTableBlock";
-import ReelCarouselPicker from "../components/CarouselBlocks/ReelCarousel";
-import NotFoundPage from "./404";
 import ContentGrid from "../components/Grids/ContentGrid";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
