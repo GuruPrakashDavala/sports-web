@@ -124,10 +124,10 @@ const HomePageContent = (props: {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {homepage.attributes.contentGrid &&
+      {/* {homepage.attributes.contentGrid &&
         homepage.attributes.contentGrid.length > 0 && (
           <ContentGrid blocks={homepage.attributes.contentGrid} />
-        )}
+        )} */}
 
       <FixtureCarousel fixtures={fixtures} />
 
@@ -151,11 +151,11 @@ const WebHome = (props: {
   recentNewsArticles?: ArticleType[];
 }) => {
   const { seriesIds, recentNewsArticles } = props;
-  // const [refetchInterval, setRefetchInterval] = useState<number>(0);
+  const [refetchInterval, setRefetchInterval] = useState<number>(0);
   const { data: currentFixtures, isLoading: isFixturesLoading } =
     useCurrentFixtures({
       seriesIds,
-      refetchInterval: 1000,
+      refetchInterval,
     });
 
   const { data: homepageRes, isLoading: isHomepageLoading } = useHomepage();
@@ -168,10 +168,9 @@ const WebHome = (props: {
 
   useEffect(() => {
     const isLive = fixtures.filter((fixture) => isMatchLive(fixture.status));
-
-    // isLive.length > 0
-    //   ? setRefetchInterval(1000 * 30) // 0.5 mins polling
-    //   : setRefetchInterval(1000 * 300); // 5 mins polling;
+    isLive.length > 0
+      ? setRefetchInterval(1000 * 30) // 0.5 mins polling
+      : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
   return (
