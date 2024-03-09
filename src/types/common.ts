@@ -1,4 +1,5 @@
-import { ReelEntitlements, VideoType } from "../components/Ionic/Pages/videos";
+import { VideoType } from "../components/Cards/VideoCard/VideoMicroCard";
+import { ReelEntitlements } from "../components/CarouselBlocks/ReelCarousel";
 import { CategoryType, ImageType, TagsType } from "./article";
 
 export type Tweet = {
