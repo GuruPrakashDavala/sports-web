@@ -112,10 +112,6 @@ const VideoMicroCard = (
   const [error, setError] = useState<boolean>(false);
   const isTweetVideo = videoType === VideoType.TWITTER_VIDEO && tweetId;
 
-  if (isTweetVideo) {
-    return <></>;
-  }
-
   const bp = useBreakpointIndex();
   const articlePublishedDate = getArticleFormattedDate(date);
 
@@ -135,6 +131,10 @@ const VideoMicroCard = (
       setImageURL(imageSrc);
     }
   }, [videoType]);
+
+  if (isTweetVideo) {
+    return <></>;
+  }
 
   return (
     <Fragment>
