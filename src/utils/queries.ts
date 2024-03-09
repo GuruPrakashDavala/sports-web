@@ -599,3 +599,14 @@ export const useInfiniteReels = ({
 };
 
 export const useTwitterFeedById = () => {};
+
+const setCookies = async () => {
+  return axios.get(`http://localhost:3000/api/cookies`);
+};
+
+// Below query not in use
+export const useCookies = () => {
+  return useQuery(["setQueryCookies"], setCookies, {
+    refetchOnWindowFocus: false,
+  });
+};

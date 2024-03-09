@@ -4,7 +4,6 @@ import { Fragment, useState } from "react";
 import Header from "../Header/Header";
 import Sticky from "react-stickynode";
 import { Waypoint } from "react-waypoint";
-import { isNativeMobileApp } from "../Ionic/utils/capacitor";
 import { Globals as GlobalsT } from "../../types/header";
 import { useGlobals } from "../../utils/queries";
 import HeaderPromo from "../Header/HeaderPromo";
@@ -34,28 +33,26 @@ const Layout = ({ children, globals }: LayoutProps) => {
 
   return (
     <div>
-      {!isNativeMobileApp && (
-        <Fragment>
-          {promo && promo.active && (
-            <HeaderPromo
-              promoDescription={promo.promo_description}
-              href={promo.href}
-              external={promo.external}
-            />
-          )}
-
-          <Sticky enabled={isSticky} innerZ={1000} enableTransforms={false}>
-            <Header
-              appHeader={appHeader}
-              className={`${isSticky ? "sticky" : "unSticky"}`}
-            />
-          </Sticky>
-          <Waypoint
-            onEnter={() => setSticky(false)}
-            onPositionChange={onWaypointPositionChange}
+      <Fragment>
+        {promo && promo.active && (
+          <HeaderPromo
+            promoDescription={promo.promo_description}
+            href={promo.href}
+            external={promo.external}
           />
-        </Fragment>
-      )}
+        )}
+
+        <Sticky enabled={isSticky} innerZ={1000} enableTransforms={false}>
+          <Header
+            appHeader={appHeader}
+            className={`${isSticky ? "sticky" : "unSticky"}`}
+          />
+        </Sticky>
+        <Waypoint
+          onEnter={() => setSticky(false)}
+          onPositionChange={onWaypointPositionChange}
+        />
+      </Fragment>
 
       <main>{children}</main>
     </div>

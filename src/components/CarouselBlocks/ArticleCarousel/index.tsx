@@ -7,8 +7,6 @@ import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { ThemeUICSSObject } from "theme-ui";
 import { renderImage } from "../../../utils/util";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
-import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
-import BasicArticleCard from "../../Cards/BasicArticalCard";
 import { useArticles } from "../../../utils/queries";
 
 type ArticleCarouselProps = {
@@ -75,20 +73,7 @@ const ArticeCarousel = (props: ArticleCarouselProps): JSX.Element => {
 
   const carouselItems: CarouselItem[] = block.articles.data.map((article) => {
     return {
-      content: isNativeMobileApp ? (
-        <BasicArticleCard
-          label={article.attributes.title}
-          imageSrc={renderImage(article.attributes.coverimage.data)}
-          date={article.attributes.createdAt}
-          variant={ArticleVariant.SMALL}
-          badge={article.attributes.badge?.data?.attributes.name}
-          type={article.attributes.type}
-          category={article.attributes.category}
-          slug={article.attributes.slug}
-          theme={carouselTheme}
-          styles={{ height: "100%", cursor: "grab", ...styles }}
-        />
-      ) : (
+      content: (
         <ArticleCard
           label={article.attributes.title}
           imageSrc={renderImage(article.attributes.coverimage.data)}

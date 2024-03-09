@@ -1,10 +1,10 @@
 /** @jsxImportSource theme-ui */
 
-import { IonImg } from "@ionic/react";
 import { renderImage } from "../../utils/util";
 import { ReelType } from "../../types/common";
 import { BsFillImageFill } from "react-icons/bs";
 import { ThemeUICSSObject } from "theme-ui";
+import Image from "next/image";
 
 export const reelContainerStyles: ThemeUICSSObject = {
   display: "flex",
@@ -27,10 +27,10 @@ const ReelImageViewer = (props: { reel: ReelType }) => {
   const { reel } = props;
   return (
     <div sx={reelContainerStyles}>
-      <IonImg
+      <Image
         src={renderImage(reel.attributes.thumbnail.data)}
         alt={reel.attributes.title}
-      ></IonImg>
+      />
 
       <div sx={reelImageInfoStyles}>
         <div

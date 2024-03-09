@@ -23,7 +23,6 @@ import PostMatchInfo from "./PostMatchInfo";
 import { useBreakpointIndex } from "@theme-ui/match-media";
 import WicketBallInfo from "./utils/WicketBallInfo";
 import BallInfo from "./utils/BallInfo";
-import { IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react";
 import Lineup from "../Util/Lineup";
 
 export const PlayerBattingDetails = (props: {
@@ -462,10 +461,6 @@ const LiveCommentary = (props: {
           lineup={lineup}
         />
       )}
-
-      <IonInfiniteScroll onIonInfinite={getMoreBalls}>
-        <IonInfiniteScrollContent></IonInfiniteScrollContent>
-      </IonInfiniteScroll>
     </div>
   );
 };

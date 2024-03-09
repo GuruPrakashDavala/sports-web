@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
 import {
   InfiniteFixturesResponseType,
+  useCookies,
   useInfiniteFixtures,
 } from "../../utils/queries";
 import {
@@ -191,6 +192,9 @@ export const SchedulePageContent = (props: {
     loadMore,
     isFetching,
   } = props;
+
+  // Set relevant cookies on page load
+  useCookies();
 
   const tabLists = [
     { id: "0", name: "today" },

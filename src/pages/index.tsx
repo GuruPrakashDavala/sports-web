@@ -13,7 +13,6 @@ import { isMatchLive } from "../utils/matchcenter";
 import { useCurrentFixtures, useHomepage } from "../utils/queries";
 import { API_BASE_URL } from "../utils/util";
 import FixtureCarousel from "../components/CarouselBlocks/FixtureCarousel";
-import dynamic from "next/dynamic";
 import { getSeriesIdsFromFixturesList } from "../utils/fixtures";
 import RetailCarousel from "../components/CarouselBlocks/RetailCarousel";
 import VideoCarouselPicker from "../components/CarouselBlocks/VideoCarousel";
@@ -21,6 +20,7 @@ import ArticleCarouselPicker from "../components/CarouselBlocks/ArticleCarousel"
 import StandingsTableBlock from "../components/StandingsTableBlock";
 import ReelCarouselPicker from "../components/CarouselBlocks/ReelCarousel";
 import NotFoundPage from "./404";
+import ContentGrid from "../components/Grids/ContentGrid";
 
 type BlockPickerProps = { block: HomeBlocks; index: number };
 
@@ -53,14 +53,14 @@ const BlockPicker = ({ block, index }: BlockPickerProps): JSX.Element => {
         />
       );
 
-    case "reelcarousel":
-      return (
-        <ReelCarouselPicker
-          block={block}
-          theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
-          styles={{ padding: [1, 2] }}
-        />
-      );
+    // case "reelcarousel":
+    //   return (
+    //     <ReelCarouselPicker
+    //       block={block}
+    //       theme={index % 2 === 0 ? ColorTheme.LIGHT : ColorTheme.GRAY}
+    //       styles={{ padding: [1, 2] }}
+    //     />
+    //   );
 
     case "articlegrid":
       return (
@@ -108,10 +108,10 @@ export const HomePageContent = (props: {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* {homepage.attributes.contentGrid &&
+      {homepage.attributes.contentGrid &&
         homepage.attributes.contentGrid.length > 0 && (
           <ContentGrid blocks={homepage.attributes.contentGrid} />
-        )} */}
+        )}
 
       <FixtureCarousel fixtures={fixtures} />
 
@@ -175,8 +175,6 @@ const WebHome = (props: {
       : setRefetchInterval(1000 * 300); // 5 mins polling;
   }, [currentFixtures]);
 
-  return <NotFoundPage />;
-
   return (
     <HomePageContent
       homepage={homepage}
@@ -193,31 +191,20 @@ const Home = (props: {
   recentNewsArticles?: ArticleType[];
 }): JSX.Element => {
   const { homepage, fixtures, recentNewsArticles, seriesIds } = props;
-  const isNativeMobileApp = process.env.NEXT_PUBLIC_IS_WEB === "false";
-
-  const AppShell = dynamic(() => import(`../components/Ionic/AppShell/index`), {
-    ssr: false,
-  });
 
   return (
-    <Fragment>
-      {isNativeMobileApp ? (
-        <AppShell />
-      ) : (
-        <WebHome
-          homepage={homepage}
-          fixtures={fixtures}
-          seriesIds={seriesIds}
-          recentNewsArticles={recentNewsArticles}
-        />
-      )}
-    </Fragment>
+    <WebHome
+      homepage={homepage}
+      fixtures={fixtures}
+      seriesIds={seriesIds}
+      recentNewsArticles={recentNewsArticles}
+    />
   );
 };
 
 export async function getStaticProps() {
   try {
-    const recentNewsAPIURL = `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep, 2&sort=createdAt:desc`;
+    const recentNewsAPIURL = `/articles?pagination[page]=1&pagination[pageSize]=10&populate=deep,2&sort=createdAt:desc`;
     const [homepage, fixturesDefinedInCMS, recentNews] = await Promise.all([
       fetchStrapiAPI("/home", {
         populate: "deep, 4",

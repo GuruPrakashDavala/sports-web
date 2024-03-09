@@ -7,9 +7,12 @@ import { colors } from "../../../styles/theme";
 import { getArticleFormattedDate } from "../../../utils/util";
 import { VideoCardProps } from ".";
 import AnimatingMusicBars from "../../Icons/AnimatingMusicBars";
-import { VideoType } from "../../Ionic/Pages/videos";
-import { Tweet as TweetT } from "next-tweet/api";
-import { getTweet } from "../../../utils/util";
+// import { getTweet } from "../../../utils/util";
+
+export enum VideoType {
+  MUX = "Mux Video",
+  TWITTER_VIDEO = "Twitter Video",
+}
 
 const cardHoverStyles: ThemeUICSSObject = {
   transition:
@@ -109,6 +112,10 @@ const VideoMicroCard = (
   const [error, setError] = useState<boolean>(false);
   const isTweetVideo = videoType === VideoType.TWITTER_VIDEO && tweetId;
 
+  if (isTweetVideo) {
+    return <></>;
+  }
+
   const bp = useBreakpointIndex();
   const articlePublishedDate = getArticleFormattedDate(date);
 
@@ -123,31 +130,9 @@ const VideoMicroCard = (
     "&:hover": bp > 1 ? cardHoverStyles : null,
   };
 
-  const setTweetImage = async (tweetId: string) => {
-    try {
-      setError(false);
-      setLoading(true);
-      const tweet: TweetT = await getTweet(tweetId);
-      const tweetImage =
-        tweet && tweet.video?.mediaAvailability.status === "available"
-          ? tweet.video.poster
-          : undefined;
-      setImageURL(tweetImage ?? imageSrc);
-      setLoading(false);
-      return;
-    } catch (err) {
-      console.log(`Error fetching the tweet - ${tweetId}`);
-      console.log(err);
-      setError(true);
-      return;
-    }
-  };
-
   useEffect(() => {
     if (videoType === VideoType.MUX) {
       setImageURL(imageSrc);
-    } else if (isTweetVideo) {
-      setTweetImage(tweetId);
     }
   }, [videoType]);
 

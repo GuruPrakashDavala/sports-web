@@ -10,8 +10,6 @@ import Link from "../../Primitives/Link";
 import { renderImage } from "../../../utils/util";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
 import { useRouter } from "next/router";
-import { useIonRouter } from "@ionic/react";
-import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 import SnackQuoteNews from "./SnackQuoteNews";
 
 type SnackQuoteProps = {
@@ -105,15 +103,11 @@ const SnackQuote = (props: SnackQuoteProps) => {
   const { title_article, description_article } = block;
 
   const router = useRouter();
-  const ionRouter = useIonRouter();
-  const newspageSlug = isNativeMobileApp ? `/newspage/` : `/news/`;
-  const currentPageURL = isNativeMobileApp
-    ? ionRouter.routeInfo.pathname
-    : router.route;
+  const newspageSlug = `/news/`;
+  const currentPageURL = router.route;
   const isNewsPage = currentPageURL.startsWith(newspageSlug);
 
   const titleArticleSlug = title_article.data.attributes.slug;
-  // const descriptionArticleSlug = description_article.data.attributes.slug;
 
   const titleArticleRoute = isNewsPage
     ? `${titleArticleSlug}`

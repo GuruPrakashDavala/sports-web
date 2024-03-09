@@ -6,10 +6,10 @@ import SectionWrapper from "../../Wrappers/SectionWrapper";
 import { ThemeUICSSObject } from "theme-ui";
 import { renderImage } from "../../../utils/util";
 import { VIDEOS_PAGE_BASE_URL } from "../../../utils/pages";
-import { VideoType } from "../../Ionic/Pages/videos";
 import TwitterVideoCard from "../../Cards/TwitterVideoCard";
 import BasicArticleCard from "../../Cards/BasicArticalCard";
 import { useVideos } from "../../../utils/queries";
+import { VideoType } from "../../Cards/VideoCard/VideoMicroCard";
 
 type VideoCarouselProps = {
   block: VideoCarouselT;

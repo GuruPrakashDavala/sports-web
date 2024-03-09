@@ -19,7 +19,6 @@ import RightArrowIcon from "../../components/Icons/RightArrow";
 import ArticleCardSkeleton from "../../components/Loaders/Cards/ArticleCard";
 import { ThemeUICSSObject } from "theme-ui";
 import Head from "next/head";
-import { isNativeMobileApp } from "../../components/Ionic/utils/capacitor";
 
 type ArticleCategories = {
   attributes: {
@@ -122,13 +121,11 @@ export const NewsPageContent = (props: {
 
       <SectionWrapper styles={{ paddingY: 2 }}>
         <div sx={headerTitleContainerStyles}>
-          {!isNativeMobileApp && (
-            <SectionHeading
-              title={`News`}
-              theme={ColorTheme.LIGHT}
-              styles={{ px: [0, 1] }}
-            />
-          )}
+          <SectionHeading
+            title={`News`}
+            theme={ColorTheme.LIGHT}
+            styles={{ px: [0, 1] }}
+          />
 
           {/* TODO: Enable the category filter later (to be reviewed) */}
 

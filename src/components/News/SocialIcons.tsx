@@ -12,7 +12,6 @@ import {
   TwitterShareButton,
   EmailShareButton,
 } from "react-share";
-import { isNativeMobileApp } from "../Ionic/utils/capacitor";
 
 const iconContainerStyles: ThemeUICSSObject = {
   display: "flex",
@@ -62,50 +61,26 @@ const SocialIcons = (props: {
 
   return (
     <ul sx={iconContainerStyles}>
-      <li
-        sx={iconWrapperStyles}
-        onClick={isNativeMobileApp ? nativeAppShare : undefined}
-      >
-        {isNativeMobileApp ? (
+      <li sx={iconWrapperStyles}>
+        <FacebookShareButton url={shareURL} quote={quote} hashtag={hashtag}>
           <FacebookIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
-        ) : (
-          <FacebookShareButton url={shareURL} quote={quote} hashtag={hashtag}>
-            <FacebookIcon
-              variant={ComponentVariant.SMALL}
-              styles={iconStyles}
-            />
-          </FacebookShareButton>
-        )}
+        </FacebookShareButton>
       </li>
 
-      <li
-        sx={iconWrapperStyles}
-        onClick={isNativeMobileApp ? nativeAppShare : undefined}
-      >
-        {isNativeMobileApp ? (
+      <li sx={iconWrapperStyles} onClick={undefined}>
+        <TwitterShareButton url={shareURL} title={quote} hashtags={hashtags}>
           <TwitterIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
-        ) : (
-          <TwitterShareButton url={shareURL} title={quote} hashtags={hashtags}>
-            <TwitterIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
-          </TwitterShareButton>
-        )}
+        </TwitterShareButton>
       </li>
 
-      <li
-        sx={iconWrapperStyles}
-        onClick={isNativeMobileApp ? nativeAppShare : undefined}
-      >
-        {isNativeMobileApp ? (
+      <li sx={iconWrapperStyles} onClick={undefined}>
+        <EmailShareButton
+          url={shareURL}
+          subject={quote}
+          body={`${quote} ${hashtag}`}
+        >
           <MailIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
-        ) : (
-          <EmailShareButton
-            url={shareURL}
-            subject={quote}
-            body={`${quote} ${hashtag}`}
-          >
-            <MailIcon variant={ComponentVariant.SMALL} styles={iconStyles} />
-          </EmailShareButton>
-        )}
+        </EmailShareButton>
       </li>
     </ul>
   );

@@ -6,11 +6,10 @@ import { CSSProperties, useState, useContext } from "react";
 import { ReelType } from "../../types/common";
 import "swiper/swiper.min.css";
 import { AiOutlineArrowLeft } from "react-icons/ai";
-import { NavContext } from "@ionic/react";
-import { ReelEntitlements } from "../Ionic/Pages/videos";
 import ReelImageViewer from "./ReelImageViewer";
 import ReelVideoPlayer from "./ReelVideoPlayer";
 import { ThemeUICSSObject } from "theme-ui";
+import { ReelEntitlements } from "../CarouselBlocks/ReelCarousel";
 
 const swiperSlideStyles: CSSProperties = {
   display: "flex",
@@ -38,7 +37,6 @@ const ReelCarousel = (
   const { swiperId, reels, hasNextPage, loadMore } = props;
   const [currentSlideId, setCurrentSlideId] = useState<number>(0);
   const [muted, setMuted] = useState<boolean>(true);
-  const { goBack } = useContext(NavContext);
 
   return (
     <Swiper
@@ -56,12 +54,7 @@ const ReelCarousel = (
         }
       }}
     >
-      <div
-        sx={goBackButtonStyles}
-        onClick={() => {
-          goBack("/videospage");
-        }}
-      >
+      <div sx={goBackButtonStyles}>
         <AiOutlineArrowLeft color="white" fontSize={22} />
       </div>
 

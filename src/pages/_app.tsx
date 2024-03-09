@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 
-import { useEffect } from "react";
 import App from "next/app";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -11,76 +10,46 @@ import Layout from "../components/Layout/Layout";
 import ProgressBarStyles, { useProgressBar } from "../utils/progressbar";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { fetchStrapiAPI } from "../lib/strapi";
-import { setupIonicReact } from "@ionic/react";
-import "@ionic/react/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
-
-// import "@ionic/react/css/normalize.css";
-// import "@ionic/react/css/structure.css";
-
-import "../styles/ionictheme/variables.css";
-import "../components/Header/Header.css";
-import "../styles/globals.css";
-import { TabBarProvider } from "../components/Ionic/contexts/tabBarContext";
 import Script from "next/script";
-import { isNativeMobileApp } from "../components/Ionic/utils/capacitor";
 import WebAnalytics from "../components/GoogleAnalytics/WebAnalytics";
 import { Globals } from "../types/header";
-import { parseCookies, setCookie } from "nookies";
-
-setupIonicReact();
-
-const queryClient = new QueryClient();
+import "../components/Header/Header.css";
+import "../styles/globals.css";
 
 type MyAppProps = AppProps & { globals: Globals };
+
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps, globals }: MyAppProps) {
   useProgressBar();
 
-  useEffect(() => {
-    const cookies = parseCookies();
-
-    console.log("Reading Cookies on client side");
-    console.log(cookies);
-
-    if (cookies && cookies["_dyid"]) {
-      const dyid = cookies["_dyid"];
-      setCookie(null, "_dyid_server", dyid, {
-        maxAge: 30 * 24 * 60 * 60, // Set a 1 year expiration for the new cookie
-        path: "/",
-      });
-    }
-  }, []);
-
   return (
-    <TabBarProvider>
-      <ThemeProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <Head>
-            <meta name="keywords" content="homepage, Cricfanatic.com" />
-            <meta
-              name="viewport"
-              content="initial-scale=1.0, maximum-scale=1.0"
-            ></meta>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1, viewport-fit=cover"
-            />
-            <RobotoFontFace />
-            <ProgressBarStyles />
-          </Head>
-          {/* Global Site Tag (gtag.js) - Google Analytics */}
-          <Script
-            id="g-tag-1"
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=G-HW56Q6WWDP`}
+    <ThemeProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <Head>
+          <meta name="keywords" content="homepage, Cricfanatic.com" />
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, maximum-scale=1.0"
+          ></meta>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
           />
-          <Script
-            id="g-tag-2"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
+          <RobotoFontFace />
+          <ProgressBarStyles />
+        </Head>
+        {/* Global Site Tag (gtag.js) - Google Analytics */}
+        <Script
+          id="g-tag-1"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-HW56Q6WWDP`}
+        />
+        <Script
+          id="g-tag-2"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
@@ -88,15 +57,14 @@ function MyApp({ Component, pageProps, globals }: MyAppProps) {
               page_path: window.location.pathname,
             });
           `,
-            }}
-          />
-          {!isNativeMobileApp && <WebAnalytics />}
-          <Layout globals={globals}>
-            <Component {...pageProps} />
-          </Layout>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </TabBarProvider>
+          }}
+        />
+        <WebAnalytics />
+        <Layout globals={globals}>
+          <Component {...pageProps} />
+        </Layout>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

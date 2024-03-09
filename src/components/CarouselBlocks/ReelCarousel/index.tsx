@@ -9,7 +9,12 @@ import { VIDEOS_PAGE_BASE_URL } from "../../../utils/pages";
 import TwitterVideoCard from "../../Cards/TwitterVideoCard";
 import BasicArticleCard from "../../Cards/BasicArticalCard";
 import { useReels } from "../../../utils/queries";
-import { ReelEntitlements } from "../../Ionic/Pages/videos";
+
+export enum ReelEntitlements {
+  MUX = "Mux Video",
+  TWITTER_VIDEO = "Twitter Video",
+  IMAGE = "Image",
+}
 
 type ReelCarouselProps = {
   block: ReelCarouselT;

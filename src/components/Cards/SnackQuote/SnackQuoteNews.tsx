@@ -1,13 +1,11 @@
 /** @jsxImportSource theme-ui */
 
-import { useIonRouter } from "@ionic/react";
 import Image from "next/legacy/image";
 import { useRouter } from "next/router";
 import { ThemeUICSSObject } from "theme-ui";
 import { colors } from "../../../styles/theme";
 import { ComponentVariant } from "../../../types/modifier";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
-import { isNativeMobileApp } from "../../Ionic/utils/capacitor";
 import Link from "../../Primitives/Link";
 
 type SnackNewsType = {
@@ -114,11 +112,8 @@ const SnackQuoteNews = (props: SnackNewsType) => {
       : 96;
 
   const router = useRouter();
-  const ionRouter = useIonRouter();
-  const newspageSlug = isNativeMobileApp ? `/newspage/` : `/news/`;
-  const currentPageURL = isNativeMobileApp
-    ? ionRouter.routeInfo.pathname
-    : router.route;
+  const newspageSlug = `/news/`;
+  const currentPageURL = router.route;
 
   const isNewsPage = currentPageURL.startsWith(newspageSlug);
 

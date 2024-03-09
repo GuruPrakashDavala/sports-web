@@ -2,7 +2,6 @@
 
 import { ThemeUICSSObject } from "theme-ui";
 import { WriterType } from "../../types/article";
-import { isNativeMobileApp } from "../Ionic/utils/capacitor";
 import AuthorInfo from "./AuthorInfo";
 import PublishInfo from "./PublishInfo";
 import SocialIcons from "./SocialIcons";
@@ -31,7 +30,7 @@ const AuthorInfoBlock = (props: AuthorInfoBlockProps): JSX.Element => {
     >
       <PublishInfo date={createdAt} />
       {authorName && <AuthorInfo name={authorName} />}
-      {!isNativeMobileApp && <SocialIcons quote={quote} shareURL={shareURL} />}
+      <SocialIcons quote={quote} shareURL={shareURL} />
     </div>
   );
 };

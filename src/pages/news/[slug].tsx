@@ -25,9 +25,7 @@ import {
 } from "../../utils/queries";
 import { useRouter } from "next/router";
 import { fetchStrapiAPI } from "../../lib/strapi";
-import { isNativeMobileApp } from "../../components/Ionic/utils/capacitor";
 import PageLoader from "../../components/Loaders/PageLoader/PageLoader";
-import { useIonRouter } from "@ionic/react";
 import { NEWSPAGE_BASE_URL } from "../../utils/pages";
 import Head from "next/head";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
@@ -157,11 +155,8 @@ export const ArticleDetailPageContent = (
   const shareURL = `${APPLICATION_DOMAIN_URL}/news/${article.attributes.slug}`;
 
   const router = useRouter();
-  const ionRouter = useIonRouter();
   const newspageSlug = `/${NEWSPAGE_BASE_URL}/`;
-  const currentPageURL = isNativeMobileApp
-    ? ionRouter.routeInfo.pathname
-    : router.route;
+  const currentPageURL = router.route;
   const isNewsPage = currentPageURL.startsWith(newspageSlug);
 
   const bp = useBreakpointIndex();
@@ -215,24 +210,23 @@ export const ArticleDetailPageContent = (
             })}
 
             {/* Published info */}
-            {!isNativeMobileApp && (
-              <div>
-                <PublishInfo
-                  date={article.attributes.createdAt}
-                  styles={{
-                    variant: "text.label1",
-                    color: colors.gray100,
-                    paddingY: 3,
-                    paddingTop: 4,
-                  }}
-                />
 
-                <SocialIcons
-                  shareURL={shareURL}
-                  quote={article.attributes.title}
-                />
-              </div>
-            )}
+            <div>
+              <PublishInfo
+                date={article.attributes.createdAt}
+                styles={{
+                  variant: "text.label1",
+                  color: colors.gray100,
+                  paddingY: 3,
+                  paddingTop: 4,
+                }}
+              />
+
+              <SocialIcons
+                shareURL={shareURL}
+                quote={article.attributes.title}
+              />
+            </div>
           </div>
 
           {/* Article side ads */}
@@ -254,7 +248,7 @@ export const ArticleDetailPageContent = (
 
       {/* Recent articles */}
 
-      {recentArticles && !isNativeMobileApp && (
+      {recentArticles && (
         <ArticleGrid
           articleGrid={{
             articles: { data: recentArticles },
@@ -298,7 +292,6 @@ const ArticlePage = (props: ArticlePageProps) => {
 
 export default ArticlePage;
 
-// #!if isWeb === "true"
 export async function getServerSideProps(context: any) {
   const slug = context.params.slug;
   const [article, recentArticles] = await Promise.all([
@@ -323,4 +316,3 @@ export async function getServerSideProps(context: any) {
     },
   };
 }
-// #!endif

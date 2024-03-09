@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 
-import { IonCard, IonCardHeader, IonImg } from "@ionic/react";
 import { colors } from "../../../styles/theme";
 import { ColorTheme } from "../../../types/modifier";
 import { NEWSPAGE_BASE_URL } from "../../../utils/pages";
@@ -10,6 +9,7 @@ import PlayIcon from "../../Icons/Play";
 import Pill from "../../Primitives/Pill";
 import { ThemeUICSSObject } from "theme-ui";
 import { BsFilm } from "react-icons/bs";
+import Image from "next/image";
 
 type BasicArticleCardProps = NewscardProps & {
   cricfanaticOriginals?: boolean;
@@ -104,9 +104,10 @@ const BasicArticleCard = (props: BasicArticleCardProps) => {
 
   return (
     <div sx={{ padding: 1, height: "100%", ...styles }}>
-      <IonCard routerLink={path} style={cardStyles}>
+      {/* routerLink={path} */}
+      <div sx={cardStyles}>
         <div sx={{ position: "relative", display: "block" }}>
-          <IonImg
+          <Image
             src={imageSrc}
             alt={slug}
             sx={{
@@ -114,7 +115,7 @@ const BasicArticleCard = (props: BasicArticleCardProps) => {
               maxWidth: "100%",
               objectFit: "cover",
             }}
-          ></IonImg>
+          />
 
           <div sx={imageIconStyles}>
             <div
@@ -149,8 +150,8 @@ const BasicArticleCard = (props: BasicArticleCardProps) => {
           </div>
         </div>
 
-        <IonCardHeader
-          style={{
+        <div
+          sx={{
             paddingLeft: 0,
             paddingTop: "15px",
             paddingBottom: "15px",
@@ -187,8 +188,8 @@ const BasicArticleCard = (props: BasicArticleCardProps) => {
               {articlePublishedDate}
             </p>
           </div>
-        </IonCardHeader>
-      </IonCard>
+        </div>
+      </div>
     </div>
   );
 };

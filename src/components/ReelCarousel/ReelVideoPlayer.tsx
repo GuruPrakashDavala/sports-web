@@ -5,14 +5,22 @@ import MuxVideo from "@mux/mux-video-react";
 import { Tweet as TweetT } from "next-tweet/api";
 import { getTweet, renderImage } from "../../utils/util";
 import { ReelType } from "../../types/common";
-import {
-  ReelEntitlements,
-  VideoType as VideoTypeT,
-} from "../Ionic/Pages/videos";
-import { VideoAttributes } from "../Ionic/Pages/videos/VideoDetailPage";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { ThemeUICSSObject } from "theme-ui";
 import { reelContainerStyles } from "./ReelImageViewer";
+import { VideoType } from "../Cards/VideoCard/VideoMicroCard";
+import { ReelEntitlements } from "../CarouselBlocks/ReelCarousel";
+
+export type VideoAttributes = {
+  playbackVideoId?: string;
+  playbackVideoTitle?: string;
+  playbackVideoDate?: string;
+  videoURL?: string;
+  image?: string;
+  tweetSource?: string;
+  videoType: VideoType;
+  videoCMSID?: number;
+};
 
 const reelVideoInfoContainerStyles: ThemeUICSSObject = {
   position: "absolute",
@@ -103,7 +111,7 @@ const ReelVideoPlayer = (props: {
           : undefined,
         image: tweetImage,
         tweetSource,
-        videoType: VideoTypeT.TWITTER_VIDEO,
+        videoType: VideoType.TWITTER_VIDEO,
         videoCMSID: video.id,
       });
       setLoading(false);
@@ -132,7 +140,7 @@ const ReelVideoPlayer = (props: {
         videoURL: undefined,
         image: renderImage(video.attributes.thumbnail.data),
         tweetSource: undefined,
-        videoType: VideoTypeT.MUX,
+        videoType: VideoType.MUX,
         videoCMSID: video.id,
       });
       setLoading(false);
@@ -178,13 +186,13 @@ const ReelVideoPlayer = (props: {
           }}
           playbackId={
             playbackVideoAttributes &&
-            playbackVideoAttributes.videoType === VideoTypeT.MUX
+            playbackVideoAttributes.videoType === VideoType.MUX
               ? playbackVideoAttributes?.playbackVideoId
               : undefined
           }
           src={
             playbackVideoAttributes &&
-            playbackVideoAttributes.videoType === VideoTypeT.TWITTER_VIDEO
+            playbackVideoAttributes.videoType === VideoType.TWITTER_VIDEO
               ? playbackVideoAttributes?.videoURL
               : undefined
           }

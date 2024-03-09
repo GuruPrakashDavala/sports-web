@@ -2,7 +2,6 @@
 
 import { Fragment } from "react";
 import { InfiniteSocialsResponseType } from "../../utils/queries";
-import { SocialsBlockPicker } from "../Ionic/Pages/socials";
 import SectionHeading from "../SectionHeading";
 
 const SocialsFeed = (props: { socialEmbeds: InfiniteSocialsResponseType }) => {
@@ -37,10 +36,10 @@ const SocialsFeed = (props: { socialEmbeds: InfiniteSocialsResponseType }) => {
                   </p>
                 )}
 
-                <SocialsBlockPicker
+                {/* <SocialsBlockPicker
                   type={social.attributes.type}
                   socialId={social.attributes.social_id}
-                />
+                /> */}
               </div>
             ))}
           </Fragment>

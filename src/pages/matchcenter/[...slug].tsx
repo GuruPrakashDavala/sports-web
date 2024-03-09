@@ -491,7 +491,6 @@ const MatchCenter = (props: MatchCenterProps): JSX.Element => {
 
 export default MatchCenter;
 
-// #!if isWeb === "true"
 export async function getServerSideProps(
   context: any
 ): Promise<MatchCenterProps | {}> {
@@ -526,4 +525,3 @@ export async function getServerSideProps(
     return {};
   }
 }
-// #!endif
