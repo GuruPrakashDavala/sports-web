@@ -129,7 +129,7 @@ const HomePageContent = (props: {
           <ContentGrid blocks={homepage.attributes.contentGrid} />
         )}
 
-      <FixtureCarousel fixtures={fixtures} />
+      {/* <FixtureCarousel fixtures={fixtures} /> */}
 
       {homepage.attributes.pageblocks &&
         homepage.attributes.pageblocks.length > 0 &&
