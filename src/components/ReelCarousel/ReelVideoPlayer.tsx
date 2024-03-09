@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import MuxVideo from "@mux/mux-video-react";
-import { Tweet as TweetT } from "next-tweet/api";
 import { getTweet, renderImage } from "../../utils/util";
 import { ReelType } from "../../types/common";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
@@ -70,58 +69,58 @@ const ReelVideoPlayer = (props: {
 
   const videoItem = video ?? undefined;
 
-  const setTweetFunction = async (
-    tweetId: string,
-    video: ReelType
-  ): Promise<VideoAttributes | undefined> => {
-    try {
-      const tweet: TweetT = await getTweet(tweetId);
-      if (!tweet) {
-        setPlayerErr(true);
-        setLoading(false);
-        return;
-      }
-      const videoVariants =
-        tweet &&
-        tweet.video?.mediaAvailability.status === "available" &&
-        tweet.video?.variants
-          ? tweet.video.variants.filter(
-              (variant) => variant.type === "video/mp4"
-            )
-          : undefined;
+  // const setTweetFunction = async (
+  //   tweetId: string,
+  //   video: ReelType
+  // ): Promise<VideoAttributes | undefined> => {
+  //   try {
+  //     const tweet: TweetT = await getTweet(tweetId);
+  //     if (!tweet) {
+  //       setPlayerErr(true);
+  //       setLoading(false);
+  //       return;
+  //     }
+  //     const videoVariants =
+  //       tweet &&
+  //       tweet.video?.mediaAvailability.status === "available" &&
+  //       tweet.video?.variants
+  //         ? tweet.video.variants.filter(
+  //             (variant) => variant.type === "video/mp4"
+  //           )
+  //         : undefined;
 
-      const tweetImage =
-        tweet && tweet.video?.mediaAvailability.status === "available"
-          ? tweet.video.poster
-          : undefined;
+  //     const tweetImage =
+  //       tweet && tweet.video?.mediaAvailability.status === "available"
+  //         ? tweet.video.poster
+  //         : undefined;
 
-      const tweetSource =
-        tweet && tweet.video?.mediaAvailability.status === "available"
-          ? tweet.user.screen_name
-          : undefined;
+  //     const tweetSource =
+  //       tweet && tweet.video?.mediaAvailability.status === "available"
+  //         ? tweet.user.screen_name
+  //         : undefined;
 
-      // Set twitter video attributes
+  //     // Set twitter video attributes
 
-      setPlaybackVideoAttributes({
-        playbackVideoId: undefined,
-        playbackVideoTitle: video.attributes.title,
-        playbackVideoDate: video.attributes.createdAt,
-        videoURL: videoVariants
-          ? videoVariants[videoVariants?.length - 1].src
-          : undefined,
-        image: tweetImage,
-        tweetSource,
-        videoType: VideoType.TWITTER_VIDEO,
-        videoCMSID: video.id,
-      });
-      setLoading(false);
-    } catch (err) {
-      console.log(`Error fetching the tweet - ${tweetId}`);
-      console.log(err);
-      setPlayerErr(true);
-      return;
-    }
-  };
+  //     setPlaybackVideoAttributes({
+  //       playbackVideoId: undefined,
+  //       playbackVideoTitle: video.attributes.title,
+  //       playbackVideoDate: video.attributes.createdAt,
+  //       videoURL: videoVariants
+  //         ? videoVariants[videoVariants?.length - 1].src
+  //         : undefined,
+  //       image: tweetImage,
+  //       tweetSource,
+  //       videoType: VideoType.TWITTER_VIDEO,
+  //       videoCMSID: video.id,
+  //     });
+  //     setLoading(false);
+  //   } catch (err) {
+  //     console.log(`Error fetching the tweet - ${tweetId}`);
+  //     console.log(err);
+  //     setPlayerErr(true);
+  //     return;
+  //   }
+  // };
 
   const loadVideoAttributes = async (video: ReelType) => {
     const videoType = video.attributes.type;
@@ -129,7 +128,7 @@ const ReelVideoPlayer = (props: {
     setPlayerErr(false);
     setLoading(true);
     if (videoType === ReelEntitlements.TWITTER_VIDEO && tweetId) {
-      return await setTweetFunction(tweetId, video);
+      return;
     } else if (videoType === ReelEntitlements.MUX) {
       setPlaybackVideoAttributes({
         playbackVideoId:
@@ -166,81 +165,82 @@ const ReelVideoPlayer = (props: {
     }
   }, [video, playbackVideoAttributes, muxVideoRef, play]);
 
-  return (
-    <div sx={{ ...reelContainerStyles }}>
-      {playerErr && (
-        <div sx={errorInfoStyles}>
-          <p sx={{ color: "white" }}>
-            OOPS. We are having trouble swipe down to view other reels.
-          </p>
-        </div>
-      )}
+  // return (
+  //   <div sx={{ ...reelContainerStyles }}>
+  //     {playerErr && (
+  //       <div sx={errorInfoStyles}>
+  //         <p sx={{ color: "white" }}>
+  //           OOPS. We are having trouble swipe down to view other reels.
+  //         </p>
+  //       </div>
+  //     )}
 
-      {!loading && playbackVideoAttributes && (
-        <MuxVideo
-          ref={muxVideoRef}
-          className="control-styles"
-          style={{
-            height: "100%",
-            width: "100%",
-          }}
-          playbackId={
-            playbackVideoAttributes &&
-            playbackVideoAttributes.videoType === VideoType.MUX
-              ? playbackVideoAttributes?.playbackVideoId
-              : undefined
-          }
-          src={
-            playbackVideoAttributes &&
-            playbackVideoAttributes.videoType === VideoType.TWITTER_VIDEO
-              ? playbackVideoAttributes?.videoURL
-              : undefined
-          }
-          metadata={{
-            video_id: playbackVideoAttributes.playbackVideoId,
-            video_title: playbackVideoAttributes.playbackVideoTitle,
-            viewer_user_id: "cricfanatic reel viewer",
-          }}
-          nonce={""}
-          muted={muted}
-          poster={playbackVideoAttributes.image}
-        />
-      )}
+  //     {!loading && playbackVideoAttributes && (
+  //       <MuxVideo
+  //         ref={muxVideoRef}
+  //         className="control-styles"
+  //         style={{
+  //           height: "100%",
+  //           width: "100%",
+  //         }}
+  //         playbackId={
+  //           playbackVideoAttributes &&
+  //           playbackVideoAttributes.videoType === VideoType.MUX
+  //             ? playbackVideoAttributes?.playbackVideoId
+  //             : undefined
+  //         }
+  //         src={
+  //           playbackVideoAttributes &&
+  //           playbackVideoAttributes.videoType === VideoType.TWITTER_VIDEO
+  //             ? playbackVideoAttributes?.videoURL
+  //             : undefined
+  //         }
+  //         metadata={{
+  //           video_id: playbackVideoAttributes.playbackVideoId,
+  //           video_title: playbackVideoAttributes.playbackVideoTitle,
+  //           viewer_user_id: "cricfanatic reel viewer",
+  //         }}
+  //         nonce={""}
+  //         muted={muted}
+  //         poster={playbackVideoAttributes.image}
+  //       />
+  //     )}
 
-      {!playerErr && (
-        <div sx={reelVideoInfoContainerStyles}>
-          {muted && <p sx={mutedTextStyles}>Tap to unmute</p>}
+  //     {!playerErr && (
+  //       <div sx={reelVideoInfoContainerStyles}>
+  //         {muted && <p sx={mutedTextStyles}>Tap to unmute</p>}
 
-          <div sx={reelVideoDescriptionContainerStyles}>
-            <p
-              sx={{
-                color: "white",
-                variant: "text.body4",
-                flexBasis: "80%",
-              }}
-            >
-              {playbackVideoAttributes?.playbackVideoTitle}
-            </p>
+  //         <div sx={reelVideoDescriptionContainerStyles}>
+  //           <p
+  //             sx={{
+  //               color: "white",
+  //               variant: "text.body4",
+  //               flexBasis: "80%",
+  //             }}
+  //           >
+  //             {playbackVideoAttributes?.playbackVideoTitle}
+  //           </p>
 
-            <div
-              sx={{
-                flexBasis: "20%",
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingRight: 1,
-              }}
-            >
-              {muted ? (
-                <FaVolumeMute color="white" fontSize={22} />
-              ) : (
-                <FaVolumeUp color="white" fontSize={22} />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  //           <div
+  //             sx={{
+  //               flexBasis: "20%",
+  //               display: "flex",
+  //               justifyContent: "flex-end",
+  //               paddingRight: 1,
+  //             }}
+  //           >
+  //             {muted ? (
+  //               <FaVolumeMute color="white" fontSize={22} />
+  //             ) : (
+  //               <FaVolumeUp color="white" fontSize={22} />
+  //             )}
+  //           </div>
+  //         </div>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
+  return <></>;
 };
 
 export default ReelVideoPlayer;
