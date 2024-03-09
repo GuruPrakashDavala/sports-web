@@ -190,14 +190,7 @@ const Home = (props: {
 }): JSX.Element => {
   const { homepage, fixtures, recentNewsArticles, seriesIds } = props;
 
-  return (
-    <WebHome
-      homepage={homepage}
-      fixtures={fixtures}
-      seriesIds={seriesIds}
-      recentNewsArticles={recentNewsArticles}
-    />
-  );
+  return <></>;
 };
 
 export async function getStaticProps() {
